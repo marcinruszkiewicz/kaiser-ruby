@@ -1,11 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "kaiser/ruby/version"
+require "kaiser_ruby/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "kaiser-ruby"
-  spec.version       = Kaiser::Ruby::VERSION
+  spec.version       = KaiserRuby::VERSION
   spec.authors       = ["Marcin Ruszkiewicz"]
   spec.email         = ["marcin.ruszkiewicz@polcode.net"]
 

@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "kaiser/ruby"
+require "kaiser_ruby"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
