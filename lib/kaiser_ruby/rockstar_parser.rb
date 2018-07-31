@@ -1,9 +1,14 @@
 module KaiserRuby
   class RockstarParser < Parslet::Parser
-    root(:poetic_literal)
+    root(:lyrics)
+    rule(:lyrics) { (verse.repeat(1) >> eof).as(:lyrics) }
+
+    # define a line and a verse
+    rule(:line) { (poetic_literal.repeat(1) >> eol.repeat(0, 1)).as(:line) }
+    rule(:verse) { (line.repeat(1) >> eol.repeat(0, 1)).as(:verse) }
 
     # declare eol/eof/spaces to DRY out later definitions
-    rule(:space) { match('\s').repeat(1) }
+    rule(:space) { match(' ').repeat(1) }
     rule(:eol) { match['\n'] }
     rule(:eof) { any.absent? }
 

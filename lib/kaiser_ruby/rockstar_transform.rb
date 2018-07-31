@@ -10,6 +10,10 @@ module KaiserRuby
       "#{parameterize(context[:name])} = #{context[:value]}"
     end
 
+    rule(:line => sequence(:block)) { block.join }
+    rule(:verse => sequence(:lines)) { lines.join("\n") }
+    rule(:lyrics => sequence(:verses)) { verses.join("\n\n") }
+
     def self.parameterize(string)
       string.to_s.downcase.gsub(/\s+/, '_')
     end
