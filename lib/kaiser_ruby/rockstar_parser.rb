@@ -1,23 +1,20 @@
 module KaiserRuby
   class RockstarParser < Parslet::Parser
-    rule(:eol) { match('\n') }
-    rule(:eof) { any.absent? }
-    rule(:space) { match[' \t'] }
-
     rule(:reserved) do
       nil_value_keywords | true_value_keywords | false_value_keywords | plus_keywords | minus_keywords | times_keywords | over_keywords |
-      str('Knock') | str('Build') | str('Put') | str('into') | str('is') | str('says') | str('was') | str('were')
+      str('Knock') | str('Build') | str('Put') | str('into') | str('says') | poetic_number_keywords | say_keywords
     end
 
+    rule(:nil_value_keywords) { str('nothing') | str('nowhere') | str('nobody') | str('empty') | str('gone') }
     rule(:false_value_keywords) { str('false') | str('wrong') | str('no') | str('lies') }
     rule(:true_value_keywords) { str('true') | str('right') | str('yes') | str('ok') }
-    rule(:nil_value_keywords) { str('nothing') | str('nowhere') | str('nobody') | str('empty') | str('gone') }
     rule(:plus_keywords) { str('plus') | str('with') }
     rule(:minus_keywords) { str('minus') | str('without') }
     rule(:minus_keywords) { str('minus') | str('without') }
     rule(:times_keywords) { str('times') | str('of') }
     rule(:over_keywords) { str('over') }
     rule(:poetic_number_keywords) { str('is') | str('was') | str('were') }
+    rule(:say_keywords) { str('Say') | str('Shout') | str('Scream') | str('Whisper') }
 
     rule(:proper_word) { reserved.absent? >> match['A-Z'] >> match['A-Za-z'].repeat }
     rule(:common_word) { reserved.absent? >> match['A-Za-z'].repeat }
@@ -43,13 +40,13 @@ module KaiserRuby
     rule(:false_value) { false_value_keywords.as(:false_value) }
     rule(:string_value) { (str('"') >> match['A-Za-z '].repeat >> str('"')).as(:string_value) }
     rule(:numeric_value) { match['0-9\.'].repeat.as(:numeric_value) }
-    rule(:simple_values) { false_value | true_value | nil_value | string_value | numeric_value }
-    rule(:unquoted_string) { any.repeat.as(:unquoted_string) }
-    rule(:string_as_number) { any.repeat.as(:string_as_number) }
+    rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
+    rule(:string_as_number) { match['^\n'].repeat.as(:string_as_number) }
 
     rule(:basic_assignment_expression) do
+      match('Put ').present? >>
       (
-        str('Put ') >> line.as(:right) >> str(' into ') >> variable_names.as(:left)
+        str('Put ') >> string_input.as(:right) >> str(' into ') >> variable_names.as(:left)
       ).as(:assignment)
     end
 
@@ -99,7 +96,7 @@ module KaiserRuby
 
     rule(:poetic_type_literal) do
       (
-        variable_names.as(:left) >> str(' is ') >> (false_value | true_value | nil_value).as(:right)
+        variable_names.as(:left) >> str(' is ') >> (nil_value | false_value | true_value).as(:right)
       ).as(:assignment)
     end
 
@@ -115,11 +112,31 @@ module KaiserRuby
       ).as(:assignment)
     end
 
+    rule(:print_function) do
+      (
+        say_keywords >> space >> value_or_variable.as(:output)
+      ).as(:print)
+    end
+
+
+    rule(:simple_values) { nil_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
     rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
-    rule(:line) { poetics | expressions | variable_names | simple_values }
+    rule(:functions) { print_function }
+    rule(:line_elements) { poetics | expressions | functions | eol }
 
-    root(:line)
+    rule(:string_input) { line_elements | value_or_variable }
+    rule(:line) { (line_elements >> eol.maybe).as(:line) }
+    rule(:lyrics) { line.repeat.as(:lyrics) }
+    root(:lyrics)
+
+    rule(:eol) { match['\n'] }
+    rule(:eof) { any.absent? }
+    rule(:space) { match[' \t'].repeat(1) }
+  end
+
+  class RockstarSingleLineParser < KaiserRuby::RockstarParser
+    root(:string_input)
   end
 end

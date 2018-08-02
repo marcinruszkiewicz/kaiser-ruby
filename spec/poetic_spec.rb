@@ -7,6 +7,10 @@ RSpec.describe KaiserRuby do
     it 'assigns a boolean to proper variable' do
       expect(KaiserRuby.transpile('Tommy is nobody')).to eq 'tommy = nil'
     end
+
+    it 'works with a newline at the end' do
+      expect(KaiserRuby.transpile("Tommy is empty\n")).to eq 'tommy = nil'
+    end
   end
 
   context 'poetic string literals' do

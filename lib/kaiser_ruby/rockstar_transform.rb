@@ -26,10 +26,10 @@ module KaiserRuby
     rule(multiplication: { left: simple(:left), right: simple(:right) }) { "#{left} * #{right}" }
     rule(division: { left: simple(:left), right: simple(:right) }) { "#{left} / #{right}" }
 
+    rule(print: { output: simple(:output) }) { "puts #{output}" }
 
-    # rule(:line => sequence(:block)) { block.join }
-    # rule(:verse => sequence(:lines)) { lines.join("\n") }
-    # rule(:lyrics => sequence(:verses)) { verses.join("\n\n") }
+    rule(line: simple(:block)) { block == "\n" ? nil : block }
+    rule(lyrics: sequence(:lines)) { lines.join("\n") + "\n" }
 
     def self.parameterize(string)
       string.to_s.downcase.gsub(/\s+/, '_')

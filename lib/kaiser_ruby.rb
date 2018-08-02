@@ -5,9 +5,13 @@ require 'pry'
 
 module KaiserRuby
   def self.parse(input)
-    KaiserRuby::RockstarParser.new.parse(input)
+    if input.split("\n").size == 1
+      KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp)
+    else
+      KaiserRuby::RockstarParser.new.parse(input)
+    end
   rescue Parslet::ParseFailed => failure
-    puts input
+    puts input.inspect
     puts failure.parse_failure_cause.ascii_tree
   end
 
