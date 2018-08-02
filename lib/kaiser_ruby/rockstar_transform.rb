@@ -8,13 +8,13 @@ module KaiserRuby
     rule(string_value: simple(:str)) { str }
     rule(numeric_value: simple(:num)) { num }
     rule(unquoted_string: simple(:str)) { "\"#{str}\"" }
-    rule(string_as_number: simple(:str)) do
-      if str.to_s.include?('.')
-        str.to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
-          sub.split(/\s+/).map { |e| e.length % 10 }.join.to_i
+    rule(string_as_number: simple(:str)) do |c|
+      if c[:str].to_s.include?('.')
+        c[:str].to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
+          str_to_num(sub)
         end.join('.').to_f
       else
-        str.to_s.split(/\s+/).map { |e| e.length % 10 }.join.to_i
+        str_to_num(c[:str])
       end
     end
 
@@ -33,6 +33,10 @@ module KaiserRuby
 
     def self.parameterize(string)
       string.to_s.downcase.gsub(/\s+/, '_')
+    end
+
+    def self.str_to_num(string)
+      string.to_s.split(/\s+/).map { |e| e.length % 10 }.join.to_i
     end
   end
 end
