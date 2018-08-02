@@ -1,27 +1,23 @@
 RSpec.describe KaiserRuby do
-  let(:result) { KaiserRuby.transpile(input) }
-
-  context 'one word proper variables' do
-    let(:input) { "Love is right" }
-
-    it 'makes a variable' do
-      expect(result).to eq "love = true"
+  context 'variable names' do
+    it 'converts My world to a variable' do
+      expect(KaiserRuby.transpile("My world")).to eq "my_world"
     end
-  end
 
-  context 'more than one word' do
-    let(:input) { "Billie Jean is bad as lover" }
-
-    it 'makes a variable' do
-      expect(result).to eq "billie_jean = 325"
+    it 'converts your soul to a variable' do
+      expect(KaiserRuby.transpile("your soul")).to eq "your_soul"
     end
-  end
 
-  context 'common variables' do
-    let(:input) { "My world is empty" }
+    it 'converts Jean to a variable' do
+      expect(KaiserRuby.transpile("Jean")).to eq "jean"
+    end
 
-    it 'makes a variable' do
-      expect(result).to eq "my_world = nil"
+    it 'converts Mister Sandman to a variable' do
+      expect(KaiserRuby.transpile("Mister Sandman")).to eq "mister_sandman"
+    end
+
+    it 'converts Johnny B Goode to a variable' do
+      expect(KaiserRuby.transpile("Johnny B Goode")).to eq "johnny_b_goode"
     end
   end
 end

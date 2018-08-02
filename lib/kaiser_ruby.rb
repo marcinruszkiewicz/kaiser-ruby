@@ -1,11 +1,13 @@
 require 'parslet'
 require 'kaiser_ruby/rockstar_parser'
 require 'kaiser_ruby/rockstar_transform'
+require 'pry'
 
 module KaiserRuby
   def self.parse(input)
     KaiserRuby::RockstarParser.new.parse(input)
   rescue Parslet::ParseFailed => failure
+    puts input
     puts failure.parse_failure_cause.ascii_tree
   end
 
