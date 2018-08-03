@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "kaiser_ruby"
+require "kaiser_ruby/cli"
+
+KaiserRuby::CLI.start(ARGV)
