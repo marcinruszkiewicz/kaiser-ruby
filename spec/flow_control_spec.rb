@@ -28,13 +28,15 @@ RSpec.describe KaiserRuby do
         Shout "Human"
         If Tommy is da boss
         Shout "Nobody"
+        Else
+        Shout "Unknown"
       END
     end
 
     it 'makes an if block' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy == nil
-        puts "Nobody"
+          puts "Nobody"
         end
       RESULT
     end
@@ -42,9 +44,9 @@ RSpec.describe KaiserRuby do
     it 'makes an if else block' do
       expect(KaiserRuby.transpile(if_else_block)).to eq <<~RESULT
         if tommy == 15
-        puts "Human"
+          puts "Human"
         else
-        puts "Nobody"
+          puts "Nobody"
         end
       RESULT
     end
@@ -52,10 +54,10 @@ RSpec.describe KaiserRuby do
     it 'makes multiple consecutive if blocks correctly' do
       expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~RESULT
         if tommy == 15
-        puts "Human"
+          puts "Human"
         end
         if tommy == 24
-        puts "Nobody"
+          puts "Nobody"
         end
       RESULT
     end
@@ -63,9 +65,11 @@ RSpec.describe KaiserRuby do
     it 'makes nested if blocks correctly' do
       expect(KaiserRuby.transpile(nested_ifs)).to eq <<~RESULT
         if tommy == 15
-        puts "Human"
-        if tommy == 24
-        puts "Nobody"
+          puts "Human"
+          if tommy == 24
+          puts "Nobody"
+        else
+          puts "Unknown"
         end
         end
       RESULT

@@ -1,3 +1,4 @@
+require 'pry'
 module KaiserRuby
   class RockstarTransform < Parslet::Transform
     rule(variable_name: simple(:str)) { |c| parameterize(c[:str]) }
@@ -30,16 +31,25 @@ module KaiserRuby
 
     rule(equals: { left: simple(:left), right: simple(:right) }) { "#{left} == #{right}" }
     rule(if: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), endif: simple(:_)} ) do
-      "if #{if_condition}\n" +
-      if_block_lines.map { |l| "#{l}\n" }.join +
-      "end"
+      output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
+      KaiserRuby.up_indent
+      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end"
+      output
     end
+
     rule(if_else: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), else_block: sequence(:else_block_lines), endif: simple(:_)} ) do
-      "if #{if_condition}\n" +
-      if_block_lines.map { |l| "#{l}\n" }.join +
-      "else\n" +
-      else_block_lines.map { |l| "#{l}\n" }.join +
-      "end"
+      output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
+      KaiserRuby.up_indent
+      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}else\n"
+      KaiserRuby.up_indent
+      output += else_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end"
+      output
     end
 
     rule(line: simple(:line)) { line == "\n" ? nil : line }

@@ -3,6 +3,20 @@ require 'kaiser_ruby/rockstar_parser'
 require 'kaiser_ruby/rockstar_transform'
 
 module KaiserRuby
+  def self.up_indent
+    @@indent ||= 0
+    @@indent += 2
+  end
+
+  def self.down_indent
+    @@indent ||= 0
+    @@indent -= 2
+  end
+
+  def self.indent
+    @@indent ||= 0
+  end
+
   def self.parse(input)
     if input.split("\n").size == 1
       KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp)
