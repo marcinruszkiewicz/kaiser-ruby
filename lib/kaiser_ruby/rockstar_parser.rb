@@ -17,8 +17,8 @@ module KaiserRuby
     rule(:say_keywords) { str('Say') | str('Shout') | str('Scream') | str('Whisper') }
     rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
 
-    rule(:proper_word) { reserved.absent? >> match['A-Z'] >> match['A-Za-z'].repeat }
-    rule(:common_word) { reserved.absent? >> match['A-Za-z'].repeat }
+    rule(:proper_word) { reserved.absent? >> match['[[:upper:]]'] >> match['[[:alpha:]]'].repeat }
+    rule(:common_word) { reserved.absent? >> match['[[:alpha:]]'].repeat }
     rule(:common_variable_name) do
       (
         str('A ') | str('a ') |
@@ -26,7 +26,7 @@ module KaiserRuby
         str('The ') | str('the ') |
         str('My ') | str('my ') |
         str('Your ') | str('your ')
-      ) >> reserved.absent? >> match['a-z'].repeat
+      ) >> reserved.absent? >> match['[[:lower:]]'].repeat
     end
     rule(:proper_variable_name) do
       (proper_word >> (space >> proper_word).repeat).repeat(1)
@@ -39,7 +39,7 @@ module KaiserRuby
     rule(:nil_value) { nil_value_keywords.as(:nil_value) }
     rule(:true_value) { true_value_keywords.as(:true_value) }
     rule(:false_value) { false_value_keywords.as(:false_value) }
-    rule(:string_value) { (str('"') >> match['A-Za-z '].repeat >> str('"')).as(:string_value) }
+    rule(:string_value) { (str('"') >> match['[[:alpha:]] '].repeat >> str('"')).as(:string_value) }
     rule(:numeric_value) { match['0-9\.'].repeat.as(:numeric_value) }
     rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
     rule(:string_as_number) { reserved.absent? >> match['^\n'].repeat.as(:string_as_number) }

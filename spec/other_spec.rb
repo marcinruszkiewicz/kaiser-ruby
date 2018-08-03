@@ -5,6 +5,23 @@ RSpec.describe KaiserRuby do
     end
   end
 
+  context 'metal umlauts' do
+    let(:metal_lyrics) do <<~METAL
+        Motörhead says We're so metäl we have umläuts everywhere!
+        Scream Motörhead
+        Ümlaut is gone
+      METAL
+    end
+
+    it 'handles metal umlauts both in variables and values' do
+      expect(KaiserRuby.transpile(metal_lyrics)).to eq <<~PURE_METAL
+        motörhead = "We're so metäl we have umläuts everywhere!"
+        puts motörhead
+        ümlaut = nil
+      PURE_METAL
+    end
+  end
+
   context 'verses' do
     let(:more_lines) do
       <<~END
