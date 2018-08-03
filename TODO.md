@@ -12,8 +12,8 @@
 
 ## Comparisons
 
-- [ ] Handle gt, gte, lt, lte comparisons
-- [ ] Handle negation
+- [x] Handle gt, gte, lt, lte comparisons
+- [x] Handle negation
 
 ## Input
 
@@ -32,7 +32,7 @@
 
 ## Examples
 
-- [ ] FizzBuzz example (should also be in tests to check if it runs)
+- [x] FizzBuzz example (should also be in tests to check if it runs)
 - [ ] Should be able to run the [Cellular Rockomata](https://github.com/Rifhutch/cellular-rocktomata)
 - [ ] Fibonacci example https://github.com/dylanbeattie/rockstar/issues/94#issuecomment-408217504
 - [ ] Math module https://gist.github.com/wrenoud/6be6f7509c88a3d8f9867ae782fb768f

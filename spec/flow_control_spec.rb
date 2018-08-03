@@ -1,5 +1,5 @@
 RSpec.describe KaiserRuby do
-  context 'conditionals' do
+  context 'if else' do
     let(:if_block) do <<~END
         If Tommy is nobody
         Shout "Nobody"

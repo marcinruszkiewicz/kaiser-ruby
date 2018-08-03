@@ -31,6 +31,12 @@ module KaiserRuby
     rule(print: { output: simple(:output) }) { "puts #{output}" }
 
     rule(equals: { left: simple(:left), right: simple(:right) }) { "#{left} == #{right}" }
+    rule(not_equals: { left: simple(:left), right: simple(:right) }) { "#{left} != #{right}" }
+    rule(gt: { left: simple(:left), right: simple(:right) }) { "#{left} > #{right}" }
+    rule(gte: { left: simple(:left), right: simple(:right) }) { "#{left} >= #{right}" }
+    rule(lte: { left: simple(:left), right: simple(:right) }) { "#{left} <= #{right}" }
+    rule(lt: { left: simple(:left), right: simple(:right) }) { "#{left} < #{right}" }
+
     rule(if: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), endif: simple(:_)} ) do
       output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
       KaiserRuby.up_indent

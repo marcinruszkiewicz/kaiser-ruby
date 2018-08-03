@@ -4,7 +4,7 @@ module KaiserRuby
       mysterious_value_keywords | null_value_keywords | true_value_keywords | false_value_keywords |
       plus_keywords | minus_keywords | times_keywords | over_keywords |
       str('Knock') | str('Build') | str('Put') | str('into') | str('says') |
-      poetic_number_keywords | say_keywords
+      poetic_number_keywords | say_keywords | flow_keywords
     end
 
     rule(:mysterious_value_keywords) { str('mysterious') }
@@ -132,6 +132,41 @@ module KaiserRuby
       ).as(:equals)
     end
 
+    rule(:not_keywords) { str(' is not ') | str(" ain't ")}
+    rule(:inequality) do
+      (
+        value_or_variable.as(:left) >> not_keywords >> (string_as_number | value_or_variable).as(:right)
+      ).as(:not_equals)
+    end
+
+    rule(:gt_keywords) { str(' is ') >> (str('higher') | str('greater') | str('bigger') | str('stronger')) >> str(' than ') }
+    rule(:gt) do
+      (
+        value_or_variable.as(:left) >> gt_keywords >> (string_as_number | value_or_variable).as(:right)
+      ).as(:gt)
+    end
+
+    rule(:lt_keywords) { str(' is ') >> (str('lower') | str('less') | str('smaller') | str('weaker')) >> str(' than ') }
+    rule(:lt) do
+      (
+        value_or_variable.as(:left) >> lt_keywords >> (string_as_number | value_or_variable).as(:right)
+      ).as(:lt)
+    end
+
+    rule(:gte_keywords) { str(' is as ') >> (str('high') | str('great') | str('big') | str('strong')) >> str(' as ') }
+    rule(:gte) do
+      (
+        value_or_variable.as(:left) >> gte_keywords >> (string_as_number | value_or_variable).as(:right)
+      ).as(:gte)
+    end
+
+    rule(:lte_keywords) { str(' is as ') >> (str('low') | str('little') | str('small') | str('weak')) >> str(' as ') }
+    rule(:lte) do
+      (
+        value_or_variable.as(:left) >> lte_keywords >> (string_as_number | value_or_variable).as(:right)
+      ).as(:lte)
+    end
+
     # flow control
 
     rule(:if_block) do
@@ -161,7 +196,7 @@ module KaiserRuby
     rule(:simple_values) { mysterious_value | null_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
     rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
-    rule(:comparisons) { equality }
+    rule(:comparisons) { gte | gt | lte | lt | inequality | equality }
     rule(:flow_control) { if_block | if_else_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
     rule(:functions) { print_function }
