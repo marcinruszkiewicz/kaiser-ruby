@@ -15,6 +15,7 @@ module KaiserRuby
     rule(:over_keywords) { str('over') }
     rule(:poetic_number_keywords) { str('is') | str('was') | str('were') }
     rule(:say_keywords) { str('Say') | str('Shout') | str('Scream') | str('Whisper') }
+    rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
 
     rule(:proper_word) { reserved.absent? >> match['A-Z'] >> match['A-Za-z'].repeat }
     rule(:common_word) { reserved.absent? >> match['A-Za-z'].repeat }
@@ -41,7 +42,7 @@ module KaiserRuby
     rule(:string_value) { (str('"') >> match['A-Za-z '].repeat >> str('"')).as(:string_value) }
     rule(:numeric_value) { match['0-9\.'].repeat.as(:numeric_value) }
     rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
-    rule(:string_as_number) { match['^\n'].repeat.as(:string_as_number) }
+    rule(:string_as_number) { reserved.absent? >> match['^\n'].repeat.as(:string_as_number) }
 
     rule(:basic_assignment_expression) do
       match('Put ').present? >>
@@ -95,6 +96,7 @@ module KaiserRuby
     # poetic assignments
 
     rule(:poetic_type_literal) do
+      (flow_keywords.absent?) >>
       (
         variable_names.as(:left) >> str(' is ') >> (nil_value | false_value | true_value).as(:right)
       ).as(:assignment)
@@ -107,6 +109,7 @@ module KaiserRuby
     end
 
     rule(:poetic_number_literal) do
+      (flow_keywords.absent?) >>
       (
         variable_names.as(:left) >> space >> poetic_number_keywords >> space >> string_as_number.as(:right)
       ).as(:assignment)
@@ -118,20 +121,56 @@ module KaiserRuby
       ).as(:print)
     end
 
+    # comparisons
+
+    rule(:equality) do
+      (
+        value_or_variable.as(:left) >> str(' is ') >> (string_as_number | value_or_variable).as(:right)
+      ).as(:equals)
+    end
+
+    # flow control
+
+    rule(:if_block) do
+      (
+        str('If ') >> comparisons.as(:if_condition) >> eol >>
+          scope {
+            inner_block_line.repeat.as(:if_block) >>
+            (eol | eof).as(:endif)
+          }
+      ).as(:if)
+    end
+
+    rule(:if_else_block) do
+      (
+        str('If ') >> comparisons.as(:if_condition) >> eol >>
+          scope {
+            inner_block_line.repeat.as(:if_block)
+          } >>
+        str('Else') >> eol >>
+          scope {
+            inner_block_line.repeat.as(:else_block) >>
+            (eol | eof).as(:endif)
+          }
+      ).as(:if_else)
+    end
 
     rule(:simple_values) { nil_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
     rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
+    rule(:comparisons) { equality }
+    rule(:flow_control) { if_block | if_else_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
     rule(:functions) { print_function }
-    rule(:line_elements) { poetics | expressions | functions | eol }
+    rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
 
     rule(:string_input) { line_elements | value_or_variable }
     rule(:line) { (line_elements >> eol.maybe).as(:line) }
+    rule(:inner_block_line) { ( (flow_control | poetics | expressions | functions) >> eol.maybe).as(:line) }
     rule(:lyrics) { line.repeat.as(:lyrics) }
     root(:lyrics)
 
-    rule(:eol) { match['\n'] }
+    rule(:eol) { match["\n"] }
     rule(:eof) { any.absent? }
     rule(:space) { match[' \t'].repeat(1) }
   end

@@ -28,7 +28,21 @@ module KaiserRuby
 
     rule(print: { output: simple(:output) }) { "puts #{output}" }
 
-    rule(line: simple(:block)) { block == "\n" ? nil : block }
+    rule(equals: { left: simple(:left), right: simple(:right) }) { "#{left} == #{right}" }
+    rule(if: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), endif: simple(:_)} ) do
+      "if #{if_condition}\n" +
+      if_block_lines.map { |l| "#{l}\n" }.join +
+      "end"
+    end
+    rule(if_else: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), else_block: sequence(:else_block_lines), endif: simple(:_)} ) do
+      "if #{if_condition}\n" +
+      if_block_lines.map { |l| "#{l}\n" }.join +
+      "else\n" +
+      else_block_lines.map { |l| "#{l}\n" }.join +
+      "end"
+    end
+
+    rule(line: simple(:line)) { line == "\n" ? nil : line }
     rule(lyrics: sequence(:lines)) { lines.join("\n") + "\n" }
 
     def self.parameterize(string)
