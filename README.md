@@ -49,6 +49,22 @@ Saved output in `a.rb`
 
 ```
 
+Another option is to run an interactive console (REPL):
+
+```
+$ kaiser-ruby rock --debug
+Type 'exit' to exit the console. Otherwise, rock on!
+\m/> Put "Hello San Francisco" into the message
+\m/> the_message = "Hello San Francisco"
+  => Hello San Francisco
+\m/> Scream the message
+\m/> puts the_message
+Hello San Francisco
+  => nil
+\m/> exit
+$
+```
+
 Finally, you can also transpile and immediately execute the code, like this:
 
 ```
