@@ -1,38 +1,65 @@
-# Kaiser::Ruby
+# KaiserRuby - a Rockstar to Ruby transpiler
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/kaiser/ruby`. To experiment with that code, run `bin/console` for an interactive prompt.
+This tool translates a file containing a program written in the [Rockstar language](https://github.com/dylanbeattie/rockstar) to Ruby code.
 
-TODO: Delete this and the text above, and describe your gem
+This is still a work in progress. For details on that, see the TODO.md file.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'kaiser-ruby'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install the gem by issuing the following command.
 
     $ gem install kaiser-ruby
 
 ## Usage
 
-TODO: Write usage instructions here
+The most common usage of this gem is to transpile (or transpile and run immediately) Rockstar code into Ruby code.
 
-## Development
+This gem provides a commandline tool for you to use:
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+    $ kaiser-ruby
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+There are a few ways you can use it. First one will just output the result of the transpilation.
+
+```
+$ kaiser-ruby transpile ./examples/assignment.rock
+tommy = 15
+puts tommy
+
+```
+
+The `--show-source` flag will output the Rockstar code along with the resulting Ruby code like this:
+
+This will have a following output:
+
+```
+$ kaiser-ruby transpile ./examples/assignment.rock --show-source
+Tommy is a rebel
+Shout Tommy
+----------------------------------------
+tommy = 15
+puts tommy
+
+```
+
+You can also use the `--save=FILE` option to write the resulting transpiled code as a file instead of outputting it:
+
+```
+$ kaiser-ruby transpile ./examples/assignment.rock --save=a.rb
+Saved output in `a.rb`
+
+```
+
+Finally, you can also transpile and immediately execute the code, like this:
+
+```
+$ kaiser-ruby execute ./examples/assignment.rock
+15
+
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/kaiser-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/marcinruszkiewicz/kaiser-ruby.
 
 ## License
 

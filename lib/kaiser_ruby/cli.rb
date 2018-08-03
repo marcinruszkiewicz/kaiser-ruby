@@ -3,13 +3,13 @@ require 'thor'
 module KaiserRuby
   class CLI < Thor
     desc "transpile FILE", "transpile a .rock FILE and output the result"
-    option :show_source, type: :boolean, desc: "prints out the source file along with the transpiled output"
+    option 'show-source'.to_sym, type: :boolean, desc: "prints out the source file along with the transpiled output"
     option :save, desc: "saves the transpiled output in SAVE"
     def transpile(filename)
       file = File.read filename
       output = KaiserRuby.transpile(file)
 
-      if options[:show_source]
+      if options['show-source'.to_sym]
         puts file
         puts "-" * 40
       end
@@ -31,6 +31,7 @@ module KaiserRuby
       output = KaiserRuby.transpile(file)
 
       eval output
+      puts
     end
   end
 end
