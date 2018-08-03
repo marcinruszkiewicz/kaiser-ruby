@@ -44,3 +44,5 @@
 - [ ] Ignore comments in parentheses
 - [x] Nicely indent blocks
 - [ ] Fix indenting of nested blocks that doesn't really work well
+- [x] Working basic REPL
+- [ ] Add code history to the REPL
