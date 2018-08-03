@@ -40,5 +40,5 @@
 
 ## Other stuff
 
-- [ ] Test if it handles metal umlauts (Ruby shouldn't care much, but tests should be made)
+- [x] Test if it handles metal umlauts (Ruby shouldn't care much, but tests should be made)
 - [ ] Ignore comments in parentheses

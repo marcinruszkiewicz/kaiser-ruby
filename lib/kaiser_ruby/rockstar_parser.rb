@@ -18,7 +18,6 @@ module KaiserRuby
     rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
 
     rule(:proper_word) { reserved.absent? >> match['[[:upper:]]'] >> match['[[:alpha:]]'].repeat }
-    rule(:common_word) { reserved.absent? >> match['[[:alpha:]]'].repeat }
     rule(:common_variable_name) do
       (
         str('A ') | str('a ') |

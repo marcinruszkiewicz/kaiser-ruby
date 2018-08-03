@@ -1,7 +1,6 @@
 require 'parslet'
 require 'kaiser_ruby/rockstar_parser'
 require 'kaiser_ruby/rockstar_transform'
-require 'pry'
 
 module KaiserRuby
   def self.parse(input)
