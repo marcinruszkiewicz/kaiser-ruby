@@ -17,7 +17,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(metal_lyrics)).to eq <<~PURE_METAL
         motörhead = "We're so metäl we have umläuts everywhere!"
         puts motörhead
-        ümlaut = nil
+        ümlaut = 0
       PURE_METAL
     end
   end

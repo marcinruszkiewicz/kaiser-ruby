@@ -54,7 +54,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'subtracts two variables' do
-      expect(KaiserRuby.transpile('Universe minus nothing')).to eq 'universe - nil'
+      expect(KaiserRuby.transpile('Universe minus mysterious')).to eq 'universe - nil'
       expect(KaiserRuby.transpile('My world without my love')).to eq 'my_world - my_love'
     end
 

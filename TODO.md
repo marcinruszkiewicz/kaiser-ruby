@@ -6,8 +6,8 @@
 
 ## Types
 
-- [ ] Handle null type differently - nil in Ruby isn't really comparable to 0
-- [ ] Handle mysterious type - probably this should be nil and what is now nil should be 0 instead
+- [x] Handle null type differently - nil in Ruby isn't really comparable to 0
+- [x] Handle mysterious type - probably this should be nil and what is now nil should be 0 instead
 - [ ] Handle object type
 
 ## Comparisons

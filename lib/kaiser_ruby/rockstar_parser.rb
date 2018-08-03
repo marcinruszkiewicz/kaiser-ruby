@@ -1,11 +1,14 @@
 module KaiserRuby
   class RockstarParser < Parslet::Parser
     rule(:reserved) do
-      nil_value_keywords | true_value_keywords | false_value_keywords | plus_keywords | minus_keywords | times_keywords | over_keywords |
-      str('Knock') | str('Build') | str('Put') | str('into') | str('says') | poetic_number_keywords | say_keywords
+      mysterious_value_keywords | null_value_keywords | true_value_keywords | false_value_keywords |
+      plus_keywords | minus_keywords | times_keywords | over_keywords |
+      str('Knock') | str('Build') | str('Put') | str('into') | str('says') |
+      poetic_number_keywords | say_keywords
     end
 
-    rule(:nil_value_keywords) { str('nothing') | str('nowhere') | str('nobody') | str('empty') | str('gone') }
+    rule(:mysterious_value_keywords) { str('mysterious') }
+    rule(:null_value_keywords) { str('nothing') | str('nowhere') | str('nobody') | str('empty') | str('gone') }
     rule(:false_value_keywords) { str('false') | str('wrong') | str('no') | str('lies') }
     rule(:true_value_keywords) { str('true') | str('right') | str('yes') | str('ok') }
     rule(:plus_keywords) { str('plus') | str('with') }
@@ -35,7 +38,8 @@ module KaiserRuby
       (common_variable_name | proper_variable_name).as(:variable_name)
     end
 
-    rule(:nil_value) { nil_value_keywords.as(:nil_value) }
+    rule(:mysterious_value) { mysterious_value_keywords.as(:mysterious_value) }
+    rule(:null_value) { null_value_keywords.as(:null_value) }
     rule(:true_value) { true_value_keywords.as(:true_value) }
     rule(:false_value) { false_value_keywords.as(:false_value) }
     rule(:string_value) { (str('"') >> match['[[:alpha:]] '].repeat >> str('"')).as(:string_value) }
@@ -97,7 +101,7 @@ module KaiserRuby
     rule(:poetic_type_literal) do
       (flow_keywords.absent?) >>
       (
-        variable_names.as(:left) >> str(' is ') >> (nil_value | false_value | true_value).as(:right)
+        variable_names.as(:left) >> str(' is ') >> (mysterious_value | null_value | false_value | true_value).as(:right)
       ).as(:assignment)
     end
 
@@ -154,7 +158,7 @@ module KaiserRuby
       ).as(:if_else)
     end
 
-    rule(:simple_values) { nil_value | false_value | true_value | string_value | numeric_value }
+    rule(:simple_values) { mysterious_value | null_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
     rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
     rule(:comparisons) { equality }

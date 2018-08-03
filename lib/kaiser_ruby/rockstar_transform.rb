@@ -3,7 +3,8 @@ module KaiserRuby
   class RockstarTransform < Parslet::Transform
     rule(variable_name: simple(:str)) { |c| parameterize(c[:str]) }
 
-    rule(nil_value: simple(:_)) { 'nil' }
+    rule(mysterious_value: simple(:_)) { 'nil' }
+    rule(null_value: simple(:_)) { '0' }
     rule(true_value: simple(:_)) { 'true' }
     rule(false_value: simple(:_)) { 'false' }
     rule(string_value: simple(:str)) { str }

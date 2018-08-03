@@ -35,7 +35,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes an if block' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if tommy == nil
+        if tommy == 0
           puts "Nobody"
         end
       RESULT

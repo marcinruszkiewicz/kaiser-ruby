@@ -15,9 +15,15 @@ RSpec.describe KaiserRuby do
     end
   end
 
-  context 'nil type' do
-    it 'converts some words to nil' do
-      expect(KaiserRuby.transpile('empty')).to eq 'nil'
+  context 'mysterious type' do
+    it 'converts some words to undefined/nil' do
+      expect(KaiserRuby.transpile('mysterious')).to eq 'nil'
+    end
+  end
+
+  context 'null type' do
+    it 'converts some words to null (actually zero)' do
+      expect(KaiserRuby.transpile('empty')).to eq '0'
     end
   end
 
