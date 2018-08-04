@@ -25,7 +25,7 @@
 - [x] While loop
 - [x] Until loop
 - [x] Break and continue
-- [ ] And/Or keywords for conditionals
+- [x] And/Or keywords for conditionals
 
 ## Functions
 

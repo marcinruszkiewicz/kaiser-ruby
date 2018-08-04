@@ -18,7 +18,7 @@ RSpec.describe KaiserRuby do
         If Tommy is a human
         Shout "Human"
 
-        If Tommy is da boss
+        If Tommy is a boss
         Shout "Nobody"
       END
     end
@@ -26,10 +26,16 @@ RSpec.describe KaiserRuby do
     let(:nested_ifs) do <<~END
         If Tommy is a human
         Shout "Human"
-        If Tommy is da boss
+        If Tommy is a boss
         Shout "Nobody"
         Else
         Shout "Unknown"
+      END
+    end
+
+    let(:two_conditions) do <<~END
+        If Tommy is a man and Gina is a vampire
+        Shout "Master"
       END
     end
 
@@ -43,7 +49,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes an if else block' do
       expect(KaiserRuby.transpile(if_else_block)).to eq <<~RESULT
-        if tommy == 15
+        if tommy == a_human
           puts "Human"
         else
           puts "Nobody"
@@ -53,10 +59,10 @@ RSpec.describe KaiserRuby do
 
     it 'makes multiple consecutive if blocks correctly' do
       expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~RESULT
-        if tommy == 15
+        if tommy == a_human
           puts "Human"
         end # endif
-        if tommy == 24
+        if tommy == a_boss
           puts "Nobody"
         end # endif
       RESULT
@@ -64,13 +70,21 @@ RSpec.describe KaiserRuby do
 
     it 'makes nested if blocks correctly' do
       expect(KaiserRuby.transpile(nested_ifs)).to eq <<~RESULT
-        if tommy == 15
+        if tommy == a_human
           puts "Human"
-          if tommy == 24
+          if tommy == a_boss
           puts "Nobody"
         else
           puts "Unknown"
         end # endifelse
+        end # endif
+      RESULT
+    end
+
+    it 'makes a comparison with two elements' do
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+        if tommy == a_man && gina == a_vampire
+          puts "Master"
         end # endif
       RESULT
     end
@@ -83,9 +97,23 @@ RSpec.describe KaiserRuby do
       END
     end
 
+    let(:two_conditions) do <<~END
+        While Tommy is nobody or Gina is nobody
+        Shout "Nobody"
+      END
+    end
+
     it 'makes a while block' do
       expect(KaiserRuby.transpile(while_block)).to eq <<~RESULT
         while tommy == 0
+          puts "Nobody"
+        end # endwhile
+      RESULT
+    end
+
+    it 'makes a while block with two conditions' do
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+        while tommy == 0 || gina == 0
           puts "Nobody"
         end # endwhile
       RESULT
@@ -99,9 +127,23 @@ RSpec.describe KaiserRuby do
       END
     end
 
+    let(:two_conditions) do <<~END
+        Until Tommy is nobody or Gina is nobody
+        Shout "Nobody"
+      END
+    end
+
     it 'makes a until block' do
       expect(KaiserRuby.transpile(until_block)).to eq <<~RESULT
         until tommy == 0
+          puts "Nobody"
+        end # enduntil
+      RESULT
+    end
+
+    it 'makes a until block with two conditions' do
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+        until tommy == 0 || gina == 0
           puts "Nobody"
         end # enduntil
       RESULT

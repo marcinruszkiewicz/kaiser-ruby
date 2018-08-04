@@ -27,7 +27,7 @@ module KaiserRuby
     rule(:increment_keywords) { str('Knock') | str('Build') }
     rule(:assignment_keywords) { str('Put') | str('into') }
     rule(:poetic_string_keywords) { str('says') }
-    rule(:comparison_keywords) { str("ain't") }
+    rule(:comparison_keywords) { str("ain't") | str('and') | str('or') }
     rule(:function_keywords) { str('Break it down') | str('Take it to the top') }
 
     # variable names
@@ -155,42 +155,42 @@ module KaiserRuby
 
     rule(:equality) do
       (
-        value_or_variable.as(:left) >> str(' is ') >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> str(' is ') >> value_or_variable.as(:right)
       ).as(:equals)
     end
 
     rule(:not_keywords) { str(' is not ') | str(" ain't ")}
     rule(:inequality) do
       (
-        value_or_variable.as(:left) >> not_keywords >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> not_keywords >> value_or_variable.as(:right)
       ).as(:not_equals)
     end
 
     rule(:gt_keywords) { str(' is ') >> (str('higher') | str('greater') | str('bigger') | str('stronger')) >> str(' than ') }
     rule(:gt) do
       (
-        value_or_variable.as(:left) >> gt_keywords >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> gt_keywords >> value_or_variable.as(:right)
       ).as(:gt)
     end
 
     rule(:lt_keywords) { str(' is ') >> (str('lower') | str('less') | str('smaller') | str('weaker')) >> str(' than ') }
     rule(:lt) do
       (
-        value_or_variable.as(:left) >> lt_keywords >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> lt_keywords >> value_or_variable.as(:right)
       ).as(:lt)
     end
 
     rule(:gte_keywords) { str(' is as ') >> (str('high') | str('great') | str('big') | str('strong')) >> str(' as ') }
     rule(:gte) do
       (
-        value_or_variable.as(:left) >> gte_keywords >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> gte_keywords >> value_or_variable.as(:right)
       ).as(:gte)
     end
 
     rule(:lte_keywords) { str(' is as ') >> (str('low') | str('little') | str('small') | str('weak')) >> str(' as ') }
     rule(:lte) do
       (
-        value_or_variable.as(:left) >> lte_keywords >> (string_as_number | value_or_variable).as(:right)
+        value_or_variable.as(:left) >> lte_keywords >> value_or_variable.as(:right)
       ).as(:lte)
     end
 
@@ -198,7 +198,8 @@ module KaiserRuby
 
     rule(:if_block) do
       (
-        str('If ') >> comparisons.as(:if_condition) >> eol >>
+        str('If ') >> comparisons.as(:if_condition) >>
+          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:if_block) >>
             (eol | eof).as(:endif)
@@ -208,7 +209,8 @@ module KaiserRuby
 
     rule(:if_else_block) do
       (
-        str('If ') >> comparisons.as(:if_condition) >> eol >>
+        str('If ') >> comparisons.as(:if_condition) >>
+          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:if_block)
           } >>
@@ -222,7 +224,8 @@ module KaiserRuby
 
     rule(:while_block) do
       (
-        str('While ') >> comparisons.as(:while_condition) >> eol >>
+        str('While ') >> comparisons.as(:while_condition) >>
+          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:while_block) >>
             (eol | eof).as(:endwhile)
@@ -232,7 +235,8 @@ module KaiserRuby
 
     rule(:until_block) do
       (
-        str('Until ') >> comparisons.as(:until_condition) >> eol >>
+        str('Until ') >> comparisons.as(:until_condition) >>
+          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:until_block) >>
             (eol | eof).as(:enduntil)

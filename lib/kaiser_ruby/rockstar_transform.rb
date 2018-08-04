@@ -52,6 +52,22 @@ module KaiserRuby
       output
     end
 
+    rule(if: {
+      if_condition: simple(:if_condition),
+      and_or: simple(:and_or),
+      second_condition: simple(:second_condition),
+      if_block: sequence(:if_block_lines),
+      endif: simple(:_)
+    } ) do
+      proper_and_or = and_or == 'and' ? '&&' : '||'
+      output = "#{' ' * KaiserRuby.indent}if #{if_condition} #{proper_and_or} #{second_condition}\n"
+      KaiserRuby.up_indent
+      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # endif"
+      output
+    end
+
     rule(if_else: {
       if_condition: simple(:if_condition),
       if_block: sequence(:if_block_lines),
@@ -59,6 +75,27 @@ module KaiserRuby
       endif: simple(:_)
     } ) do
       output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
+      KaiserRuby.up_indent
+      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}else\n"
+      KaiserRuby.up_indent
+      output += else_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # endifelse"
+      output
+    end
+
+    rule(if_else: {
+      if_condition: simple(:if_condition),
+      and_or: simple(:and_or),
+      second_condition: simple(:second_condition),
+      if_block: sequence(:if_block_lines),
+      else_block: sequence(:else_block_lines),
+      endif: simple(:_)
+    } ) do
+      proper_and_or = and_or == 'and' ? '&&' : '||'
+      output = "#{' ' * KaiserRuby.indent}if #{if_condition} #{proper_and_or} #{second_condition}\n"
       KaiserRuby.up_indent
       output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
       KaiserRuby.down_indent
@@ -83,12 +120,44 @@ module KaiserRuby
       output
     end
 
+    rule(while: {
+      while_condition: simple(:while_condition),
+      and_or: simple(:and_or),
+      second_condition: simple(:second_condition),
+      while_block: sequence(:while_block_lines),
+      endwhile: simple(:_)
+    } ) do
+      proper_and_or = and_or == 'and' ? '&&' : '||'
+      output = "#{' ' * KaiserRuby.indent}while #{while_condition} #{proper_and_or} #{second_condition}\n"
+      KaiserRuby.up_indent
+      output += while_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # endwhile"
+      output
+    end
+
     rule(until: {
       until_condition: simple(:until_condition),
       until_block: sequence(:until_block_lines),
       enduntil: simple(:_)
     } ) do
       output = "#{' ' * KaiserRuby.indent}until #{until_condition}\n"
+      KaiserRuby.up_indent
+      output += until_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # enduntil"
+      output
+    end
+
+    rule(until: {
+      until_condition: simple(:until_condition),
+      and_or: simple(:and_or),
+      second_condition: simple(:second_condition),
+      until_block: sequence(:until_block_lines),
+      enduntil: simple(:_)
+    } ) do
+      proper_and_or = and_or == 'and' ? '&&' : '||'
+      output = "#{' ' * KaiserRuby.indent}until #{until_condition} #{proper_and_or} #{second_condition}\n"
       KaiserRuby.up_indent
       output += until_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
       KaiserRuby.down_indent
