@@ -18,6 +18,7 @@ module KaiserRuby
   end
 
   def self.parse(input)
+    # strings without a line ending (or single lines) should be fed into the alternative parser
     if input.split("\n").size == 1
       KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp)
     else

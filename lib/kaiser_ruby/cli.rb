@@ -39,6 +39,8 @@ module KaiserRuby
     def rock
       say "Type 'exit' to exit the console. Otherwise, rock on!"
 
+      # grab the outside block's binding, so that we can use it to eval code
+      # this makes it not lose local variables throughout the loop
       b = binding
 
       begin

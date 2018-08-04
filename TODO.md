@@ -40,6 +40,8 @@
 - [ ] Math module https://gist.github.com/wrenoud/6be6f7509c88a3d8f9867ae782fb768f
 - [ ] Primality checker https://www.reddit.com/r/RockstarDevs/comments/92i6sm/primality_checker_in_rockstar/
 
+- [ ] Make a demo command in the CLI that runs all examples (would that even work as a gem? it should be doable somehow)
+
 ## Other stuff
 
 - [x] Test if it handles metal umlauts (Ruby shouldn't care much, but tests should be made)
@@ -51,3 +53,5 @@
 - [x] Working basic REPL
 - [ ] Add code history to the REPL
 - [ ] Make REPL work with multiline input also, not only singular lines
+
+- [ ] Better error handling

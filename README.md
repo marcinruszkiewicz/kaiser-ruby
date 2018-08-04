@@ -2,7 +2,7 @@
 
 This tool translates a file containing a program written in the [Rockstar language](https://github.com/dylanbeattie/rockstar) to Ruby code.
 
-This is still a work in progress. For details on that, see the TODO.md file.
+This is still a work in progress. For details on that, see the TODO.md and CHANGELOG.md files.
 
 ## Installation
 
