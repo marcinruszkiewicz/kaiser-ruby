@@ -37,7 +37,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy == 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
 
@@ -47,7 +47,7 @@ RSpec.describe KaiserRuby do
           puts "Human"
         else
           puts "Nobody"
-        end
+        end # endifelse
       RESULT
     end
 
@@ -55,10 +55,10 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~RESULT
         if tommy == 15
           puts "Human"
-        end
+        end # endif
         if tommy == 24
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
 
@@ -70,10 +70,41 @@ RSpec.describe KaiserRuby do
           puts "Nobody"
         else
           puts "Unknown"
-        end
-        end
+        end # endifelse
+        end # endif
       RESULT
     end
   end
 
+  context 'while loop' do
+    let(:while_block) do <<~END
+        While Tommy is nobody
+        Shout "Nobody"
+      END
+    end
+
+    it 'makes a while block' do
+      expect(KaiserRuby.transpile(while_block)).to eq <<~RESULT
+        while tommy == 0
+          puts "Nobody"
+        end # endwhile
+      RESULT
+    end
+  end
+
+  context 'until loop' do
+    let(:until_block) do <<~END
+        Until Tommy is nobody
+        Shout "Nobody"
+      END
+    end
+
+    it 'makes a until block' do
+      expect(KaiserRuby.transpile(until_block)).to eq <<~RESULT
+        until tommy == 0
+          puts "Nobody"
+        end # enduntil
+      RESULT
+    end
+  end
 end

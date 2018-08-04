@@ -29,6 +29,8 @@ module KaiserRuby
     rule(division: { left: simple(:left), right: simple(:right) }) { "#{left} / #{right}" }
 
     rule(print: { output: simple(:output) }) { "puts #{output}" }
+    rule(continue: simple(:_)) { "next" }
+    rule(break: simple(:_)) { "break" }
 
     rule(equals: { left: simple(:left), right: simple(:right) }) { "#{left} == #{right}" }
     rule(not_equals: { left: simple(:left), right: simple(:right) }) { "#{left} != #{right}" }
@@ -37,16 +39,25 @@ module KaiserRuby
     rule(lte: { left: simple(:left), right: simple(:right) }) { "#{left} <= #{right}" }
     rule(lt: { left: simple(:left), right: simple(:right) }) { "#{left} < #{right}" }
 
-    rule(if: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), endif: simple(:_)} ) do
+    rule(if: {
+      if_condition: simple(:if_condition),
+      if_block: sequence(:if_block_lines),
+      endif: simple(:_)
+    } ) do
       output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
       KaiserRuby.up_indent
       output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
       KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end"
+      output += "#{' ' * KaiserRuby.indent}end # endif"
       output
     end
 
-    rule(if_else: { if_condition: simple(:if_condition), if_block: sequence(:if_block_lines), else_block: sequence(:else_block_lines), endif: simple(:_)} ) do
+    rule(if_else: {
+      if_condition: simple(:if_condition),
+      if_block: sequence(:if_block_lines),
+      else_block: sequence(:else_block_lines),
+      endif: simple(:_)
+    } ) do
       output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
       KaiserRuby.up_indent
       output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
@@ -55,7 +66,33 @@ module KaiserRuby
       KaiserRuby.up_indent
       output += else_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
       KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end"
+      output += "#{' ' * KaiserRuby.indent}end # endifelse"
+      output
+    end
+
+    rule(while: {
+      while_condition: simple(:while_condition),
+      while_block: sequence(:while_block_lines),
+      endwhile: simple(:_)
+    } ) do
+      output = "#{' ' * KaiserRuby.indent}while #{while_condition}\n"
+      KaiserRuby.up_indent
+      output += while_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # endwhile"
+      output
+    end
+
+    rule(until: {
+      until_condition: simple(:until_condition),
+      until_block: sequence(:until_block_lines),
+      enduntil: simple(:_)
+    } ) do
+      output = "#{' ' * KaiserRuby.indent}until #{until_condition}\n"
+      KaiserRuby.up_indent
+      output += until_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # enduntil"
       output
     end
 

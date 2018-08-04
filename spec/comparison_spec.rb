@@ -10,7 +10,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy == 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy != 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy > 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end
@@ -58,7 +58,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy >= 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy < 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end
@@ -90,7 +90,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
         if tommy <= 0
           puts "Nobody"
-        end
+        end # endif
       RESULT
     end
   end

@@ -1,10 +1,15 @@
 module KaiserRuby
   class RockstarParser < Parslet::Parser
+    # ORDER OF THESE RULES ABSOLUTELY MATTERS
+    # DON'T MESS WITH IT
+
+    # all the keywords separately, so that variable names can't use them
+
     rule(:reserved) do
       mysterious_value_keywords | null_value_keywords | true_value_keywords | false_value_keywords |
-      plus_keywords | minus_keywords | times_keywords | over_keywords |
-      str('Knock') | str('Build') | str('Put') | str('into') | str('says') |
-      poetic_number_keywords | say_keywords | flow_keywords
+      plus_keywords | minus_keywords | times_keywords | over_keywords | increment_keywords |
+      assignment_keywords | poetic_string_keywords | poetic_number_keywords |
+      say_keywords | flow_keywords | comparison_keywords | function_keywords
     end
 
     rule(:mysterious_value_keywords) { str('mysterious') }
@@ -19,6 +24,14 @@ module KaiserRuby
     rule(:poetic_number_keywords) { str('is') | str('was') | str('were') }
     rule(:say_keywords) { str('Say') | str('Shout') | str('Scream') | str('Whisper') }
     rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
+    rule(:increment_keywords) { str('Knock') | str('Build') }
+    rule(:assignment_keywords) { str('Put') | str('into') }
+    rule(:poetic_string_keywords) { str('says') }
+    rule(:comparison_keywords) { str("ain't") }
+    rule(:function_keywords) { str('Break it down') | str('Take it to the top') }
+
+    # variable names
+    # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
 
     rule(:proper_word) { reserved.absent? >> match['[[:upper:]]'] >> match['[[:alpha:]]'].repeat }
     rule(:common_variable_name) do
@@ -38,6 +51,8 @@ module KaiserRuby
       (common_variable_name | proper_variable_name).as(:variable_name)
     end
 
+    # all the different value types (except Object for now)
+
     rule(:mysterious_value) { mysterious_value_keywords.as(:mysterious_value) }
     rule(:null_value) { null_value_keywords.as(:null_value) }
     rule(:true_value) { true_value_keywords.as(:true_value) }
@@ -47,12 +62,16 @@ module KaiserRuby
     rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
     rule(:string_as_number) { reserved.absent? >> match['^\n'].repeat.as(:string_as_number) }
 
+    # assignment
+
     rule(:basic_assignment_expression) do
       match('Put ').present? >>
       (
         str('Put ') >> string_input.as(:right) >> str(' into ') >> variable_names.as(:left)
       ).as(:assignment)
     end
+
+    # math operations
 
     rule(:increment) do
       (
@@ -65,8 +84,6 @@ module KaiserRuby
         str('Knock ') >> variable_names.as(:variable_name) >> str(' down')
       ).as(:decrement)
     end
-
-    # math operations
 
     rule(:addition) do
       (match('.*? plus') | match('.*? with')).present? >>
@@ -118,10 +135,20 @@ module KaiserRuby
       ).as(:assignment)
     end
 
+    # single statements
+
     rule(:print_function) do
       (
         say_keywords >> space >> value_or_variable.as(:output)
       ).as(:print)
+    end
+
+    rule(:break_function) do
+      str('Break it down').as(:break)
+    end
+
+    rule(:continue_function) do
+      str('Take it to the top').as(:continue)
     end
 
     # comparisons
@@ -167,7 +194,7 @@ module KaiserRuby
       ).as(:lte)
     end
 
-    # flow control
+    # flow control - if, else, while, until
 
     rule(:if_block) do
       (
@@ -193,14 +220,38 @@ module KaiserRuby
       ).as(:if_else)
     end
 
+    rule(:while_block) do
+      (
+        str('While ') >> comparisons.as(:while_condition) >> eol >>
+          scope {
+            inner_block_line.repeat.as(:while_block) >>
+            (eol | eof).as(:endwhile)
+          }
+      ).as(:while)
+    end
+
+    rule(:until_block) do
+      (
+        str('Until ') >> comparisons.as(:until_condition) >> eol >>
+          scope {
+            inner_block_line.repeat.as(:until_block) >>
+            (eol | eof).as(:enduntil)
+          }
+      ).as(:until)
+    end
+
+    # sets of rules
+
     rule(:simple_values) { mysterious_value | null_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
     rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
     rule(:comparisons) { gte | gt | lte | lt | inequality | equality }
-    rule(:flow_control) { if_block | if_else_block }
+    rule(:flow_control) { if_block | if_else_block | while_block | until_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
-    rule(:functions) { print_function }
+    rule(:functions) { print_function | break_function | continue_function }
     rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
+
+    # handle multiple lines in a file
 
     rule(:string_input) { line_elements | value_or_variable }
     rule(:line) { (line_elements >> eol.maybe).as(:line) }
@@ -208,11 +259,16 @@ module KaiserRuby
     rule(:lyrics) { line.repeat.as(:lyrics) }
     root(:lyrics)
 
+    # DRY helpers
+
     rule(:eol) { match["\n"] }
     rule(:eof) { any.absent? }
     rule(:space) { match[' \t'].repeat(1) }
   end
 
+  # this is an alternative parser that enables all the RSpec tests to pass
+  # it specifically has a single line rule that matches a string instead of lines
+  # it also matches the value_or_variable rule, so that the value creation can be tested
   class RockstarSingleLineParser < KaiserRuby::RockstarParser
     root(:string_input)
   end

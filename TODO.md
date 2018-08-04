@@ -3,6 +3,7 @@
 ## Variables
 
 - [ ] Handle pronouns - he, she, it, and others should refer to the last used variable
+- [ ] Handle "Janie's got a gun"
 
 ## Types
 
@@ -21,9 +22,10 @@
 
 ## Flow Control
 
-- [ ] While loop
-- [ ] Until loop
-- [ ] Break and continue
+- [x] While loop
+- [x] Until loop
+- [x] Break and continue
+- [ ] And/Or keywords for conditionals
 
 ## Functions
 
@@ -42,7 +44,10 @@
 
 - [x] Test if it handles metal umlauts (Ruby shouldn't care much, but tests should be made)
 - [ ] Ignore comments in parentheses
+
 - [x] Nicely indent blocks
 - [ ] Fix indenting of nested blocks that doesn't really work well
+
 - [x] Working basic REPL
 - [ ] Add code history to the REPL
+- [ ] Make REPL work with multiline input also, not only singular lines
