@@ -19,5 +19,9 @@ RSpec.describe KaiserRuby do
     it 'converts Johnny B Goode to a variable' do
       expect(KaiserRuby.transpile("Johnny B Goode")).to eq "johnny_b_goode"
     end
+
+    it 'ignores commas' do
+      expect(KaiserRuby.transpile('a man,')).to eq "a_man"
+    end
   end
 end

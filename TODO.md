@@ -29,8 +29,9 @@
 
 ## Functions
 
-- [ ] Define functions
-- [ ] Handle function calls
+- [x] Define functions
+- [x] Handle function calls
+- [ ] Function calls can be used as expressions in flow statements
 
 ## Examples
 

@@ -165,6 +165,30 @@ module KaiserRuby
       output
     end
 
+    rule(argument_name: simple(:str)) { str }
+    rule(return_value: simple(:value)) { "return #{value}" }
+
+    rule(function_definition: {
+      function_name: simple(:function_name),
+      arguments: sequence(:arguments),
+      function_block: sequence(:function_block_lines),
+      enddef: simple(:_)
+    } ) do
+      output = "#{' ' * KaiserRuby.indent}def #{function_name}(#{arguments.join(', ')})\n"
+      KaiserRuby.up_indent
+      output += function_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
+      KaiserRuby.down_indent
+      output += "#{' ' * KaiserRuby.indent}end # enddef"
+      output
+    end
+
+    rule(function_call: {
+      function_name: simple(:function_name),
+      arguments: sequence(:arguments)
+    } ) do
+      "#{function_name}(#{arguments.join(', ')})"
+    end
+
     rule(line: simple(:line)) { line == "\n" ? nil : line }
     rule(lyrics: sequence(:lines)) { lines.join("\n") + "\n" }
 

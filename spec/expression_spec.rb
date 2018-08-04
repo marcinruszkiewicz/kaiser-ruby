@@ -11,6 +11,10 @@ RSpec.describe KaiserRuby do
     it 'assigns an expression to a variable' do
       expect(KaiserRuby.transpile('Put the whole of your heart into my hands')).to eq 'my_hands = the_whole * your_heart'
     end
+
+    it 'assigns a returned value to a variable' do
+      expect(KaiserRuby.transpile('Put Midnight taking Dreams into my hands')).to eq 'my_hands = midnight(dreams)'
+    end
   end
 
   context 'increment expression' do

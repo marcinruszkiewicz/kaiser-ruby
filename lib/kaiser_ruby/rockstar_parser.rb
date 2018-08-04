@@ -27,8 +27,8 @@ module KaiserRuby
     rule(:increment_keywords) { str('Knock') | str('Build') }
     rule(:assignment_keywords) { str('Put') | str('into') }
     rule(:poetic_string_keywords) { str('says') }
-    rule(:comparison_keywords) { str("ain't") | str('and') | str('or') }
-    rule(:function_keywords) { str('Break it down') | str('Take it to the top') }
+    rule(:comparison_keywords) { str("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
+    rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') }
 
     # variable names
     # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
@@ -41,10 +41,10 @@ module KaiserRuby
         str('The ') | str('the ') |
         str('My ') | str('my ') |
         str('Your ') | str('your ')
-      ) >> reserved.absent? >> match['[[:lower:]]'].repeat
+      ) >> reserved.absent? >> match['[[:lower:]]'].repeat >> match[','].maybe.ignore
     end
     rule(:proper_variable_name) do
-      (proper_word >> (space >> proper_word).repeat).repeat(1)
+      (proper_word >> (space >> proper_word).repeat) >> match[','].maybe.ignore
     end
 
     rule(:variable_names) do
@@ -113,6 +113,27 @@ module KaiserRuby
       ).as(:multiplication)
     end
 
+    # functions
+
+    rule(:function) do
+      match('.*? takes').present? >>
+      (
+        variable_names.as(:function_name) >> str(' takes') >>
+        (space >> str('and ').maybe >> variable_names.as(:argument_name)).repeat.as(:arguments) >> eol >>
+        scope {
+          inner_block_line.repeat.as(:function_block) >>
+          (eol | eof).as(:enddef)
+        }
+      ).as(:function_definition)
+    end
+
+    rule(:function_call) do
+      (
+        variable_names.as(:function_name) >> str(' taking') >>
+        (space >> str('and ').maybe >> variable_names.as(:argument_name)).repeat.as(:arguments)
+      ).as(:function_call)
+    end
+
     # poetic assignments
 
     rule(:poetic_type_literal) do
@@ -149,6 +170,10 @@ module KaiserRuby
 
     rule(:continue_function) do
       str('Take it to the top').as(:continue)
+    end
+
+    rule(:return_function) do
+      str('Give back ') >> value_or_variable.as(:return_value)
     end
 
     # comparisons
@@ -252,8 +277,8 @@ module KaiserRuby
     rule(:comparisons) { gte | gt | lte | lt | inequality | equality }
     rule(:flow_control) { if_block | if_else_block | while_block | until_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
-    rule(:functions) { print_function | break_function | continue_function }
-    rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
+    rule(:functions) { print_function | break_function | continue_function | return_function }
+    rule(:line_elements) { function_call | function | flow_control | poetics | expressions | functions | eol }
 
     # handle multiple lines in a file
 
