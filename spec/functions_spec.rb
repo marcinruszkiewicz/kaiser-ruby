@@ -43,4 +43,17 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_arguments)).to eq "metal(a_man, a_song)"
     end
   end
+
+  context 'return a value' do
+    let(:variable) { "Give back Desire" }
+    let(:expression) { "Give back the daylight with the night" }
+
+    it 'returns a variable' do
+      expect(KaiserRuby.transpile(variable)).to eq "return desire"
+    end
+
+    it 'returs an expression' do
+      expect(KaiserRuby.transpile(expression)).to eq "return the_daylight + the_night"
+    end
+  end
 end

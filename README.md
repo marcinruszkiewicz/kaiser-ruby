@@ -2,7 +2,7 @@
 
 This tool translates a file containing a program written in the [Rockstar language](https://github.com/dylanbeattie/rockstar) to Ruby code.
 
-This is still a work in progress. For details on that, see the TODO.md and CHANGELOG.md files.
+This is still a work in progress, however most of the language implementation is already finished and working (as are the fibonacci sequence and fizzbuzz examples in the repository). For details on what is done, see the TODO.md and CHANGELOG.md files.
 
 ## Installation
 
@@ -71,6 +71,38 @@ Finally, you can also transpile and immediately execute the code, like this:
 $ kaiser-ruby execute ./examples/assignment.rock
 15
 
+```
+
+Or even better, this:
+
+```
+$ kaiser-ruby execute ./examples/fibonacci.rock
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89
+144
+233
+377
+610
+987
+1597
+2584
+4181
+6765
+10946
+17711
+28657
+46368
+
+$
 ```
 
 ## Contributing

@@ -1,25 +1,32 @@
 # 0.1
 
-- Initial implementation of the Rockstar Language based using `Parslet::Parser`
+- [x] Initial implementation of the Rockstar Language based using `Parslet::Parser`
 
 # 0.2
 
-- Rewrote the `KaiserRuby::RockstarParser` and `KaiserRuby::RockstarTransform` from scratch
-- basic CLI and REPL
-- Metal umlauts
-- Most variable types, assignmnents, output, conditionals are working.
+- [x] Rewrote the Parser and Transform classes from scratch
+- [x] basic CLI and REPL
+- [x] Metal umlauts
+- [x] Most variable types, assignmnents, output, conditionals are working.
 
 # 0.3
 
-- Switched null and mysterious types around - mysterious is now nil and 'null' is just 0 as it should be.
-- All flow control statements are working correctly.
-- Added comments to resulting ruby code flow control statements, so it's easier to see where what ends. This should help making the code more readable (and easier to figure out if it's actually correct), at least while the indentation feature is not fully working yet.
+Language Implementation:
 
-- Functions are working and callable
-- Pronouns are handled correctly
+- [x] Handle null type differently - nil in Ruby isn't really comparable to 0
+- [x] Handle mysterious type - probably this should be nil and what is now nil should be 0 instead
+- [x] Handle gt, gte, lt, lte comparisons
+- [x] Handle inequality
+- [x] While loop
+- [x] Until loop
+- [x] Break and continue
+- [x] And/Or keywords for conditionals
+- [x] Define functions
+- [x] Handle function calls
+- [x] Return can return math operations directly
 
-# 0.4
+Other stuff:
 
-- Input from STDIN is handled correctly
-- Object type is working
-- All examples should be running correctly
+- [x] FizzBuzz example is working
+- [x] Fibonacci example is working
+- [x] Added comments to resulting ruby code flow control statements, so it's easier to see where what ends. This should help making the code more readable (and easier to figure out if it's actually correct), at least while the indentation feature is not fully working yet.

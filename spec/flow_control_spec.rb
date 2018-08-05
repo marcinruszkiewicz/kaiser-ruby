@@ -130,6 +130,17 @@ RSpec.describe KaiserRuby do
     let(:two_conditions) do <<~END
         Until Tommy is nobody or Gina is nobody
         Shout "Nobody"
+        Put Midnight taking my world and Fire into my fire
+      END
+    end
+
+    let(:nested_if) do <<~END
+        Until Tommy is nobody
+        Shout "Nobody"
+        If Tommy is a man
+        Take it to the top
+
+        Shout "Until"
       END
     end
 
@@ -145,6 +156,19 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
         until tommy == 0 || gina == 0
           puts "Nobody"
+          my_fire = midnight(my_world, fire)
+        end # enduntil
+      RESULT
+    end
+
+    it 'nests if and comes back to the until loop' do
+      expect(KaiserRuby.transpile(nested_if)).to eq <<~RESULT
+        until tommy == 0
+          puts "Nobody"
+          if tommy == a_man
+          next
+        end # endif
+          puts "Until"
         end # enduntil
       RESULT
     end

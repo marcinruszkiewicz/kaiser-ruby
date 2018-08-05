@@ -173,7 +173,7 @@ module KaiserRuby
     end
 
     rule(:return_function) do
-      str('Give back ') >> value_or_variable.as(:return_value)
+      str('Give back ') >> (math_operations | value_or_variable).as(:return_value)
     end
 
     # comparisons
@@ -226,9 +226,8 @@ module KaiserRuby
         str('If ') >> comparisons.as(:if_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
-            inner_block_line.repeat.as(:if_block) >>
-            (eol | eof).as(:endif)
-          }
+            inner_block_line.repeat.as(:if_block)
+          } >> (eol | eof).as(:endif)
       ).as(:if)
     end
 
@@ -263,9 +262,9 @@ module KaiserRuby
         str('Until ') >> comparisons.as(:until_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
-            inner_block_line.repeat.as(:until_block) >>
-            (eol | eof).as(:enduntil)
-          }
+            inner_block_line.repeat.as(:until_block)
+
+          } >> (eol | eof).as(:enduntil)
       ).as(:until)
     end
 
@@ -273,12 +272,13 @@ module KaiserRuby
 
     rule(:simple_values) { mysterious_value | null_value | false_value | true_value | string_value | numeric_value }
     rule(:value_or_variable) { variable_names | simple_values }
-    rule(:expressions) { basic_assignment_expression | increment | decrement | addition | subtraction | multiplication | division }
+    rule(:math_operations) { increment | decrement | addition | subtraction | multiplication | division }
+    rule(:expressions) { basic_assignment_expression | math_operations }
     rule(:comparisons) { gte | gt | lte | lt | inequality | equality }
     rule(:flow_control) { if_block | if_else_block | while_block | until_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
-    rule(:functions) { print_function | break_function | continue_function | return_function }
-    rule(:line_elements) { function_call | function | flow_control | poetics | expressions | functions | eol }
+    rule(:functions) { function_call | function | print_function | break_function | continue_function | return_function }
+    rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
 
     # handle multiple lines in a file
 
