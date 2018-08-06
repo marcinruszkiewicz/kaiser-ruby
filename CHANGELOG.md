@@ -30,3 +30,13 @@ Other stuff:
 - [x] FizzBuzz example is working
 - [x] Fibonacci example is working
 - [x] Added comments to resulting ruby code flow control statements, so it's easier to see where what ends. This should help making the code more readable (and easier to figure out if it's actually correct), at least while the indentation feature is not fully working yet.
+
+# 0.4
+
+Language Implementation:
+
+- [x] Handle non-alpha values in quoted strings
+
+Other stuff:
+
+- [x] Updated the FizzBuzz example

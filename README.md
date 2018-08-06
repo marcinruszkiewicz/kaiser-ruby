@@ -8,7 +8,9 @@ This is still a work in progress, however most of the language implementation is
 
 Install the gem by issuing the following command.
 
-    $ gem install kaiser-ruby
+```
+$ gem install kaiser-ruby
+```
 
 ## Usage
 
@@ -16,7 +18,9 @@ The most common usage of this gem is to transpile (or transpile and run immediat
 
 This gem provides a commandline tool for you to use:
 
-    $ kaiser-ruby
+```
+$ kaiser-ruby
+```
 
 There are a few ways you can use it. First one will just output the result of the transpilation.
 
@@ -28,8 +32,6 @@ puts tommy
 ```
 
 The `--show-source` flag will output the Rockstar code along with the resulting Ruby code like this:
-
-This will have a following output:
 
 ```
 $ kaiser-ruby transpile ./examples/assignment.rock --show-source

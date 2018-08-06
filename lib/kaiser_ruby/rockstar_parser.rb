@@ -57,7 +57,7 @@ module KaiserRuby
     rule(:null_value) { null_value_keywords.as(:null_value) }
     rule(:true_value) { true_value_keywords.as(:true_value) }
     rule(:false_value) { false_value_keywords.as(:false_value) }
-    rule(:string_value) { (str('"') >> match['[[:alpha:]] '].repeat >> str('"')).as(:string_value) }
+    rule(:string_value) { (str('"') >> match['^"'].repeat >> str('"')).as(:string_value) }
     rule(:numeric_value) { match['0-9\.'].repeat.as(:numeric_value) }
     rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
     rule(:string_as_number) { reserved.absent? >> match['^\n'].repeat.as(:string_as_number) }

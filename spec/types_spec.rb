@@ -3,6 +3,10 @@ RSpec.describe KaiserRuby do
     it 'treats double quoted string as a string' do
       expect(KaiserRuby.transpile('"Hello San Francisco"')).to eq '"Hello San Francisco"'
     end
+
+    it 'allows everything in the string' do
+      expect(KaiserRuby.transpile('"So metal 3332!! &"')).to eq '"So metal 3332!! &"'
+    end
   end
 
   context 'numeric type' do
