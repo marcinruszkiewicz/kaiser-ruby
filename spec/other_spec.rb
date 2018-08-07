@@ -23,8 +23,7 @@ RSpec.describe KaiserRuby do
   end
 
   context 'verses' do
-    let(:more_lines) do
-      <<~END
+    let(:more_lines) do <<~END
         Put 5 into your heart
         Whisper your heart
       END
@@ -51,8 +50,7 @@ RSpec.describe KaiserRuby do
   end
 
   context 'lyrics' do
-    let(:lyrics) do
-      <<~END
+    let(:lyrics) do <<~END
         Put 5 into your heart
         Whisper your heart
 
@@ -68,6 +66,21 @@ RSpec.describe KaiserRuby do
 
         a_rockstar = "Ruby"
         puts a_rockstar
+      RESULT
+    end
+  end
+
+  context 'comments' do
+    let(:comments) do <<~END
+        Ruby is a language
+        (a programming one)
+      END
+    end
+
+    it 'transforms comments to ruby comments' do
+      expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
+        ruby = 18
+        # a programming one
       RESULT
     end
   end
