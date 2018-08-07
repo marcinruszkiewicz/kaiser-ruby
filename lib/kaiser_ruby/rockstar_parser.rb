@@ -62,7 +62,7 @@ module KaiserRuby
     rule(:string_value) { (str('"') >> match['^"'].repeat >> str('"')).as(:string_value) }
     rule(:numeric_value) { match['0-9\.'].repeat.as(:numeric_value) }
     rule(:unquoted_string) { match['^\n'].repeat.as(:unquoted_string) }
-    rule(:string_as_number) { reserved.absent? >> (match('.*?\(').present? >> match['^\('] | match('.*?\(').absent? >> match['^\n']).repeat.as(:string_as_number) }
+    rule(:string_as_number) { reserved.absent? >> match['^\n'].repeat.as(:string_as_number) }
 
     # assignment
 
@@ -180,48 +180,64 @@ module KaiserRuby
 
     # comparisons
 
-    rule(:equality) do
-      (
-        value_or_variable.as(:left) >> str(' is ') >> value_or_variable.as(:right)
-      ).as(:equals)
-    end
-
-    rule(:not_keywords) { str(' is not ') | str(" ain't ")}
-    rule(:inequality) do
-      (
-        value_or_variable.as(:left) >> not_keywords >> value_or_variable.as(:right)
-      ).as(:not_equals)
-    end
-
-    rule(:gt_keywords) { str(' is ') >> (str('higher') | str('greater') | str('bigger') | str('stronger')) >> str(' than ') }
-    rule(:gt) do
-      (
-        value_or_variable.as(:left) >> gt_keywords >> value_or_variable.as(:right)
-      ).as(:gt)
-    end
-
-    rule(:lt_keywords) { str(' is ') >> (str('lower') | str('less') | str('smaller') | str('weaker')) >> str(' than ') }
-    rule(:lt) do
-      (
-        value_or_variable.as(:left) >> lt_keywords >> value_or_variable.as(:right)
-      ).as(:lt)
-    end
-
     rule(:gte_keywords) { str(' is as ') >> (str('high') | str('great') | str('big') | str('strong')) >> str(' as ') }
     rule(:gte) do
       (
-        value_or_variable.as(:left) >> gte_keywords >> value_or_variable.as(:right)
+        value_or_variable.as(:left) >> gte_keywords >> (math_operations | value_or_variable).as(:right)
       ).as(:gte)
     end
 
     rule(:lte_keywords) { str(' is as ') >> (str('low') | str('little') | str('small') | str('weak')) >> str(' as ') }
     rule(:lte) do
       (
-        value_or_variable.as(:left) >> lte_keywords >> value_or_variable.as(:right)
+        value_or_variable.as(:left) >> lte_keywords >> (math_operations | value_or_variable).as(:right)
       ).as(:lte)
     end
 
+    rule(:equality) do
+      (
+        value_or_variable.as(:left) >> str(' is ') >> (math_operations | value_or_variable).as(:right)
+      ).as(:equals)
+    end
+
+    rule(:not_keywords) { str(' is not ') | str(" ain't ")}
+    rule(:inequality) do
+      (
+        value_or_variable.as(:left) >> not_keywords >> (math_operations | value_or_variable).as(:right)
+      ).as(:not_equals)
+    end
+
+    rule(:gt_keywords) { str(' is ') >> (str('higher') | str('greater') | str('bigger') | str('stronger')) >> str(' than ') }
+    rule(:gt) do
+      (
+        value_or_variable.as(:left) >> gt_keywords >> (math_operations | value_or_variable).as(:right)
+      ).as(:gt)
+    end
+
+    rule(:lt_keywords) { str(' is ') >> (str('lower') | str('less') | str('smaller') | str('weaker')) >> str(' than ') }
+    rule(:lt) do
+      (
+        value_or_variable.as(:left) >> lt_keywords >> (math_operations | value_or_variable).as(:right)
+      ).as(:lt)
+    end
+
+
+
     # flow control - if, else, while, until
+
+    rule(:if_else_block) do
+      (
+        str('If ') >> comparisons.as(:if_condition) >>
+          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
+          scope {
+            inner_block_line.repeat.as(:if_block)
+          } >>
+        str('Else') >> eol >>
+          scope {
+            inner_block_line.repeat.as(:else_block)
+          } >> (eol | eof).as(:endif)
+      ).as(:if_else)
+    end
 
     rule(:if_block) do
       (
@@ -233,29 +249,13 @@ module KaiserRuby
       ).as(:if)
     end
 
-    rule(:if_else_block) do
-      (
-        str('If ') >> comparisons.as(:if_condition) >>
-          (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
-          scope {
-            inner_block_line.repeat.as(:if_block)
-          } >>
-        str('Else') >> eol >>
-          scope {
-            inner_block_line.repeat.as(:else_block) >>
-            (eol | eof).as(:endif)
-          }
-      ).as(:if_else)
-    end
-
     rule(:while_block) do
       (
         str('While ') >> comparisons.as(:while_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
-            inner_block_line.repeat.as(:while_block) >>
-            (eol | eof).as(:endwhile)
-          }
+            inner_block_line.repeat.as(:while_block)
+          } >> (eol | eof).as(:endwhile)
       ).as(:while)
     end
 
@@ -286,7 +286,7 @@ module KaiserRuby
 
     rule(:string_input) { line_elements | value_or_variable }
     rule(:line) { (line_elements >> eol.maybe).as(:line) }
-    rule(:inner_block_line) { ( (flow_control | poetics | expressions | functions) >> eol.maybe).as(:line) }
+    rule(:inner_block_line) { ( (comment | flow_control | poetics | expressions | functions) >> eol.maybe).as(:line) }
     rule(:lyrics) { line.repeat.as(:lyrics) }
     root(:lyrics)
 
