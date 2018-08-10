@@ -30,8 +30,6 @@ module KaiserRuby
     rule(:comparison_keywords) { str("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
     rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') }
 
-    rule(:comment) { str('(') >> match['^)'].repeat.as(:comment) >> str(')') }
-
     # variable names
     # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
 
@@ -280,13 +278,13 @@ module KaiserRuby
     rule(:flow_control) { if_block | if_else_block | while_block | until_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
     rule(:functions) { function_call | function | print_function | break_function | continue_function | return_function }
-    rule(:line_elements) { flow_control | poetics | expressions | functions | eol | comment }
+    rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
 
     # handle multiple lines in a file
 
     rule(:string_input) { line_elements | value_or_variable }
     rule(:line) { (line_elements >> eol.maybe).as(:line) }
-    rule(:inner_block_line) { ( (comment | flow_control | poetics | expressions | functions) >> eol.maybe).as(:line) }
+    rule(:inner_block_line) { ( (flow_control | poetics | expressions | functions) >> eol.maybe).as(:line) }
     rule(:lyrics) { line.repeat.as(:lyrics) }
     root(:lyrics)
 

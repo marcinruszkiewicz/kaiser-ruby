@@ -18,6 +18,9 @@ module KaiserRuby
   end
 
   def self.parse(input)
+    # eat comments since we don't care about them
+    input = input.gsub(/(\(.*?\))/, '')
+
     # strings without a line ending (or single lines) should be fed into the alternative parser
     if input.split("\n").size == 1
       KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp)

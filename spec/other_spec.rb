@@ -74,13 +74,15 @@ RSpec.describe KaiserRuby do
     let(:comments) do <<~END
         Ruby is a language
         (a programming one)
+        Javascript is a language (probably)
       END
     end
 
     it 'transforms comments to ruby comments' do
       expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
         ruby = 18
-        # a programming one
+
+        javascript = 18
       RESULT
     end
   end
