@@ -1,7 +1,28 @@
 require 'pry'
 module KaiserRuby
   class RockstarTransform < Parslet::Transform
-    rule(variable_name: simple(:str)) { |c| parameterize(c[:str]) }
+    @@last_variable = nil
+    @@indent = 0
+
+    class << self
+      def last_variable=(value)
+        @@last_variable = value
+      end
+
+      def up_indent
+        @@indent += 2
+      end
+
+      def down_indent
+        @@indent -= 2
+      end
+    end
+
+    rule(variable_name: simple(:str)) do |context|
+      self.last_variable = parameterize(context[:str])
+      parameterize(context[:str])
+    end
+    rule(pronoun: simple(:_)) { @@last_variable }
 
     rule(mysterious_value: simple(:_)) { 'nil' }
     rule(null_value: simple(:_)) { '0' }
@@ -10,13 +31,13 @@ module KaiserRuby
     rule(string_value: simple(:str)) { str }
     rule(numeric_value: simple(:num)) { num }
     rule(unquoted_string: simple(:str)) { "\"#{str}\"" }
-    rule(string_as_number: simple(:str)) do |c|
-      if c[:str].to_s.include?('.')
-        c[:str].to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
+    rule(string_as_number: simple(:str)) do |context|
+      if context[:str].to_s.include?('.')
+        context[:str].to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
           str_to_num(sub)
         end.join('.').to_f
       else
-        str_to_num(c[:str])
+        str_to_num(context[:str])
       end
     end
 
@@ -44,12 +65,12 @@ module KaiserRuby
       if_condition: simple(:if_condition),
       if_block: sequence(:if_block_lines),
       endif: simple(:_)
-    } ) do
-      output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
-      KaiserRuby.up_indent
-      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endif"
+    } ) do |context|
+      output = "#{' ' * @@indent}if #{context[:if_condition]}\n"
+      self.up_indent
+      output += context[:if_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endif"
       output
     end
 
@@ -59,13 +80,13 @@ module KaiserRuby
       second_condition: simple(:second_condition),
       if_block: sequence(:if_block_lines),
       endif: simple(:_)
-    } ) do
-      proper_and_or = and_or == 'and' ? '&&' : '||'
-      output = "#{' ' * KaiserRuby.indent}if #{if_condition} #{proper_and_or} #{second_condition}\n"
-      KaiserRuby.up_indent
-      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endif"
+    } ) do |context|
+      proper_and_or = context[:and_or] == 'and' ? '&&' : '||'
+      output = "#{' ' * @@indent}if #{context[:if_condition]} #{proper_and_or} #{context[:second_condition]}\n"
+      self.up_indent
+      output += context[:if_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endif"
       output
     end
 
@@ -74,16 +95,16 @@ module KaiserRuby
       if_block: sequence(:if_block_lines),
       else_block: sequence(:else_block_lines),
       endif: simple(:_)
-    } ) do
-      output = "#{' ' * KaiserRuby.indent}if #{if_condition}\n"
-      KaiserRuby.up_indent
-      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}else\n"
-      KaiserRuby.up_indent
-      output += else_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endifelse"
+    } ) do |context|
+      output = "#{' ' * @@indent}if #{context[:if_condition]}\n"
+      self.up_indent
+      output += context[:if_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}else\n"
+      self.up_indent
+      output += context[:else_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endifelse"
       output
     end
 
@@ -94,17 +115,17 @@ module KaiserRuby
       if_block: sequence(:if_block_lines),
       else_block: sequence(:else_block_lines),
       endif: simple(:_)
-    } ) do
-      proper_and_or = and_or == 'and' ? '&&' : '||'
-      output = "#{' ' * KaiserRuby.indent}if #{if_condition} #{proper_and_or} #{second_condition}\n"
-      KaiserRuby.up_indent
-      output += if_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}else\n"
-      KaiserRuby.up_indent
-      output += else_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endifelse"
+    } ) do |context|
+      proper_and_or = context[:and_or] == 'and' ? '&&' : '||'
+      output = "#{' ' * @@indent}if #{context[:if_condition]} #{proper_and_or} #{context[:second_condition]}\n"
+      self.up_indent
+      output += context[:if_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}else\n"
+      self.up_indent
+      output += context[:else_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endifelse"
       output
     end
 
@@ -112,12 +133,12 @@ module KaiserRuby
       while_condition: simple(:while_condition),
       while_block: sequence(:while_block_lines),
       endwhile: simple(:_)
-    } ) do
-      output = "#{' ' * KaiserRuby.indent}while #{while_condition}\n"
-      KaiserRuby.up_indent
-      output += while_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endwhile"
+    } ) do |context|
+      output = "#{' ' * @@indent}while #{context[:while_condition]}\n"
+      self.up_indent
+      output += context[:while_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endwhile"
       output
     end
 
@@ -127,13 +148,13 @@ module KaiserRuby
       second_condition: simple(:second_condition),
       while_block: sequence(:while_block_lines),
       endwhile: simple(:_)
-    } ) do
-      proper_and_or = and_or == 'and' ? '&&' : '||'
-      output = "#{' ' * KaiserRuby.indent}while #{while_condition} #{proper_and_or} #{second_condition}\n"
-      KaiserRuby.up_indent
-      output += while_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # endwhile"
+    } ) do |context|
+      proper_and_or = context[:and_or] == 'and' ? '&&' : '||'
+      output = "#{' ' * @@indent}while #{context[:while_condition]} #{proper_and_or} #{context[:second_condition]}\n"
+      self.up_indent
+      output += context[:while_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # endwhile"
       output
     end
 
@@ -141,12 +162,12 @@ module KaiserRuby
       until_condition: simple(:until_condition),
       until_block: sequence(:until_block_lines),
       enduntil: simple(:_)
-    } ) do
-      output = "#{' ' * KaiserRuby.indent}until #{until_condition}\n"
-      KaiserRuby.up_indent
-      output += until_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # enduntil"
+    } ) do |context|
+      output = "#{' ' * @@indent}until #{context[:until_condition]}\n"
+      self.up_indent
+      output += context[:until_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # enduntil"
       output
     end
 
@@ -156,13 +177,13 @@ module KaiserRuby
       second_condition: simple(:second_condition),
       until_block: sequence(:until_block_lines),
       enduntil: simple(:_)
-    } ) do
-      proper_and_or = and_or == 'and' ? '&&' : '||'
-      output = "#{' ' * KaiserRuby.indent}until #{until_condition} #{proper_and_or} #{second_condition}\n"
-      KaiserRuby.up_indent
-      output += until_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # enduntil"
+    } ) do |context|
+      proper_and_or = context[:and_or] == 'and' ? '&&' : '||'
+      output = "#{' ' * @@indent}until #{context[:until_condition]} #{proper_and_or} #{context[:second_condition]}\n"
+      self.up_indent
+      output += context[:until_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # enduntil"
       output
     end
 
@@ -174,12 +195,12 @@ module KaiserRuby
       arguments: sequence(:arguments),
       function_block: sequence(:function_block_lines),
       enddef: simple(:_)
-    } ) do
-      output = "#{' ' * KaiserRuby.indent}def #{function_name}(#{arguments.join(', ')})\n"
-      KaiserRuby.up_indent
-      output += function_block_lines.map { |l| "#{' ' * KaiserRuby.indent}#{l}\n" }.join
-      KaiserRuby.down_indent
-      output += "#{' ' * KaiserRuby.indent}end # enddef"
+    } ) do |context|
+      output = "#{' ' * @@indent}def #{context[:function_name]}(#{context[:arguments].join(', ')})\n"
+      self.up_indent
+      output += context[:function_block_lines].map { |l| "#{' ' * @@indent}#{l}\n" }.join
+      self.down_indent
+      output += "#{' ' * @@indent}end # enddef"
       output
     end
 

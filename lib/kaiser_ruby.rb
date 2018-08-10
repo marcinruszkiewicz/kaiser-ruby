@@ -3,29 +3,18 @@ require 'kaiser_ruby/rockstar_parser'
 require 'kaiser_ruby/rockstar_transform'
 
 module KaiserRuby
-  def self.up_indent
-    @@indent ||= 0
-    @@indent += 2
-  end
-
-  def self.down_indent
-    @@indent ||= 0
-    @@indent -= 2
-  end
-
-  def self.indent
-    @@indent ||= 0
-  end
-
   def self.parse(input)
     # eat comments since we don't care about them
-    input = input.gsub(/(\(.*?\))/, '')
+    input = input.gsub(/\(.*?\)/, '')
+
+    # expand contractions
+    input = input.gsub(/'s\W+/, ' is ')
 
     # strings without a line ending (or single lines) should be fed into the alternative parser
     if input.split("\n").size == 1
-      KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp)
+      KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp, reporter: Parslet::ErrorReporter::Deepest.new)
     else
-      KaiserRuby::RockstarParser.new.parse(input)
+      KaiserRuby::RockstarParser.new.parse(input, reporter: Parslet::ErrorReporter::Deepest.new)
     end
   rescue Parslet::ParseFailed => failure
     puts input.inspect

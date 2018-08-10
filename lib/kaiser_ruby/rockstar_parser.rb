@@ -30,6 +30,8 @@ module KaiserRuby
     rule(:comparison_keywords) { str("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
     rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') | str('Listen to') }
 
+    rule(:pronouns) { (str('he') | str('she') | str('it') | str('they') | str('them') | str('her') | str('him') | str('its')).as(:pronoun) }
+
     # variable names
     # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
 
@@ -48,7 +50,7 @@ module KaiserRuby
     end
 
     rule(:variable_names) do
-      (common_variable_name | proper_variable_name).as(:variable_name)
+      (pronouns | common_variable_name | proper_variable_name).as(:variable_name)
     end
 
     # all the different value types (except Object for now)

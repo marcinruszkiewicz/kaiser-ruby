@@ -30,7 +30,7 @@ module KaiserRuby
       file = File.read filename
       output = KaiserRuby.transpile(file)
 
-      eval output
+      instance_eval output
       say
     end
 
@@ -43,16 +43,18 @@ module KaiserRuby
       # this makes it not lose local variables throughout the loop
       b = binding
 
-      begin
+      loop do
         input = ask('\m/>')
-        if input != 'exit'
-          code = KaiserRuby.transpile(input)
-          say "\\m/> #{code}", :blue if options[:debug]
-          output = b.eval(code)
-          output = 'nil' if output.nil?
-          say "  => #{output}\n"
-        end
-      end until input == 'exit'
+        break if input == 'exit'
+
+        code = KaiserRuby.transpile(input)
+        say "\\m/> #{code}", :blue if options[:debug]
+        output = b.eval(code)
+        output = 'nil' if output.nil?
+        say "  => #{output}\n"
+      rescue
+        say "THE STAGE IS ON FIRE!"
+      end
     end
   end
 end

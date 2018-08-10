@@ -89,7 +89,7 @@ RSpec.describe KaiserRuby do
 
   context 'input from STDIN' do
     let(:input) do <<~END
-        Listen to the news
+        Listenadsdsaasd to the news
         Shout the news
       END
     end
@@ -100,6 +100,14 @@ RSpec.describe KaiserRuby do
         the_news = STDIN.gets.chomp
         puts the_news
       RESULT
+    end
+  end
+
+  context 'contractions' do
+    let(:contraction) { "Janie's got a gun" }
+
+    it 'changes contraction to is' do
+      expect(KaiserRuby.transpile(contraction)).to eq "janie = 313"
     end
   end
 end

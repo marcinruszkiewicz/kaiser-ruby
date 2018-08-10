@@ -24,4 +24,23 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile('a man,')).to eq "a_man"
     end
   end
+
+  context 'pronouns' do
+    let(:example) do <<~END
+        Desire is a killer
+        Shout it
+        Union's been on strike
+        Whisper them
+      END
+    end
+
+    it 'converts pronouns to last used variable' do
+      expect(KaiserRuby.transpile(example)).to eq <<~RESULT
+        desire = 16
+        puts desire
+        union = 426
+        puts union
+      RESULT
+    end
+  end
 end

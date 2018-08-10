@@ -2,13 +2,11 @@
 
 ## Language Implementation
 
-- [ ] Handle pronouns - he, she, it, and others should refer to the last used variable
-- [ ] Handle "Janie's got a gun"
-- [ ] Handle object type
-
 - [ ] Function calls can be used as expressions in flow statements
 - [ ] Handle ',' instead of 'and' in function calls
+
 - [ ] Somehow handle function variable scope
+- [ ] Handle object type
 
 ## Examples
 
@@ -22,6 +20,4 @@
 - [ ] Fix indenting of nested blocks that doesn't really work well (this should also help deeper nesting)
 - [ ] Add code history to the REPL
 - [ ] Make REPL work with multiline input also, not only singular lines
-- [ ] Better error handling
-- [ ] Suppress warning about eval from Thor
 - [ ] Make a demo visitor that evals the code and waits a bit between commands, so it's more music video-ish. Maybe should change the console colors while at it?
