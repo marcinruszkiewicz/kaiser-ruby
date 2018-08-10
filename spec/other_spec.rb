@@ -78,11 +78,27 @@ RSpec.describe KaiserRuby do
       END
     end
 
-    it 'transforms comments to ruby comments' do
+    it 'eats comments' do
       expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
         ruby = 18
 
         javascript = 18
+      RESULT
+    end
+  end
+
+  context 'input from STDIN' do
+    let(:input) do <<~END
+        Listen to the news
+        Shout the news
+      END
+    end
+
+    it 'transforms into ruby' do
+      expect(KaiserRuby.transpile(input)).to eq <<~RESULT
+        print '> '
+        the_news = STDIN.gets.chomp
+        puts the_news
       RESULT
     end
   end

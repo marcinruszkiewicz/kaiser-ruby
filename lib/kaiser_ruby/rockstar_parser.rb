@@ -28,7 +28,7 @@ module KaiserRuby
     rule(:assignment_keywords) { str('Put') | str('into') }
     rule(:poetic_string_keywords) { str('says') }
     rule(:comparison_keywords) { str("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
-    rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') }
+    rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') | str('Listen to') }
 
     # variable names
     # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
@@ -176,6 +176,10 @@ module KaiserRuby
       str('Give back ') >> (math_operations | value_or_variable).as(:return_value)
     end
 
+    rule(:input) do
+      str('Listen to ') >> variable_names.as(:input_variable)
+    end
+
     # comparisons
 
     rule(:gte_keywords) { str(' is as ') >> (str('high') | str('great') | str('big') | str('strong')) >> str(' as ') }
@@ -277,7 +281,7 @@ module KaiserRuby
     rule(:comparisons) { gte | gt | lte | lt | inequality | equality }
     rule(:flow_control) { if_block | if_else_block | while_block | until_block }
     rule(:poetics) { poetic_type_literal | poetic_string_literal | poetic_number_literal }
-    rule(:functions) { function_call | function | print_function | break_function | continue_function | return_function }
+    rule(:functions) { function_call | function | print_function | break_function | continue_function | return_function | input }
     rule(:line_elements) { flow_control | poetics | expressions | functions | eol }
 
     # handle multiple lines in a file

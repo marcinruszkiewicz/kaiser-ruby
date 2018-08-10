@@ -31,6 +31,7 @@ module KaiserRuby
     rule(print: { output: simple(:output) }) { "puts #{output}" }
     rule(continue: simple(:_)) { "next" }
     rule(break: simple(:_)) { "break" }
+    rule(input_variable: simple(:var)) { "print '> '\n#{var} = STDIN.gets.chomp" }
 
     rule(equals: { left: simple(:left), right: simple(:right) }) { "#{left} == #{right}" }
     rule(not_equals: { left: simple(:left), right: simple(:right) }) { "#{left} != #{right}" }

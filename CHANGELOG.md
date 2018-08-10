@@ -36,6 +36,8 @@ Other stuff:
 Language Implementation:
 
 - [x] Handle non-alpha values in quoted strings
+- [x] Ignore comments in parentheses
+- [x] Handle input from STDIN
 
 Other stuff:
 

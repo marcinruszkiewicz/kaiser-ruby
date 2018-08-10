@@ -4,9 +4,8 @@
 
 - [ ] Handle pronouns - he, she, it, and others should refer to the last used variable
 - [ ] Handle "Janie's got a gun"
-- [ ] Ignore comments in parentheses
 - [ ] Handle object type
-- [ ] Handle input from STDIN
+
 - [ ] Function calls can be used as expressions in flow statements
 - [ ] Handle ',' instead of 'and' in function calls
 - [ ] Somehow handle function variable scope
@@ -20,7 +19,7 @@
 
 ## Other stuff
 
-- [ ] Fix indenting of nested blocks that doesn't really work well
+- [ ] Fix indenting of nested blocks that doesn't really work well (this should also help deeper nesting)
 - [ ] Add code history to the REPL
 - [ ] Make REPL work with multiline input also, not only singular lines
 - [ ] Better error handling
