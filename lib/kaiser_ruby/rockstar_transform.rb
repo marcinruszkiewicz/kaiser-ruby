@@ -1,4 +1,3 @@
-require 'pry'
 module KaiserRuby
   class RockstarTransform < Parslet::Transform
     @@last_variable = nil
