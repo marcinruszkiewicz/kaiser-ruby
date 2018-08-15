@@ -162,7 +162,7 @@ module KaiserRuby
 
     rule(:print_function) do
       (
-        say_keywords >> space >> value_or_variable.as(:output)
+        say_keywords >> space >> (function_call | value_or_variable).as(:output)
       ).as(:print)
     end
 
