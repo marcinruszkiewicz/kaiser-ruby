@@ -51,7 +51,9 @@ Other stuff:
 - [x] Move nesting indentation from main module to transformer
 - [x] Celsius to Fahrenheit example
 
-0.5
+# 0.5
+
+- [x] Fixed converting decimals so "Conversion is lovestruck. lovestruck and essential seasick" results in "conversion = 0.0397" as one would expect.
 
 Other stuff
 
