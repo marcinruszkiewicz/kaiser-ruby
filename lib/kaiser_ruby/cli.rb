@@ -44,16 +44,18 @@ module KaiserRuby
       b = binding
 
       loop do
-        input = ask('\m/>')
-        break if input == 'exit'
+        begin
+          input = ask('\m/>')
+          break if input == 'exit'
 
-        code = KaiserRuby.transpile(input)
-        say "\\m/> #{code}", :blue if options[:debug]
-        output = b.eval(code)
-        output = 'nil' if output.nil?
-        say "  => #{output}\n"
-      rescue
-        say "THE STAGE IS ON FIRE!"
+          code = KaiserRuby.transpile(input)
+          say "\\m/> #{code}", :blue if options[:debug]
+          output = b.eval(code)
+          output = 'nil' if output.nil?
+          say "  => #{output}\n"
+        rescue
+          say "THE STAGE IS ON FIRE!"
+        end
       end
     end
   end

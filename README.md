@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/marcinruszkiewicz/kaiser-ruby.svg?branch=master)](https://travis-ci.org/marcinruszkiewicz/kaiser-ruby)
+[![Gem Version](https://badge.fury.io/rb/kaiser-ruby.svg)](https://badge.fury.io/rb/kaiser-ruby)
+
 # KaiserRuby - a Rockstar to Ruby transpiler
 
 This tool translates a file containing a program written in the [Rockstar language](https://github.com/dylanbeattie/rockstar) to Ruby code.
@@ -11,6 +14,10 @@ Install the gem by issuing the following command.
 ```
 $ gem install kaiser-ruby
 ```
+
+This gem works best on a current Ruby version and requires Ruby 2.3 at minimum. Running it on 2.3 has the downside of metal umlauts not being entirely correct as that Ruby version doesn't know how to `.downcase` a capital umlaut letter, which was fixed in 2.4.
+
+If you're not using the umlauts, all should be fine otherwise.
 
 ## Usage
 
