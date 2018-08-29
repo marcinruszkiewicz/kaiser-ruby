@@ -50,3 +50,10 @@ Other stuff:
 - [x] Suppressed warning about eval from Thor
 - [x] Move nesting indentation from main module to transformer
 - [x] Celsius to Fahrenheit example
+
+0.5
+
+Other stuff
+
+- [x] Updated the REPL to work on Ruby versions earlier than 2.5 (2.3 is the minimum supported version)
+- [x] Travis CI tests on all supported Ruby versions
