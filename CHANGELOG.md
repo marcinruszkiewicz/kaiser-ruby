@@ -40,6 +40,8 @@ Language Implementation:
 - [x] Handle input from STDIN
 - [x] Handle contractions - "Janie's got a gun" should be expanded to "Janie is got a gun" and so it should transpile to "janie = 313"
 - [x] Handle pronouns - he, she, it, and others should refer to the last used variable
+- [x] Better handle input of integers from STDIN
+- [x] Print can print returned values from functions
 
 Other stuff:
 
@@ -47,3 +49,4 @@ Other stuff:
 - [x] Catch exceptions in the REPL
 - [x] Suppressed warning about eval from Thor
 - [x] Move nesting indentation from main module to transformer
+- [x] Celsius to Fahrenheit example

@@ -89,7 +89,7 @@ RSpec.describe KaiserRuby do
 
   context 'input from STDIN' do
     let(:input) do <<~END
-        Listenadsdsaasd to the news
+        Listen to the news
         Shout the news
       END
     end
@@ -97,7 +97,8 @@ RSpec.describe KaiserRuby do
     it 'transforms into ruby' do
       expect(KaiserRuby.transpile(input)).to eq <<~RESULT
         print '> '
-        the_news = STDIN.gets.chomp
+        __input = STDIN.gets.chomp
+        the_news = Integer(__input) rescue input
         puts the_news
       RESULT
     end
