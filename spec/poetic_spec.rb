@@ -31,5 +31,9 @@ RSpec.describe KaiserRuby do
     it 'ignores apostrophes and other nonalpha chars' do
       expect(KaiserRuby.transpile("My dreams were ice. A life unfulfilled; wakin' everybody up, taking booze and pills")).to eq "my_dreams = 3.1415926535"
     end
+
+    it 'converts floats properly' do
+      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck and essential seasick")).to eq "conversion = 0.0397"
+    end
   end
 end

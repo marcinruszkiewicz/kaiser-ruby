@@ -33,10 +33,10 @@ module KaiserRuby
     rule(string_as_number: simple(:str)) do |context|
       if context[:str].to_s.include?('.')
         context[:str].to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
-          str_to_num(sub)
+          str_to_num(sub.strip)
         end.join('.').to_f
       else
-        str_to_num(context[:str])
+        str_to_num(context[:str]).to_i
       end
     end
 
@@ -218,7 +218,7 @@ module KaiserRuby
     end
 
     def self.str_to_num(string)
-      string.to_s.split(/\s+/).map { |e| e.length % 10 }.join.to_i
+      string.to_s.split(/\s+/).map { |e| e.length % 10 }.join
     end
   end
 end
