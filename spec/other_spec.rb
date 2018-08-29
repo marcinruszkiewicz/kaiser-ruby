@@ -9,7 +9,7 @@ RSpec.describe KaiserRuby do
     let(:metal_lyrics) do <<~METAL
         Motörhead says We're so metäl we have umläuts everywhere!
         Scream Motörhead
-        Ümlaut is gone
+        Umlaüt is gone
       METAL
     end
 
@@ -17,7 +17,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(metal_lyrics)).to eq <<~PURE_METAL
         motörhead = "We're so metäl we have umläuts everywhere!"
         puts motörhead
-        ümlaut = 0
+        umlaüt = 0
       PURE_METAL
     end
   end
