@@ -32,4 +32,19 @@ module KaiserRuby
   def self.transpile(input)
     transform(parse(input))
   end
+
+  def self.execute(input)
+    with_captured_stdout do
+      instance_eval transpile(input)
+    end
+  end
+
+  def self.with_captured_stdout
+    old_stdout = $stdout
+    $stdout = StringIO.new
+    yield
+    $stdout.string
+  ensure
+    $stdout = old_stdout
+  end
 end

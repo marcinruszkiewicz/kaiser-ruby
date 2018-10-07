@@ -22,7 +22,7 @@ module KaiserRuby
     rule(:times_keywords) { str('times') | str('of') }
     rule(:over_keywords) { str('over') }
     rule(:poetic_number_keywords) { str('is') | str('was') | str('were') }
-    rule(:say_keywords) { str('Say') | str('Shout') | str('Scream') | str('Whisper') }
+    rule(:say_keywords) { stri('Say') | stri('Shout') | stri('Scream') | stri('Whisper') }
     rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
     rule(:increment_keywords) { str('Knock') | str('Build') }
     rule(:assignment_keywords) { str('Put') | str('into') }
@@ -299,7 +299,15 @@ module KaiserRuby
     rule(:eol) { match["\n"] }
     rule(:eof) { any.absent? }
     rule(:space) { match[' \t'].repeat(1) }
+
+    def stri(str)
+      key_chars = str.split(//)
+      key_chars.
+        collect! { |char| match["#{char.upcase}#{char.downcase}"] }.
+        reduce(:>>)
+    end
   end
+
 
   # this is an alternative parser that enables all the RSpec tests to pass
   # it specifically has a single line rule that matches a string instead of lines
