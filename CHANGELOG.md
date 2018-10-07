@@ -59,3 +59,13 @@ Other stuff
 
 - [x] Updated the REPL to work on Ruby versions earlier than 2.5 (2.3 is the minimum supported version)
 - [x] Travis CI tests on all supported Ruby versions
+
+# 0.6
+
+- [x] Fixed error in input from STDIN
+- [x] The transpiler now throws a SyntaxError instead of Parslet exception
+
+Test Suite
+
+- [ ] Refactored the test suite to make more sense
+- [ ] Added a ton of new negative and positive tests

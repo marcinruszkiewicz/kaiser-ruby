@@ -17,8 +17,12 @@ module KaiserRuby
       KaiserRuby::RockstarParser.new.parse(input, reporter: Parslet::ErrorReporter::Deepest.new)
     end
   rescue Parslet::ParseFailed => failure
-    puts input.inspect
-    puts failure.parse_failure_cause.ascii_tree
+    unless ENV['RACK_ENV'] == 'test'
+      puts input.inspect
+      puts failure.parse_failure_cause.ascii_tree
+    end
+    
+    raise SyntaxError, failure.message
   end
 
   def self.transform(tree)

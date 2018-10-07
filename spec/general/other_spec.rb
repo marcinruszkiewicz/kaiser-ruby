@@ -1,27 +1,4 @@
 RSpec.describe KaiserRuby do
-  context 'output' do
-    it 'prints values' do
-      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts my_love'
-    end
-  end
-
-  context 'metal umlauts' do
-    let(:metal_lyrics) do <<~METAL
-        Motörhead says We're so metäl we have umläuts everywhere!
-        Scream Motörhead
-        Umlaüt is gone
-      METAL
-    end
-
-    it 'handles metal umlauts both in variables and values' do
-      expect(KaiserRuby.transpile(metal_lyrics)).to eq <<~PURE_METAL
-        motörhead = "We're so metäl we have umläuts everywhere!"
-        puts motörhead
-        umlaüt = 0
-      PURE_METAL
-    end
-  end
-
   context 'verses' do
     let(:more_lines) do <<~END
         Put 5 into your heart
@@ -78,28 +55,11 @@ RSpec.describe KaiserRuby do
       END
     end
 
-    it 'eats comments' do
+    it 'consumes comments' do
       expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
         ruby = 18
 
         javascript = 18
-      RESULT
-    end
-  end
-
-  context 'input from STDIN' do
-    let(:input) do <<~END
-        Listen to the news
-        Shout the news
-      END
-    end
-
-    it 'transforms into ruby' do
-      expect(KaiserRuby.transpile(input)).to eq <<~RESULT
-        print '> '
-        __input = STDIN.gets.chomp
-        the_news = Integer(__input) rescue input
-        puts the_news
       RESULT
     end
   end

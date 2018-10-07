@@ -1,3 +1,5 @@
+ENV['RACK_ENV'] = 'test'
+
 require "bundler/setup"
 require "kaiser_ruby"
 require "kaiser_ruby/cli"

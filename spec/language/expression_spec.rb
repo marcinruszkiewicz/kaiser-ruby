@@ -1,22 +1,4 @@
 RSpec.describe KaiserRuby do
-  context 'basic assigmnent expression' do
-    it 'assigns string to a common variable' do
-      expect(KaiserRuby.transpile('Put "Hello World" into your soul')).to eq 'your_soul = "Hello World"'
-    end
-
-    it 'assigns number to a common variable' do
-      expect(KaiserRuby.transpile('Put 3.14 into X')).to eq 'x = 3.14'
-    end
-
-    it 'assigns an expression to a variable' do
-      expect(KaiserRuby.transpile('Put the whole of your heart into my hands')).to eq 'my_hands = the_whole * your_heart'
-    end
-
-    it 'assigns a returned value to a variable' do
-      expect(KaiserRuby.transpile('Put Midnight taking Dreams into my hands')).to eq 'my_hands = midnight(dreams)'
-    end
-  end
-
   context 'increment expression' do
     it 'increments a common variable' do
       expect(KaiserRuby.transpile('Build my world up')).to eq 'my_world += 1'

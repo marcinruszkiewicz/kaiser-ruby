@@ -4,7 +4,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile('My heart is true')).to eq 'my_heart = true'
     end
 
-    it 'assigns a boolean to proper variable' do
+    it 'assigns a zero to proper variable' do
       expect(KaiserRuby.transpile('Tommy is nobody')).to eq 'tommy = 0'
     end
 
