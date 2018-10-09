@@ -1,3 +1,5 @@
+require 'pry'
+
 module KaiserRuby
   class RockstarTransform < Parslet::Transform
     @@last_variable = nil
@@ -22,7 +24,6 @@ module KaiserRuby
       parameterize(context[:str])
     end
     rule(pronoun: simple(:_)) { @@last_variable }
-
     rule(mysterious_value: simple(:_)) { 'nil' }
     rule(null_value: simple(:_)) { '0' }
     rule(true_value: simple(:_)) { 'true' }
@@ -32,7 +33,7 @@ module KaiserRuby
     rule(unquoted_string: simple(:str)) { "\"#{str}\"" }
     rule(string_as_number: simple(:str)) do |context|
       if context[:str].to_s.include?('.')
-        context[:str].to_s.gsub(/[^A-Za-z\s\.]/, '').split('.').map do |sub|
+        context[:str].to_s.split('.').map do |sub|
           str_to_num(sub.strip)
         end.join('.').to_f
       else
@@ -218,7 +219,11 @@ module KaiserRuby
     end
 
     def self.str_to_num(string)
-      string.to_s.split(/\s+/).map { |e| e.length % 10 }.join
+      filter_string(string).map { |e| e.length % 10 }.join
+    end
+
+    def self.filter_string(string, rxp: /[[:alpha:]]/)
+      string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }
     end
   end
 end

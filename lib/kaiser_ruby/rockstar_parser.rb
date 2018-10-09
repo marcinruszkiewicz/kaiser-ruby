@@ -12,41 +12,35 @@ module KaiserRuby
       say_keywords | flow_keywords | comparison_keywords | function_keywords
     end
 
-    rule(:mysterious_value_keywords) { str('mysterious') }
-    rule(:null_value_keywords) { str('nothing') | str('nowhere') | str('nobody') | str('empty') | str('gone') }
-    rule(:false_value_keywords) { str('false') | str('wrong') | str('no') | str('lies') }
-    rule(:true_value_keywords) { str('true') | str('right') | str('yes') | str('ok') }
-    rule(:plus_keywords) { str('plus') | str('with') }
-    rule(:minus_keywords) { str('minus') | str('without') }
-    rule(:minus_keywords) { str('minus') | str('without') }
-    rule(:times_keywords) { str('times') | str('of') }
-    rule(:over_keywords) { str('over') }
-    rule(:poetic_number_keywords) { str('is') | str('was') | str('were') }
+    rule(:mysterious_value_keywords) { stri('mysterious') }
+    rule(:null_value_keywords) { stri('nothing') | stri('nowhere') | stri('nobody') | stri('empty') | stri('gone') }
+    rule(:false_value_keywords) { stri('false') | stri('wrong') | stri('no') | stri('lies') }
+    rule(:true_value_keywords) { stri('true') | stri('right') | stri('yes') | stri('ok') }
+    rule(:plus_keywords) { stri('plus') | stri('with') }
+    rule(:minus_keywords) { stri('minus') | stri('without') }
+    rule(:times_keywords) { stri('times') | stri('of') }
+    rule(:over_keywords) { stri('over') }
+    rule(:poetic_number_keywords) { stri(' is ') | stri(' was ') | stri(' were ') | stri("'s ")}
     rule(:say_keywords) { stri('Say') | stri('Shout') | stri('Scream') | stri('Whisper') }
-    rule(:flow_keywords) { str('If') | str('Else') | str('While') | str('Until') }
-    rule(:increment_keywords) { str('Knock') | str('Build') }
-    rule(:assignment_keywords) { str('Put') | str('into') }
-    rule(:poetic_string_keywords) { str('says') }
-    rule(:comparison_keywords) { str("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
-    rule(:function_keywords) { str('Break it down') | str('Take it to the top') | str('Give back') | str('takes') | str('taking') | str('Listen to') }
+    rule(:flow_keywords) { stri('If') | stri('Else') | stri('While') | stri('Until') }
+    rule(:increment_keywords) { stri('Knock') | stri('Build') }
+    rule(:assignment_keywords) { stri('Put') | stri('into') }
+    rule(:poetic_string_keywords) { stri('says') }
+    rule(:comparison_keywords) { stri("is") | not_keywords | gt_keywords | gte_keywords | lt_keywords | lte_keywords }
+    rule(:function_keywords) { stri('Break it down') | stri('Take it to the top') | stri('Give back') | stri('takes') | stri('taking') | stri('Listen to') }
 
-    rule(:pronouns) { (str('he') | str('she') | str('it') | str('they') | str('them') | str('her') | str('him') | str('its')).as(:pronoun) }
+    rule(:pronouns) { (stri('he') | stri('she') | stri('it') | stri('they') | stri('them') | stri('her') | stri('him') | stri('its')).as(:pronoun) }
 
     # variable names
     # using [[:upper:]] etc here allows for metal umlauts and other UTF characters
 
-    rule(:proper_word) { reserved.absent? >> match['[[:upper:]]'] >> match['[[:alpha:]]'].repeat }
+    rule(:proper_word) { match['[[:upper:]]'] >> match['[[:alpha:]]'].repeat }
+    rule(:common_variable_keywords) { stri('A ') | stri('The ') | stri('My ') | stri('Your ') }
     rule(:common_variable_name) do
-      (
-        str('A ') | str('a ') |
-        str('An ') | str('an ') |
-        str('The ') | str('the ') |
-        str('My ') | str('my ') |
-        str('Your ') | str('your ')
-      ) >> reserved.absent? >> match['[[:lower:]]'].repeat >> match[','].maybe.ignore
+      common_variable_keywords >> match['[[:lower:]]'].repeat(1)
     end
     rule(:proper_variable_name) do
-      (proper_word >> (space >> proper_word).repeat) >> match[','].maybe.ignore
+      proper_word >> (space >> proper_word).repeat
     end
 
     rule(:variable_names) do
@@ -67,9 +61,8 @@ module KaiserRuby
     # assignment
 
     rule(:basic_assignment_expression) do
-      match('Put ').present? >>
       (
-        str('Put ') >> string_input.as(:right) >> str(' into ') >> variable_names.as(:left)
+        stri('Put ') >> string_input.as(:right) >> stri(' into ') >> variable_names.as(:left)
       ).as(:assignment)
     end
 
@@ -77,39 +70,35 @@ module KaiserRuby
 
     rule(:increment) do
       (
-        str('Build ') >> variable_names.as(:variable_name) >> str(' up')
+        stri('Build ') >> variable_names.as(:variable_name) >> stri(' up')
       ).as(:increment)
     end
 
     rule(:decrement) do
       (
-        str('Knock ') >> variable_names.as(:variable_name) >> str(' down')
+        stri('Knock ') >> variable_names.as(:variable_name) >> stri(' down')
       ).as(:decrement)
     end
 
     rule(:addition) do
-      (match('.*? plus') | match('.*? with')).present? >>
       (
         value_or_variable.as(:left) >> space >> plus_keywords >> space >> value_or_variable.as(:right)
       ).as(:addition)
     end
 
     rule(:subtraction) do
-      (match('.*? minus') | match('.*? without')).present? >>
       (
         value_or_variable.as(:left) >> space >> minus_keywords >> space >> value_or_variable.as(:right)
       ).as(:subtraction)
     end
 
     rule(:division) do
-      match('.*? over').present? >>
       (
         value_or_variable.as(:left) >> space >> over_keywords >> space >> value_or_variable.as(:right)
       ).as(:division)
     end
 
     rule(:multiplication) do
-      (match('.*? times') | match('.*? of')).present? >>
       (
         value_or_variable.as(:left) >> space >> times_keywords >> space >> value_or_variable.as(:right)
       ).as(:multiplication)
@@ -118,7 +107,6 @@ module KaiserRuby
     # functions
 
     rule(:function) do
-      match('.*? takes').present? >>
       (
         variable_names.as(:function_name) >> str(' takes') >>
         (space >> str('and ').maybe >> variable_names.as(:argument_name)).repeat.as(:arguments) >> eol >>
@@ -131,7 +119,7 @@ module KaiserRuby
 
     rule(:function_call) do
       (
-        variable_names.as(:function_name) >> str(' taking') >>
+        variable_names.as(:function_name) >> stri(' taking') >>
         (space >> str('and ').maybe >> variable_names.as(:argument_name)).repeat.as(:arguments)
       ).as(:function_call)
     end
@@ -141,20 +129,20 @@ module KaiserRuby
     rule(:poetic_type_literal) do
       (flow_keywords.absent?) >>
       (
-        variable_names.as(:left) >> str(' is ') >> (mysterious_value | null_value | false_value | true_value).as(:right)
+        variable_names.as(:left) >> ( stri(' is ') | stri("'s ") ) >> (mysterious_value | null_value | false_value | true_value).as(:right)
       ).as(:assignment)
     end
 
     rule(:poetic_string_literal) do
       (
-        variable_names.as(:left) >> str(' says ') >> unquoted_string.as(:right)
+        variable_names.as(:left) >> stri(' says ') >> unquoted_string.as(:right)
       ).as(:assignment)
     end
 
     rule(:poetic_number_literal) do
       (flow_keywords.absent?) >>
       (
-        variable_names.as(:left) >> space >> poetic_number_keywords >> space >> string_as_number.as(:right)
+        variable_names.as(:left) >> poetic_number_keywords >> string_as_number.as(:right)
       ).as(:assignment)
     end
 
@@ -167,19 +155,19 @@ module KaiserRuby
     end
 
     rule(:break_function) do
-      str('Break it down').as(:break)
+      stri('Break it down').as(:break)
     end
 
     rule(:continue_function) do
-      str('Take it to the top').as(:continue)
+      stri('Take it to the top').as(:continue)
     end
 
     rule(:return_function) do
-      str('Give back ') >> (math_operations | value_or_variable).as(:return_value)
+      stri('Give back ') >> (math_operations | value_or_variable).as(:return_value)
     end
 
     rule(:input) do
-      str('Listen to ') >> variable_names.as(:input_variable)
+      stri('Listen to ') >> variable_names.as(:input_variable)
     end
 
     # comparisons
@@ -225,18 +213,16 @@ module KaiserRuby
       ).as(:lt)
     end
 
-
-
     # flow control - if, else, while, until
 
     rule(:if_else_block) do
       (
-        str('If ') >> comparisons.as(:if_condition) >>
+        stri('If ') >> comparisons.as(:if_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:if_block)
           } >>
-        str('Else') >> eol >>
+        stri('Else') >> eol >>
           scope {
             inner_block_line.repeat.as(:else_block)
           } >> (eol | eof).as(:endif)
@@ -245,7 +231,7 @@ module KaiserRuby
 
     rule(:if_block) do
       (
-        str('If ') >> comparisons.as(:if_condition) >>
+        stri('If ') >> comparisons.as(:if_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:if_block)
@@ -255,7 +241,7 @@ module KaiserRuby
 
     rule(:while_block) do
       (
-        str('While ') >> comparisons.as(:while_condition) >>
+        stri('While ') >> comparisons.as(:while_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:while_block)
@@ -265,7 +251,7 @@ module KaiserRuby
 
     rule(:until_block) do
       (
-        str('Until ') >> comparisons.as(:until_condition) >>
+        stri('Until ') >> comparisons.as(:until_condition) >>
           (space >> (str('and') | str('or')).as(:and_or) >> space >> comparisons.as(:second_condition)).maybe >> eol >>
           scope {
             inner_block_line.repeat.as(:until_block)
@@ -302,9 +288,7 @@ module KaiserRuby
 
     def stri(str)
       key_chars = str.split(//)
-      key_chars.
-        collect! { |char| match["#{char.upcase}#{char.downcase}"] }.
-        reduce(:>>)
+      key_chars.collect! { |char| match["#{char.upcase}#{char.downcase}"] }.reduce(:>>)
     end
   end
 

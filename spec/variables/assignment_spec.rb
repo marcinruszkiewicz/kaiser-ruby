@@ -5,7 +5,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns proper variables' do
-      expect(KaiserRuby.transpile('Put Love into Heart')).to eq 'heart = love'
+      expect(KaiserRuby.transpile('Put Love into Heart')).to eq 'Heart = Love'
     end
 
     it 'assigns string to a common variable' do
@@ -13,7 +13,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns number to a common variable' do
-      expect(KaiserRuby.transpile('Put 3.14 into X')).to eq 'x = 3.14'
+      expect(KaiserRuby.transpile('Put 3.14 into X')).to eq 'X = 3.14'
     end
 
     it 'assigns an expression to a variable' do
@@ -21,7 +21,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns a returned value to a variable' do
-      expect(KaiserRuby.transpile('Put Midnight taking Dreams into my hands')).to eq 'my_hands = midnight(dreams)'
+      expect(KaiserRuby.transpile('Put Midnight taking Dreams into my hands')).to eq 'my_hands = Midnight(Dreams)'
     end    
   end
 end

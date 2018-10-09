@@ -1,28 +1,12 @@
 RSpec.describe KaiserRuby do
-  context 'poetic literals' do
-    let(:input) { file_fixture "reference/correct/poeticLiterals.rock" }
-    let(:output) { file_fixture "reference/correct/poeticLiterals.rock.out" }
+  Dir.glob("*.rock", base: file_fixture("reference/correct")).each do |filename|
+    xcontext "#{filename}" do
+      let(:source) { file_fixture "reference/correct/#{filename}" }
+      let(:output) { file_fixture "reference/correct/#{filename}.out" }
 
-    it 'is correct' do
-      expect(KaiserRuby.execute(input.read)).to eq output.read
+      it 'is correct' do
+        expect(KaiserRuby.execute(source.read)).to eq output.read
+      end
     end
   end
-
-  context 'poetic numbers' do
-    let(:input) { file_fixture "reference/correct/poeticNumbers.rock" }
-    let(:output) { file_fixture "reference/correct/poeticNumbers.rock.out" }
-
-    it 'is correct' do
-      expect(KaiserRuby.execute(input.read)).to eq output.read
-    end
-  end
-
-  context 'poetic strings' do
-    let(:input) { file_fixture "reference/correct/poeticStrings.rock" }
-    let(:output) { file_fixture "reference/correct/poeticStrings.rock.out" }
-
-    it 'is correct' do
-      expect(KaiserRuby.execute(input.read)).to eq output.read
-    end
-  end  
 end

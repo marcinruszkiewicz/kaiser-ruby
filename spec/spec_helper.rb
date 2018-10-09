@@ -1,4 +1,4 @@
-ENV['RACK_ENV'] = '2test'
+ENV['RACK_ENV'] = 'test'
 
 require "bundler/setup"
 require "kaiser_ruby"
@@ -27,4 +27,17 @@ def file_fixture(fixture_name)
     msg = "the directory '%s' does not contain a file named '%s'"
     raise ArgumentError, msg % [file_fixture_path, fixture_name]
   end
+end
+
+def capture(stream)
+  begin
+    stream = stream.to_s
+    eval "$#{stream} = StringIO.new"
+    yield
+    result = eval("$#{stream}").string
+  ensure
+    eval("$#{stream} = #{stream.upcase}")
+  end
+
+  result
 end

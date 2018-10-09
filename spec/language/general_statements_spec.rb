@@ -16,7 +16,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(input)).to eq <<~RESULT
         print '> '
         __input = STDIN.gets.chomp
-        the_news = Integer(__input) rescue __input
+        the_news = Float(__input) rescue __input
         puts the_news
       RESULT
     end

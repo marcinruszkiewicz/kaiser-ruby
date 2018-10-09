@@ -1,16 +1,14 @@
 require 'parslet'
+require 'hashie'
+require 'kaiser_ruby/parser'
+require 'kaiser_ruby/transformer'
 require 'kaiser_ruby/rockstar_parser'
 require 'kaiser_ruby/rockstar_transform'
+require 'pry'
 
 module KaiserRuby
-  def self.parse(input)
-    # eat comments since we don't care about them
-    input = input.gsub(/\(.*?\)/, '')
-
-    # expand contractions
-    input = input.gsub(/'s\W+/, ' is ')
-
-    # strings without a line ending (or single lines) should be fed into the alternative parser
+  def self.old_parse(input)
+    #strings without a line ending (or single lines) should be fed into the alternative parser
     if input.split("\n").size == 1
       KaiserRuby::RockstarSingleLineParser.new.parse(input.chomp, reporter: Parslet::ErrorReporter::Deepest.new)
     else
@@ -30,7 +28,8 @@ module KaiserRuby
   end
 
   def self.transpile(input)
-    transform(parse(input))
+    tree = parse(input)
+    KaiserRuby::Transformer.new(tree).transform
   end
 
   def self.execute(input)
@@ -46,5 +45,13 @@ module KaiserRuby
     $stdout.string
   ensure
     $stdout = old_stdout
+  end
+
+  def self.parse(input)
+    # eat comments since we don't care about them
+    input = input.gsub(/\(.*?\)/, '')
+
+    parser = KaiserRuby::Parser.new(input)
+    parser.parse
   end
 end
