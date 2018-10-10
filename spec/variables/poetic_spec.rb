@@ -44,12 +44,16 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck and essential seasick")).to eq "Conversion = 0.0397"
     end
 
+    it "ignores following dots" do
+      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck. and essential. seasick.")).to eq "Conversion = 0.0397"
+    end
+
     it 'ignores nonalphabetic characters' do
-      expect(KaiserRuby.transpile("my number is a 57 + true 43")).to eq "my_number = 10040"
+      expect(KaiserRuby.transpile("my number is a 57 + true 43")).to eq "my_number = 14"
     end
 
     it 'ignores nonalphabetic characters in decimals' do
-      expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "my_number = 1.004"
+      expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "my_number = 1.4"
     end
   end
 end

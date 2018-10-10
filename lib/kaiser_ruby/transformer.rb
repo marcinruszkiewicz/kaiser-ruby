@@ -112,7 +112,7 @@ module KaiserRuby
     def transform_number_literal(object)
       string = object[:number_literal]
       if string.include?('.')
-        string.split('.').map do |sub|
+        string.split('.', 2).map do |sub|
           str_to_num(sub.strip)
         end.join('.').to_f
       else
@@ -151,7 +151,7 @@ module KaiserRuby
     end
 
     def filter_string(string, rxp: /[[:alpha:]]/)
-      string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }
+      string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }.reject { |a| a.empty? }
     end    
   end
 end
