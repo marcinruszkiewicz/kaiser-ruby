@@ -1,13 +1,16 @@
 module KaiserRuby
   class Transformer
-    attr_reader :parsed_tree, :output
+    attr_reader :parsed_tree, :output, :indent
 
     def initialize(tree)
       @parsed_tree = tree
       @output = []
+
     end
 
     def transform
+      @indent = 0
+
       @parsed_tree.each do |line_object|
         @output << select_transformer(line_object)
       end
@@ -15,6 +18,17 @@ module KaiserRuby
       @output << '' if @output.size > 1
       @output.join("\n")
     end
+
+    def select_transformer(object)
+      key = object.keys.first
+      send("transform_#{key}", object)
+    end
+
+    def method_missing(m, *args, &block)  
+      raise ArgumentError, "missing Transform rule: #{m}, #{args}"
+    end
+
+    # transform language tree into Ruby
 
     def transform_print(object)
       var = select_transformer(object[:print])
@@ -29,6 +43,14 @@ module KaiserRuby
     def transform_return(object)
       var = select_transformer(object[:return])
       "return #{var}"
+    end
+
+    def transform_continue(_object)
+      "next"
+    end
+
+    def transform_break(_object)
+      "break"
     end
 
     def transform_variable_name(object)
@@ -137,14 +159,99 @@ module KaiserRuby
       ""
     end
 
-    def select_transformer(object)
-      key = object.keys.first
-      send("transform_#{key}", object)
+    def transform_if(object)
+      argument = select_transformer(object[:if][:argument])
+      block = transform_block(object[:if][:block])
+      output = "if #{argument}\n"
+      output += "#{' ' * @indent}#{block}"
+      output += "#{' ' * @indent}end\n"
+      output
     end
 
-    def method_missing(m, *args, &block)  
-      raise ArgumentError, "missing Transform rule: #{m}, #{args}"
+    def transform_block(block)
+      output = ''
+      @indent += 2
+      block_output = []
+
+      block.each do |block_line|
+        block_output << select_transformer(block_line)
+      end
+
+      output += block_output.map { |l| "  #{l}" }.join("\n") + "\n"
+      @indent -= 2
+      output
     end
+
+    def transform_else(_object)
+      "else"
+    end
+
+    def transform_while(object)
+      argument = select_transformer(object[:while][:argument])
+      block = transform_block(object[:while][:block])
+      output = "while #{argument}\n"
+      output += "#{' ' * @indent}#{block}"
+      output += "#{' ' * @indent}end\n"
+      output
+    end
+
+    def transform_until(object)
+      argument = select_transformer(object[:until][:argument])
+      block = transform_block(object[:until][:block])
+      output = "until #{argument}\n"
+      output += "#{' ' * @indent}#{block}"
+      output += "#{' ' * @indent}end\n"
+      output
+    end
+
+    def transform_equality(object)
+      left = select_transformer(object[:equality][:left])
+      right = select_transformer(object[:equality][:right])
+      "#{left} == #{right}"
+    end
+
+    def transform_inequality(object)
+      left = select_transformer(object[:inequality][:left])
+      right = select_transformer(object[:inequality][:right])
+      "#{left} != #{right}"
+    end
+
+    def transform_gt(object)
+      left = select_transformer(object[:gt][:left])
+      right = select_transformer(object[:gt][:right])
+      "#{left} > #{right}"
+    end    
+    
+    def transform_gte(object)
+      left = select_transformer(object[:gte][:left])
+      right = select_transformer(object[:gte][:right])
+      "#{left} >= #{right}"
+    end    
+
+    def transform_lt(object)
+      left = select_transformer(object[:lt][:left])
+      right = select_transformer(object[:lt][:right])
+      "#{left} < #{right}"
+    end    
+    
+    def transform_lte(object)
+      left = select_transformer(object[:lte][:left])
+      right = select_transformer(object[:lte][:right])
+      "#{left} <= #{right}"
+    end    
+
+    def transform_function(object)
+      funcname = transform_variable_name(object[:function][:name])
+      argument = select_transformer(object[:function][:argument])
+      block = transform_block(object[:function][:block])
+
+      output = "def #{funcname}(#{argument})\n"
+      output += "#{' ' * @indent}#{block}"
+      output += "#{' ' * @indent}end\n"
+      output      
+    end
+
+    # private
 
     def str_to_num(string)
       filter_string(string).map { |e| e.length % 10 }.join

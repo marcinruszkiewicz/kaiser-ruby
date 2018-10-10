@@ -39,6 +39,13 @@ module KaiserRuby
     MULTIPLICATION_KEYWORDS = %w(times of)
     DIVISION_KEYWORDS = %w(over)
 
+    EQUALITY_KEYWORDS = %w(is)
+    INEQUALITY_KEYWORDS = %w(isn't isnt ain't aint)
+    GT_KEYWORDS = ['is higher than', 'is greater than', 'is bigger than', 'is stronger than']
+    GTE_KEYWORDS = ['is as high as', 'is as great as', 'is as big as', 'is as strong as']
+    LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
+    LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
+
     def initialize(input)
       @raw_input = input
       @lines = input.split /\n/
@@ -69,13 +76,16 @@ module KaiserRuby
         words = line.split /\s/
 
         if matches_first?(words, IF_KEYWORDS)
-          one_argument_block(line, :if, IF_KEYWORDS)
+          add_to_tree parse_if(line)
+          @nesting += 1
         elsif matches_first?(words, ELSE_KEYWORDS)
           add_to_tree parse_else
         elsif matches_first?(words, WHILE_KEYWORDS)
-          one_argument_block(line, :while, WHILE_KEYWORDS)
+          add_to_tree parse_while(line)
+          @nesting += 1
         elsif matches_first?(words, UNTIL_KEYWORDS)
-          one_argument_block(line, :until, UNTIL_KEYWORDS)  
+          add_to_tree parse_until(line)
+          @nesting += 1
         elsif matches_separate?(words, ASSIGNMENT_FIRST_KEYWORDS, ASSIGNMENT_SECOND_KEYWORDS)
           add_to_tree parse_assignment(line)
         elsif matches_several_first?(line, RETURN_KEYWORDS)
@@ -103,7 +113,10 @@ module KaiserRuby
               add_to_tree parse_decrement(line)
             end
 
-            two_arguments_block(line, :function, FUNCTION_KEYWORDS) if matches_any?(words, FUNCTION_KEYWORDS)
+            if matches_any?(words, FUNCTION_KEYWORDS)
+              add_to_tree(parse_function(line)) 
+              @nesting += 1
+            end
           end
         end
       end
@@ -216,27 +229,34 @@ module KaiserRuby
       { assignment: { left: left, right: right } }
     end
 
-    def two_arguments(line, type, rxp, contractions: false)
-      words = line.split prepared_regexp(rxp, contractions: contractions)
-      add_to_tree({ type => { left: words.first.strip, right: words.last.strip } })
+    def parse_if(line)
+      words = line.split prepared_regexp(IF_KEYWORDS)
+      argument = parse_argument(words.last.strip)
+      { if: { argument: argument, block: [] } }
     end
 
-    def one_argument_separate(line, type, first_rxp, second_rxp)
-      match_rxp = prepared_capture(first_rxp, second_rxp)
-      capture = line.match(match_rxp).captures.first.strip
-      add_to_tree({ type => capture })
+    def parse_until(line)
+      words = line.split prepared_regexp(UNTIL_KEYWORDS)
+      argument = parse_argument(words.last.strip)
+      { until: { argument: argument, block: [] } }
     end
 
-    def two_arguments_separate(line, type, first_rxp, second_rxp)
-      match_rxp = prepared_capture(first_rxp, second_rxp)
-      left = line.match(match_rxp).captures.first.strip
-      right = line.match(match_rxp).captures.last.strip
-      add_to_tree({ type => { left: left, right: right } })
+    def parse_while(line)
+      words = line.split prepared_regexp(WHILE_KEYWORDS)
+      argument = parse_argument(words.last.strip)
+      { while: { argument: argument, block: [] } }
+    end
+
+    def parse_function(line)
+      words = line.split prepared_regexp(FUNCTION_KEYWORDS)
+      funcname = parse_proper_variable(words.first.strip)
+      argument = parse_argument(words.last.strip)
+      { function: { name: funcname, argument: argument, block: [] } }
     end
 
     def two_arguments_block(line, type, rxp)
       words = line.split prepared_regexp(rxp)
-      add_to_tree({ type => { left: words.first.strip, right: words.last.strip }, block: [] })
+      add_to_tree()
       @nesting += 1
     end
 
@@ -247,6 +267,9 @@ module KaiserRuby
     end
 
     def parse_argument(string)
+      cmp = parse_comparison(string)
+      return cmp if cmp
+
       fcl = parse_function_call(string)
       return fcl if fcl
 
@@ -261,6 +284,77 @@ module KaiserRuby
 
       vars = parse_variables(string)
       return vars if vars
+
+      tpl = parse_type_literal(string)
+      return tpl if tpl
+    end
+
+    def parse_comparison(string)
+      words = string.split(/\s/)
+
+      if string =~ prepared_regexp(GT_KEYWORDS)
+        return parse_gt(string)
+      elsif string =~ prepared_regexp(GTE_KEYWORDS)
+        return parse_gte(string)
+      elsif string =~ prepared_regexp(LT_KEYWORDS)
+        return parse_lt(string)
+      elsif string =~ prepared_regexp(LTE_KEYWORDS)
+        return parse_lte(string)
+      elsif string =~ prepared_regexp(INEQUALITY_KEYWORDS)
+        return parse_inequality(string)
+      elsif string =~ prepared_regexp(EQUALITY_KEYWORDS)
+        return parse_equality(string)
+      end
+
+      return false
+    end
+
+    def parse_equality(string)
+      words = string.split prepared_regexp(EQUALITY_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { equality: { left: left, right: right } }
+    end
+
+    def parse_inequality(string)
+      words = string.split prepared_regexp(INEQUALITY_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { inequality: { left: left, right: right } }
+    end
+
+    def parse_gt(string)
+      words = string.split prepared_regexp(GT_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { gt: { left: left, right: right } }
+    end
+
+    def parse_gte(string)
+      words = string.split prepared_regexp(GTE_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { gte: { left: left, right: right } }
+    end
+
+    def parse_lt(string)
+      words = string.split prepared_regexp(LT_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { lt: { left: left, right: right } }
+    end
+
+    def parse_lte(string)
+      words = string.split prepared_regexp(LTE_KEYWORDS)
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { lte: { left: left, right: right } }
     end
 
     def parse_variables(string)
@@ -272,8 +366,6 @@ module KaiserRuby
         return parse_common_variable(string)
       elsif matches_all?(words, /\A[[:upper:]]/)
         return parse_proper_variable(string)
-      else
-        raise SyntaxError, "invalid variable name: #{string}"
       end
 
       return false

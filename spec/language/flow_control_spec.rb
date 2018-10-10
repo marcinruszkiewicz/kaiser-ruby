@@ -51,7 +51,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_else_block)).to eq <<~RESULT
         if Tommy == a_human
           puts "Human"
-        else
+          else
           puts "Nobody"
         end
       RESULT
@@ -63,9 +63,11 @@ RSpec.describe KaiserRuby do
           puts "Human"
         end
 
-        if tommy == a_boss
+
+        if Tommy == a_boss
           puts "Nobody"
         end
+
       RESULT
     end
 
@@ -76,8 +78,9 @@ RSpec.describe KaiserRuby do
           if Tommy == a_boss
             puts "Nobody"
           else
-            puts "Unknown"
+          puts "Unknown"
           end
+
         end
       RESULT
     end
@@ -169,6 +172,7 @@ RSpec.describe KaiserRuby do
           if Tommy == a_man
             next
           end
+
           puts "Until"
         end
       RESULT
