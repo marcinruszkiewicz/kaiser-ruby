@@ -1,6 +1,6 @@
 RSpec.describe KaiserRuby do
   Dir.glob("*.rock", base: file_fixture("reference/correct")).each do |filename|
-    xcontext "#{filename}" do
+    context "#{filename}" do
       let(:source) { file_fixture "reference/correct/#{filename}" }
       let(:output) { file_fixture "reference/correct/#{filename}.out" }
 

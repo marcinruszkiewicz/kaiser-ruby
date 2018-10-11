@@ -46,6 +46,10 @@ module KaiserRuby
     LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
 
+    AND_KEYWORDS = %w(and)
+    OR_KEYWORDS = %w(or)
+    NOR_KEYWORDS = %w(nor)
+
     def initialize(input)
       @raw_input = input
       @lines = input.split /\n/
@@ -171,12 +175,22 @@ module KaiserRuby
       { continue: nil }
     end
 
+    def parse_multiple_arguments(string)
+      words = string.split /and|,/
+      arguments = []
+      words.each do |w|
+        arguments << parse_variables(w.strip)
+      end
+
+      { argument_list: arguments }
+    end
+
     def parse_function_call(line)
       words = line.split /\s/
       if matches_any?(words, FUNCTION_CALL_KEYWORDS)
         words = line.split prepared_regexp(FUNCTION_CALL_KEYWORDS)
         left = parse_variables(words.first.strip)
-        right = parse_variables(words.last.strip)
+        right = parse_multiple_arguments(words.last.strip)
         { function_call: { left: left, right: right } }
       else
         return false
@@ -250,28 +264,19 @@ module KaiserRuby
     def parse_function(line)
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
       funcname = parse_proper_variable(words.first.strip)
-      argument = parse_argument(words.last.strip)
+      argument = parse_multiple_arguments(words.last.strip)
       { function: { name: funcname, argument: argument, block: [] } }
     end
 
-    def two_arguments_block(line, type, rxp)
-      words = line.split prepared_regexp(rxp)
-      add_to_tree()
-      @nesting += 1
-    end
-
-    def one_argument_block(line, type, rxp)
-      words = line.split prepared_regexp(rxp)
-      add_to_tree({ type => words.last.strip, block: [] })
-      @nesting += 1
-    end
-
     def parse_argument(string)
-      cmp = parse_comparison(string)
-      return cmp if cmp
-
       fcl = parse_function_call(string)
       return fcl if fcl
+
+      exp = parse_logic_operation(string)
+      return exp if exp  
+
+      cmp = parse_comparison(string)
+      return cmp if cmp
 
       str = parse_literal_string(string)
       return str if str
@@ -288,6 +293,36 @@ module KaiserRuby
       tpl = parse_type_literal(string)
       return tpl if tpl
     end
+
+    def parse_logic_operation(string)
+      if string =~ prepared_regexp(AND_KEYWORDS)
+        return parse_and(string)
+      elsif string =~ prepared_regexp(OR_KEYWORDS)
+        return parse_or(string)
+      elsif string =~ prepared_regexp(NOR_KEYWORDS)
+        
+      end
+
+      return false
+    end
+
+    def parse_and(string)
+      words = string.split(prepared_regexp(AND_KEYWORDS), 2)
+
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { and: { left: left, right: right } }
+    end
+
+    def parse_or(string)
+      words = string.split(prepared_regexp(OR_KEYWORDS), 2)
+
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { or: { left: left, right: right } }
+    end    
 
     def parse_comparison(string)
       words = string.split(/\s/)
@@ -362,7 +397,9 @@ module KaiserRuby
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alnum:]]|\./ }.join }
       string = words.join(' ')
 
-      if matches_first?(words, COMMON_VARIABLE_KEYWORDS)
+      if string =~ prepared_regexp(PRONOUN_KEYWORDS)
+        return parse_pronoun
+      elsif matches_first?(words, COMMON_VARIABLE_KEYWORDS)
         return parse_common_variable(string)
       elsif matches_all?(words, /\A[[:upper:]]/)
         return parse_proper_variable(string)
@@ -394,7 +431,11 @@ module KaiserRuby
       end      
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
-      { variable_name: words.join('_') }
+      { variable_name: words.map { |w| w.downcase }.join('_') }
+    end
+
+    def parse_pronoun
+      { pronoun: nil}
     end
 
     def parse_math_operations(string)

@@ -5,35 +5,35 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns a zero to proper variable' do
-      expect(KaiserRuby.transpile('Tommy is nobody')).to eq 'Tommy = 0'
+      expect(KaiserRuby.transpile('Tommy is nobody')).to eq 'tommy = 0'
     end
 
     it 'assigns a false' do
-      expect(KaiserRuby.transpile('Bad Wolf is wrong')).to eq 'Bad_Wolf = false'
+      expect(KaiserRuby.transpile('Bad Wolf is wrong')).to eq 'bad_wolf = false'
     end
 
     it 'assigns a nil' do
-      expect(KaiserRuby.transpile('Bad Wolf is mysterious')).to eq 'Bad_Wolf = nil'
+      expect(KaiserRuby.transpile('Bad Wolf is mysterious')).to eq 'bad_wolf = nil'
     end
   end
 
   context 'poetic string literals' do
     it 'assigns string to a variable' do
-      expect(KaiserRuby.transpile('Peter says Hello San Francisco!')).to eq 'Peter = "Hello San Francisco!"'
+      expect(KaiserRuby.transpile('Peter says Hello San Francisco!')).to eq 'peter = "Hello San Francisco!"'
     end
 
     it "doesn't strip apostrophes in the string" do
-      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %Q{Newton = "he's got a new theory to share"}
+      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %Q{newton = "he's got a new theory to share"}
     end
   end
 
   context 'poetic number literals' do
     it 'captures a string as a numeric variable' do
-      expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq 'Tommy = 100'
+      expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq 'tommy = 100'
     end
 
     it 'ignores reserved words in the string' do
-      expect(KaiserRuby.transpile('Mary is a rebel gone without lies')).to eq 'Mary = 15474'
+      expect(KaiserRuby.transpile('Mary is a rebel gone without lies')).to eq 'mary = 15474'
     end
 
     it 'ignores apostrophes and other nonalpha chars' do
@@ -41,11 +41,11 @@ RSpec.describe KaiserRuby do
     end
 
     it 'converts decimals properly' do
-      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck and essential seasick")).to eq "Conversion = 0.0397"
+      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck and essential seasick")).to eq "conversion = 0.0397"
     end
 
     it "ignores following dots" do
-      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck. and essential. seasick.")).to eq "Conversion = 0.0397"
+      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck. and essential. seasick.")).to eq "conversion = 0.0397"
     end
 
     it 'ignores nonalphabetic characters' do

@@ -5,7 +5,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'increments a proper variable' do
-      expect(KaiserRuby.transpile('Build Best City up')).to eq 'Best_City += 1'
+      expect(KaiserRuby.transpile('Build Best City up')).to eq 'best_city += 1'
     end
   end
 
@@ -15,7 +15,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'decrements a proper variable' do
-      expect(KaiserRuby.transpile('Knock London Bridge down')).to eq 'London_Bridge -= 1'
+      expect(KaiserRuby.transpile('Knock London Bridge down')).to eq 'london_bridge -= 1'
     end
   end
 
@@ -25,12 +25,12 @@ RSpec.describe KaiserRuby do
     end
 
     it 'adds two variables' do
-      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts Universe + my_love'
+      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts universe + my_love'
       expect(KaiserRuby.transpile('Say My world with my love')).to eq 'puts my_world + my_love'
     end
 
     it 'adds a value to a variable' do
-      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts You + "my axe"'
+      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts you + "my axe"'
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'subtracts a value from a variable' do
-      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts You - "my axe"'
+      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts you - "my axe"'
     end
   end
 
@@ -58,7 +58,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'divides a value to a variable' do
-      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts You / "my axe"'
+      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts you / "my axe"'
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'multiplicates two variables' do
-      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts Universe * my_love'
+      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts universe * my_love'
       expect(KaiserRuby.transpile('Say My world times my love')).to eq 'puts my_world * my_love'
     end
 

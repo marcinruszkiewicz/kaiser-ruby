@@ -1,6 +1,6 @@
 module KaiserRuby
   class Transformer
-    attr_reader :parsed_tree, :output, :indent
+    attr_reader :parsed_tree, :output, :indent, :last_variable
 
     def initialize(tree)
       @parsed_tree = tree
@@ -10,6 +10,7 @@ module KaiserRuby
 
     def transform
       @indent = 0
+      @last_variable = nil
 
       @parsed_tree.each do |line_object|
         @output << select_transformer(line_object)
@@ -55,6 +56,11 @@ module KaiserRuby
 
     def transform_variable_name(object)
       object[:variable_name]
+      @last_variable = object[:variable_name]
+    end
+
+    def transform_pronoun(_object)
+      @last_variable
     end
 
     def transform_string(object)
@@ -63,6 +69,15 @@ module KaiserRuby
 
     def transform_number(object)
       object[:number]
+    end
+
+    def transform_argument_list(object)
+      list = []
+      object[:argument_list].each do |arg|
+        list << select_transformer(arg)
+      end
+
+      list.join(', ')
     end
 
     def transform_addition(object)
@@ -147,11 +162,11 @@ module KaiserRuby
       when "nil"
         'nil'
       when "null"
-        0
+        '0'
       when "true"
-        true
+        'true'
       when "false"
-        false
+        'false'
       end
     end
 
@@ -249,6 +264,20 @@ module KaiserRuby
       output += "#{' ' * @indent}#{block}"
       output += "#{' ' * @indent}end\n"
       output      
+    end
+
+    def transform_and(object)
+      left = select_transformer(object[:and][:left])
+      right = select_transformer(object[:and][:right])
+
+      "#{left} && #{right}"
+    end
+
+    def transform_or(object)
+      left = select_transformer(object[:or][:left])
+      right = select_transformer(object[:or][:right])
+
+      "#{left} || #{right}"
     end
 
     # private

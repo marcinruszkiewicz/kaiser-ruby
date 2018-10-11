@@ -11,7 +11,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transpiles a string' do
-      expect(KaiserRuby.transpile('Tommy is a vampire')).to eq 'Tommy = 17'
+      expect(KaiserRuby.transpile('Tommy is a vampire')).to eq 'tommy = 17'
     end
 
     it 'transpiles a single line' do
@@ -57,9 +57,9 @@ RSpec.describe KaiserRuby do
 
     it 'consumes comments' do
       expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
-        Ruby = 18
+        ruby = 18
 
-        Javascript = 18
+        javascript = 18
       RESULT
     end
   end
@@ -68,7 +68,7 @@ RSpec.describe KaiserRuby do
     let(:contraction) { "Janie's got a gun" }
 
     it 'changes contraction to is' do
-      expect(KaiserRuby.transpile(contraction)).to eq "Janie = 313"
+      expect(KaiserRuby.transpile(contraction)).to eq "janie = 313"
     end
   end
 end

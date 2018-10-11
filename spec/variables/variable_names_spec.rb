@@ -1,23 +1,23 @@
 RSpec.describe KaiserRuby do
   context 'proper variables' do
     it 'handles a single word' do
-      expect(KaiserRuby.transpile("say Jean")).to eq "puts Jean"
+      expect(KaiserRuby.transpile("say Jean")).to eq "puts jean"
     end
 
     it 'handles more words' do
-      expect(KaiserRuby.transpile("say Mister Sandman")).to eq "puts Mister_Sandman"
+      expect(KaiserRuby.transpile("say Mister Sandman")).to eq "puts mister_sandman"
     end
 
     it 'handles single capitalized letters' do
-      expect(KaiserRuby.transpile("say Johnny B Goode")).to eq "puts Johnny_B_Goode"
+      expect(KaiserRuby.transpile("say Johnny B Goode")).to eq "puts johnny_b_goode"
     end
 
     it 'handles metal umlauts' do
-      expect(KaiserRuby.transpile('say Motörhead')).to eq 'puts Motörhead'
+      expect(KaiserRuby.transpile('say Motörhead')).to eq 'puts motörhead'
     end  
 
     it 'handles single uppercase letters' do
-      expect(KaiserRuby.transpile('say X')).to eq 'puts X'
+      expect(KaiserRuby.transpile('say X')).to eq 'puts x'
     end
 
     it "doesn't convert mixed case words" do
@@ -66,10 +66,10 @@ RSpec.describe KaiserRuby do
 
     it 'converts pronouns to last used variable' do
       expect(KaiserRuby.transpile(example)).to eq <<~RESULT
-        Desire = 16
-        puts Desire
-        Union = 426
-        puts Union
+        desire = 16
+        puts desire
+        union = 426
+        puts union
       RESULT
     end
   end  
