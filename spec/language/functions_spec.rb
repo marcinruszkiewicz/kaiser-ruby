@@ -36,11 +36,11 @@ RSpec.describe KaiserRuby do
     let(:two_arguments) { "Metal taking a man, a song" }
 
     it 'calls a function' do
-      expect(KaiserRuby.transpile(one_argument)).to eq "midnight(hate)"
+      expect(KaiserRuby.transpile(one_argument)).to eq "midnight(@hate)"
     end
 
     it 'calls a function with more arguments' do
-      expect(KaiserRuby.transpile(two_arguments)).to eq "metal(a_man, a_song)"
+      expect(KaiserRuby.transpile(two_arguments)).to eq "metal(@a_man, @a_song)"
     end
   end
 
@@ -49,11 +49,11 @@ RSpec.describe KaiserRuby do
     let(:expression) { "Give back the daylight with the night" }
 
     it 'returns a variable' do
-      expect(KaiserRuby.transpile(variable)).to eq "return desire"
+      expect(KaiserRuby.transpile(variable)).to eq "return @desire"
     end
 
     it 'returs an expression' do
-      expect(KaiserRuby.transpile(expression)).to eq "return the_daylight + the_night"
+      expect(KaiserRuby.transpile(expression)).to eq "return @the_daylight + @the_night"
     end
   end
 end

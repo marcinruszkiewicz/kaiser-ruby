@@ -1,21 +1,21 @@
 RSpec.describe KaiserRuby do
   context 'increment expression' do
     it 'increments a common variable' do
-      expect(KaiserRuby.transpile('Build my world up')).to eq 'my_world += 1'
+      expect(KaiserRuby.transpile('Build my world up')).to eq '@my_world += 1'
     end
 
     it 'increments a proper variable' do
-      expect(KaiserRuby.transpile('Build Best City up')).to eq 'best_city += 1'
+      expect(KaiserRuby.transpile('Build Best City up')).to eq '@best_city += 1'
     end
   end
 
   context 'decrement expression' do
     it 'decrements a common variable' do
-      expect(KaiserRuby.transpile('Knock the walls down')).to eq 'the_walls -= 1'
+      expect(KaiserRuby.transpile('Knock the walls down')).to eq '@the_walls -= 1'
     end
 
     it 'decrements a proper variable' do
-      expect(KaiserRuby.transpile('Knock London Bridge down')).to eq 'london_bridge -= 1'
+      expect(KaiserRuby.transpile('Knock London Bridge down')).to eq '@london_bridge -= 1'
     end
   end
 
@@ -25,12 +25,12 @@ RSpec.describe KaiserRuby do
     end
 
     it 'adds two variables' do
-      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts universe + my_love'
-      expect(KaiserRuby.transpile('Say My world with my love')).to eq 'puts my_world + my_love'
+      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts @universe + @my_love'
+      expect(KaiserRuby.transpile('Say My world with my love')).to eq 'puts @my_world + @my_love'
     end
 
     it 'adds a value to a variable' do
-      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts you + "my axe"'
+      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts @you + "my axe"'
     end
   end
 
@@ -40,11 +40,11 @@ RSpec.describe KaiserRuby do
     end
 
     it 'subtracts two variables' do
-      expect(KaiserRuby.transpile('Say My world without my love')).to eq 'puts my_world - my_love'
+      expect(KaiserRuby.transpile('Say My world without my love')).to eq 'puts @my_world - @my_love'
     end
 
     it 'subtracts a value from a variable' do
-      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts you - "my axe"'
+      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts @you - "my axe"'
     end
   end
 
@@ -54,11 +54,11 @@ RSpec.describe KaiserRuby do
     end
 
     it 'divides two variables' do
-      expect(KaiserRuby.transpile('Say My world over my love')).to eq 'puts my_world / my_love'
+      expect(KaiserRuby.transpile('Say My world over my love')).to eq 'puts @my_world / @my_love'
     end
 
     it 'divides a value to a variable' do
-      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts you / "my axe"'
+      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts @you / "my axe"'
     end
   end
 
@@ -68,12 +68,12 @@ RSpec.describe KaiserRuby do
     end
 
     it 'multiplicates two variables' do
-      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts universe * my_love'
-      expect(KaiserRuby.transpile('Say My world times my love')).to eq 'puts my_world * my_love'
+      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts @universe * @my_love'
+      expect(KaiserRuby.transpile('Say My world times my love')).to eq 'puts @my_world * @my_love'
     end
 
     it 'multiplicates a value with a variable' do
-      expect(KaiserRuby.transpile('Say Your head of "my axe"')).to eq 'puts your_head * "my axe"'
+      expect(KaiserRuby.transpile('Say Your head of "my axe"')).to eq 'puts @your_head * "my axe"'
     end
   end
 end

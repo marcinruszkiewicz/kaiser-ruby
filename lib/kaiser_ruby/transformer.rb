@@ -58,9 +58,19 @@ module KaiserRuby
     end
 
     def transform_variable_name(object)
-      varname = @global_variable_scope ? "@#{object[:variable_name]}" : object[:variable_name]
+      if @global_variable_scope
+        varname = "@#{object[:variable_name]}"
+        @global_variables << varname
+      else
+        varname = object[:variable_name]
+        varname = "@#{object[:variable_name]}" if @global_variables.include?("@#{object[:variable_name]}")
+      end
       @last_variable = varname
       varname
+    end
+
+    def transform_local_variable_name(object)
+      object[:local_variable_name]
     end
 
     def transform_function_name(object)
@@ -201,9 +211,10 @@ module KaiserRuby
       output
     end
 
-    def transform_block(block)
+    def transform_block(block, change_locality: false)
       output = ''
       @indent += 2
+      @global_variable_scope = false if change_locality
       block_output = []
 
       block.each do |block_line|
@@ -212,6 +223,7 @@ module KaiserRuby
 
       output += block_output.map { |l| "  #{l}" }.join("\n") + "\n"
       @indent -= 2
+      @global_variable_scope = true if change_locality
       output
     end
 
@@ -277,7 +289,7 @@ module KaiserRuby
       funcname = transform_function_name(object[:function][:name])
       @method_names << funcname
       argument = select_transformer(object[:function][:argument])
-      block = transform_block(object[:function][:block])
+      block = transform_block(object[:function][:block], change_locality: true)
 
       output = "def #{funcname}(#{argument})\n"
       output += "#{' ' * @indent}#{block}"

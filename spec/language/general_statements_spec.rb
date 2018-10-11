@@ -1,7 +1,7 @@
 RSpec.describe KaiserRuby do
   context 'print statement' do
     it 'prints values' do
-      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts my_love'
+      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts @my_love'
     end
   end
 
@@ -16,8 +16,8 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(input)).to eq <<~RESULT
         print '> '
         __input = STDIN.gets.chomp
-        the_news = Float(__input) rescue __input
-        puts the_news
+        @the_news = Float(__input) rescue __input
+        puts @the_news
       RESULT
     end
   end

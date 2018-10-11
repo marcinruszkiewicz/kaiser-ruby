@@ -175,11 +175,13 @@ module KaiserRuby
       { continue: nil }
     end
 
-    def parse_multiple_arguments(string)
+    def parse_multiple_arguments(string, local: false)
       words = string.split /and|,/
       arguments = []
       words.each do |w|
-        arguments << parse_argument(w.strip)
+        arg = parse_argument(w.strip)
+        arg[:local_variable_name] = arg.delete(:variable_name) if local
+        arguments << arg
       end
 
       { argument_list: arguments }
@@ -264,7 +266,7 @@ module KaiserRuby
     def parse_function(line)
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
       funcname = parse_function_name(words.first.strip)
-      argument = parse_multiple_arguments(words.last.strip)
+      argument = parse_multiple_arguments(words.last.strip, local: true)
       { function: { name: funcname, argument: argument, block: [] } }
     end
 
