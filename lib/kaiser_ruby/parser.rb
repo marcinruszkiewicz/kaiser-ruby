@@ -179,7 +179,7 @@ module KaiserRuby
       words = string.split /and|,/
       arguments = []
       words.each do |w|
-        arguments << parse_variables(w.strip)
+        arguments << parse_argument(w.strip)
       end
 
       { argument_list: arguments }
@@ -495,8 +495,8 @@ module KaiserRuby
     end
 
     def parse_literal_number(string)
-      num = Float(string) rescue string
-      if num.is_a? Float
+      num = Integer(string) rescue Float(string) rescue string
+      if num.is_a?(Float) || num.is_a?(Integer)
         { number: num }
       else
         return false

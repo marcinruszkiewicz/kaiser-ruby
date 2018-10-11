@@ -22,6 +22,14 @@ say 7
 F takes X
 give back X
 
-if F taking 5
+if F
 say 8
 
+if F taking 5
+say 9
+
+Y takes X
+give back nothing
+
+if Y taking 6
+say 10

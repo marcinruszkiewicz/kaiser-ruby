@@ -1,11 +1,11 @@
 module KaiserRuby
   class Transformer
-    attr_reader :parsed_tree, :output, :indent, :last_variable
+    attr_reader :parsed_tree, :output, :indent, :last_variable, :method_names
 
     def initialize(tree)
       @parsed_tree = tree
       @output = []
-
+      @method_names = []
     end
 
     def transform
@@ -55,8 +55,8 @@ module KaiserRuby
     end
 
     def transform_variable_name(object)
-      object[:variable_name]
       @last_variable = object[:variable_name]
+      object[:variable_name]
     end
 
     def transform_pronoun(_object)
@@ -174,8 +174,18 @@ module KaiserRuby
       ""
     end
 
+    def additional_argument_transformation(argument)
+      if @method_names.include?(argument)
+        return "defined?(#{argument})"
+      end
+
+      return argument
+    end
+
     def transform_if(object)
       argument = select_transformer(object[:if][:argument])
+      argument = additional_argument_transformation(argument)
+
       block = transform_block(object[:if][:block])
       output = "if #{argument}\n"
       output += "#{' ' * @indent}#{block}"
@@ -257,6 +267,7 @@ module KaiserRuby
 
     def transform_function(object)
       funcname = transform_variable_name(object[:function][:name])
+      @method_names << funcname
       argument = select_transformer(object[:function][:argument])
       block = transform_block(object[:function][:block])
 

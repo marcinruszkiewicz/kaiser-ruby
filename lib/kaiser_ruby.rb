@@ -34,7 +34,7 @@ module KaiserRuby
 
   def self.execute(input)
     with_captured_stdout do
-      eval transpile(input)
+      instance_eval transpile(input)
     end
   end
 
