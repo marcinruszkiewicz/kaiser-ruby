@@ -189,7 +189,7 @@ module KaiserRuby
       words = line.split /\s/
       if matches_any?(words, FUNCTION_CALL_KEYWORDS)
         words = line.split prepared_regexp(FUNCTION_CALL_KEYWORDS)
-        left = parse_variables(words.first.strip)
+        left = parse_function_name(words.first.strip)
         right = parse_multiple_arguments(words.last.strip)
         { function_call: { left: left, right: right } }
       else
@@ -263,7 +263,7 @@ module KaiserRuby
 
     def parse_function(line)
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
-      funcname = parse_proper_variable(words.first.strip)
+      funcname = parse_function_name(words.first.strip)
       argument = parse_multiple_arguments(words.last.strip)
       { function: { name: funcname, argument: argument, block: [] } }
     end
@@ -406,6 +406,12 @@ module KaiserRuby
       end
 
       return false
+    end
+
+    def parse_function_name(string)
+      fname = parse_variables(string)
+      fname[:function_name] = fname.delete(:variable_name)
+      fname
     end
 
     def parse_common_variable(string)
