@@ -175,13 +175,23 @@ module KaiserRuby
       { continue: nil }
     end
 
-    def parse_multiple_arguments(string, local: false)
+    def parse_function_definition_arguments(string)
       words = string.split /and|,/
       arguments = []
       words.each do |w|
         arg = parse_argument(w.strip)
-        arg[:local_variable_name] = arg.delete(:variable_name) if local
+        arg[:local_variable_name] = arg.delete(:variable_name)
         arguments << arg
+      end
+
+      { argument_list: arguments }
+    end
+
+    def parse_function_call_arguments(string)
+      words = string.split /and|,/
+      arguments = []
+      words.each do |w|
+        arguments << parse_value_or_variable(w.strip)
       end
 
       { argument_list: arguments }
@@ -192,7 +202,7 @@ module KaiserRuby
       if matches_any?(words, FUNCTION_CALL_KEYWORDS)
         words = line.split prepared_regexp(FUNCTION_CALL_KEYWORDS)
         left = parse_function_name(words.first.strip)
-        right = parse_multiple_arguments(words.last.strip)
+        right = parse_function_call_arguments(words.last.strip)
         { function_call: { left: left, right: right } }
       else
         return false
@@ -266,19 +276,22 @@ module KaiserRuby
     def parse_function(line)
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
       funcname = parse_function_name(words.first.strip)
-      argument = parse_multiple_arguments(words.last.strip, local: true)
+      argument = parse_function_definition_arguments(words.last.strip)
       { function: { name: funcname, argument: argument, block: [] } }
     end
 
     def parse_argument(string)
-      fcl = parse_function_call(string)
-      return fcl if fcl
-
       exp = parse_logic_operation(string)
       return exp if exp  
 
+      math = parse_math_operations(string)
+      return math if math 
+
       cmp = parse_comparison(string)
       return cmp if cmp
+
+      fcl = parse_function_call(string)
+      return fcl if fcl
 
       str = parse_literal_string(string)
       return str if str
@@ -286,8 +299,19 @@ module KaiserRuby
       num = parse_literal_number(string)
       return num if num
 
-      math = parse_math_operations(string)
-      return math if math 
+      vars = parse_variables(string)
+      return vars if vars
+
+      tpl = parse_type_literal(string)
+      return tpl if tpl
+    end
+
+    def parse_value_or_variable(string)
+      str = parse_literal_string(string)
+      return str if str
+
+      num = parse_literal_number(string)
+      return num if num
 
       vars = parse_variables(string)
       return vars if vars
