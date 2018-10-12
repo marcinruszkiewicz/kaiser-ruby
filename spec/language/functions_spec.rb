@@ -34,6 +34,7 @@ RSpec.describe KaiserRuby do
   context 'function calls' do
     let(:one_argument) { "Midnight taking Hate" }
     let(:two_arguments) { "Metal taking a man, a song" }
+    let(:mixed_arguments) { "Metal taking a man, a song and a life" }
 
     it 'calls a function' do
       expect(KaiserRuby.transpile(one_argument)).to eq "midnight(@hate)"
@@ -41,6 +42,10 @@ RSpec.describe KaiserRuby do
 
     it 'calls a function with more arguments' do
       expect(KaiserRuby.transpile(two_arguments)).to eq "metal(@a_man, @a_song)"
+    end
+
+    it 'calls a function with mixed separators' do
+      expect(KaiserRuby.transpile(mixed_arguments)).to eq "metal(@a_man, @a_song, @a_life)"
     end
   end
 

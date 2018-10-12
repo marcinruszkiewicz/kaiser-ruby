@@ -8,8 +8,8 @@ module KaiserRuby
     POETIC_TYPE_KEYWORDS = %w(is)
     PRINT_KEYWORDS = %w(say whisper shout scream)
     LISTEN_KEYWORDS = ['listen to']
-    BREAK_KEYWORDS = ['break it down']
-    CONTINUE_KEYWORDS = ['take it to the top']
+    BREAK_KEYWORDS = ['break', 'break it down']
+    CONTINUE_KEYWORDS = ['continue', 'take it to the top']
     RETURN_KEYWORDS = ['give back']
     FUNCTION_CALL_KEYWORDS = %w(taking)
     INCREMENT_FIRST_KEYWORDS = %w(build)
@@ -57,25 +57,20 @@ module KaiserRuby
 
     def parse
       @tree = []
-
-      # we need the deep locate from hashie to do proper nesting
-      @tree.extend(Hashie::Extensions::DeepLocate)
-      @current_block = []
       @nesting = 0
 
       # parse through lines to get the general structure (statements/flow control/functions/etc) out of it
       @lines.each do |line|
         parse_line(line)
       end
-      # fill_block # end of file should close blocks
 
       @tree
     end
 
     def parse_line(line)
-      if line.empty?
-        fill_block
-        add_to_tree(parse_empty_line) if @nesting == 0
+      if line.strip.empty?
+        @nesting -= 1 if @nesting > 0
+        add_to_tree(parse_empty_line)
       else
         words = line.split /\s/
 
@@ -226,7 +221,7 @@ module KaiserRuby
     def parse_poetic_number(line)
       words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
       left = parse_variables(words.first.strip)
-      right = { number_literal: words.last.strip }
+      right = parse_poetic_number_value(words.last.strip)
       { poetic_number: { left: left, right: right } }
     end
 
@@ -258,52 +253,43 @@ module KaiserRuby
     def parse_if(line)
       words = line.split prepared_regexp(IF_KEYWORDS)
       argument = parse_argument(words.last.strip)
-      { if: { argument: argument, block: [] } }
+      { if: { argument: argument } }
     end
 
     def parse_until(line)
       words = line.split prepared_regexp(UNTIL_KEYWORDS)
       argument = parse_argument(words.last.strip)
-      { until: { argument: argument, block: [] } }
+      { until: { argument: argument } }
     end
 
     def parse_while(line)
       words = line.split prepared_regexp(WHILE_KEYWORDS)
       argument = parse_argument(words.last.strip)
-      { while: { argument: argument, block: [] } }
+      { while: { argument: argument } }
     end
 
     def parse_function(line)
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
       funcname = parse_function_name(words.first.strip)
       argument = parse_function_definition_arguments(words.last.strip)
-      { function: { name: funcname, argument: argument, block: [] } }
+      { function: { name: funcname, argument: argument } }
     end
 
     def parse_argument(string)
       exp = parse_logic_operation(string)
       return exp if exp  
 
-      math = parse_math_operations(string)
-      return math if math 
-
       cmp = parse_comparison(string)
       return cmp if cmp
 
+      math = parse_math_operations(string)
+      return math if math 
+
       fcl = parse_function_call(string)
-      return fcl if fcl
+      return fcl if fcl      
 
-      str = parse_literal_string(string)
-      return str if str
-
-      num = parse_literal_number(string)
-      return num if num
-
-      vars = parse_variables(string)
-      return vars if vars
-
-      tpl = parse_type_literal(string)
-      return tpl if tpl
+      vals = parse_value_or_variable(string)
+      return vals if vals
     end
 
     def parse_value_or_variable(string)
@@ -320,21 +306,28 @@ module KaiserRuby
       return tpl if tpl
     end
 
+    def parse_poetic_number_value(string)
+      num = parse_literal_number(string)
+      if num
+        return num 
+      else
+        return { number_literal: string.strip }
+      end
+    end
+
     def parse_logic_operation(string)
       if string =~ prepared_regexp(AND_KEYWORDS)
         return parse_and(string)
       elsif string =~ prepared_regexp(OR_KEYWORDS)
         return parse_or(string)
       elsif string =~ prepared_regexp(NOR_KEYWORDS)
-        
       end
 
       return false
     end
 
     def parse_and(string)
-      words = string.split(prepared_regexp(AND_KEYWORDS), 2)
-
+      words = string.rpartition prepared_regexp(AND_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -342,7 +335,7 @@ module KaiserRuby
     end
 
     def parse_or(string)
-      words = string.split(prepared_regexp(OR_KEYWORDS), 2)
+      words = string.rpartition prepared_regexp(OR_KEYWORDS)
 
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
@@ -371,7 +364,7 @@ module KaiserRuby
     end
 
     def parse_equality(string)
-      words = string.split prepared_regexp(EQUALITY_KEYWORDS)
+      words = string.rpartition prepared_regexp(EQUALITY_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -379,7 +372,7 @@ module KaiserRuby
     end
 
     def parse_inequality(string)
-      words = string.split prepared_regexp(INEQUALITY_KEYWORDS)
+      words = string.rpartition prepared_regexp(INEQUALITY_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -387,7 +380,7 @@ module KaiserRuby
     end
 
     def parse_gt(string)
-      words = string.split prepared_regexp(GT_KEYWORDS)
+      words = string.rpartition prepared_regexp(GT_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -395,7 +388,7 @@ module KaiserRuby
     end
 
     def parse_gte(string)
-      words = string.split prepared_regexp(GTE_KEYWORDS)
+      words = string.rpartition prepared_regexp(GTE_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -403,7 +396,7 @@ module KaiserRuby
     end
 
     def parse_lt(string)
-      words = string.split prepared_regexp(LT_KEYWORDS)
+      words = string.rpartition prepared_regexp(LT_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -411,7 +404,7 @@ module KaiserRuby
     end
 
     def parse_lte(string)
-      words = string.split prepared_regexp(LTE_KEYWORDS)
+      words = string.rpartition prepared_regexp(LTE_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -473,21 +466,21 @@ module KaiserRuby
     def parse_math_operations(string)
       words = string.split(/\s/)
 
-      if matches_any?(words, ADDITION_KEYWORDS)
-        return parse_addition(string)
-      elsif matches_any?(words, SUBTRACTION_KEYWORDS)
-        return parse_subtraction(string)
-      elsif matches_any?(words, MULTIPLICATION_KEYWORDS)
+      if matches_any?(words, MULTIPLICATION_KEYWORDS)
         return parse_multiplication(string)
       elsif matches_any?(words, DIVISION_KEYWORDS)
         return parse_division(string)
+      elsif matches_any?(words, ADDITION_KEYWORDS)
+        return parse_addition(string)
+      elsif matches_any?(words, SUBTRACTION_KEYWORDS)
+        return parse_subtraction(string)
       end
 
       return false
     end
 
     def parse_addition(string)
-      words = string.split prepared_regexp(ADDITION_KEYWORDS)
+      words = string.rpartition prepared_regexp(ADDITION_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -495,7 +488,7 @@ module KaiserRuby
     end
 
     def parse_subtraction(string)
-      words = string.split prepared_regexp(SUBTRACTION_KEYWORDS)
+      words = string.rpartition prepared_regexp(SUBTRACTION_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -503,7 +496,7 @@ module KaiserRuby
     end
 
     def parse_multiplication(string)
-      words = string.split prepared_regexp(MULTIPLICATION_KEYWORDS)
+      words = string.rpartition prepared_regexp(MULTIPLICATION_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -511,7 +504,7 @@ module KaiserRuby
     end
 
     def parse_division(string)
-      words = string.split prepared_regexp(DIVISION_KEYWORDS)
+      words = string.rpartition prepared_regexp(DIVISION_KEYWORDS)
       left = parse_argument(words.first.strip)
       right = parse_argument(words.last.strip)
 
@@ -538,19 +531,8 @@ module KaiserRuby
     #private
 
     def add_to_tree(object)
-      object.extend(Hashie::Extensions::DeepLocate)
-
-      if @nesting == 0
-        @tree << object
-        @current_block = @tree.count - 1
-      else
-        blocks = @tree[@current_block].deep_locate(:block)
-        blocks[@nesting - 1][:block] << object
-      end
-    end
-
-    def fill_block      
-      @nesting -= 1 if @nesting >= 1
+      object[:nesting] = @nesting if @nesting > 0
+      @tree << object
     end
 
     def prepared_regexp(array, contractions: false)

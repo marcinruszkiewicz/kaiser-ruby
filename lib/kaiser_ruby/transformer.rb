@@ -7,18 +7,31 @@ module KaiserRuby
       @output = []
       @method_names = []
       @global_variables = []
-      @local_variables = []
+      @nesting = 0
+      @indentation = ''
     end
 
     def transform
-      @indent = 0
       @last_variable = nil
       @global_variable_scope = true
 
       @parsed_tree.each do |line_object|
-        @output << select_transformer(line_object)
+        transformed_line = select_transformer(line_object)
+        if line_object[:nesting]
+          @nesting = line_object[:nesting]
+        else
+          @nesting = 0
+        end
+
+        @indentation = '  ' * @nesting
+        @output << @indentation + transformed_line
       end
 
+      while @nesting > 0
+        @nesting -= 1
+        @indentation = '  ' * @nesting
+        @output << @indentation + "end"
+      end
       @output << '' if @output.size > 1
       @output.join("\n")
     end
@@ -189,7 +202,12 @@ module KaiserRuby
     end
 
     def transform_empty_line(_object)
-      ""
+      if @nesting == 0
+        @global_variable_scope = true
+        return ""
+      else
+        return "end\n"
+      end
     end
 
     def additional_argument_transformation(argument)
@@ -204,27 +222,7 @@ module KaiserRuby
       argument = select_transformer(object[:if][:argument])
       argument = additional_argument_transformation(argument)
 
-      block = transform_block(object[:if][:block])
-      output = "if #{argument}\n"
-      output += "#{' ' * @indent}#{block}"
-      output += "#{' ' * @indent}end\n"
-      output
-    end
-
-    def transform_block(block, change_locality: false)
-      output = ''
-      @indent += 2
-      @global_variable_scope = false if change_locality
-      block_output = []
-
-      block.each do |block_line|
-        block_output << select_transformer(block_line)
-      end
-
-      output += block_output.map { |l| "  #{l}" }.join("\n") + "\n"
-      @indent -= 2
-      @global_variable_scope = true if change_locality
-      output
+      "if #{argument}"
     end
 
     def transform_else(_object)
@@ -233,20 +231,12 @@ module KaiserRuby
 
     def transform_while(object)
       argument = select_transformer(object[:while][:argument])
-      block = transform_block(object[:while][:block])
-      output = "while #{argument}\n"
-      output += "#{' ' * @indent}#{block}"
-      output += "#{' ' * @indent}end\n"
-      output
+      "while #{argument}"
     end
 
     def transform_until(object)
       argument = select_transformer(object[:until][:argument])
-      block = transform_block(object[:until][:block])
-      output = "until #{argument}\n"
-      output += "#{' ' * @indent}#{block}"
-      output += "#{' ' * @indent}end\n"
-      output
+      "until #{argument}"
     end
 
     def transform_equality(object)
@@ -289,12 +279,9 @@ module KaiserRuby
       funcname = transform_function_name(object[:function][:name])
       @method_names << funcname
       argument = select_transformer(object[:function][:argument])
-      block = transform_block(object[:function][:block], change_locality: true)
+      @global_variable_scope = false
 
-      output = "def #{funcname}(#{argument})\n"
-      output += "#{' ' * @indent}#{block}"
-      output += "#{' ' * @indent}end\n"
-      output      
+      "def #{funcname}(#{argument})"
     end
 
     def transform_and(object)

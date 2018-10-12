@@ -26,7 +26,6 @@ RSpec.describe KaiserRuby do
 
     it 'adds two variables' do
       expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts @universe + @my_love'
-      expect(KaiserRuby.transpile('Say My world with my love')).to eq 'puts @my_world + @my_love'
     end
 
     it 'adds a value to a variable' do
@@ -69,7 +68,6 @@ RSpec.describe KaiserRuby do
 
     it 'multiplicates two variables' do
       expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts @universe * @my_love'
-      expect(KaiserRuby.transpile('Say My world times my love')).to eq 'puts @my_world * @my_love'
     end
 
     it 'multiplicates a value with a variable' do

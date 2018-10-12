@@ -63,11 +63,9 @@ RSpec.describe KaiserRuby do
           puts "Human"
         end
 
-
         if @tommy == @a_boss
           puts "Nobody"
         end
-
       RESULT
     end
 
@@ -77,10 +75,9 @@ RSpec.describe KaiserRuby do
           puts "Human"
           if @tommy == @a_boss
             puts "Nobody"
-          else
-          puts "Unknown"
+            else
+            puts "Unknown"
           end
-
         end
       RESULT
     end
@@ -134,7 +131,6 @@ RSpec.describe KaiserRuby do
     let(:two_conditions) do <<~END
         Until Tommy is nobody or Gina is nobody
         Shout "Nobody"
-        Put Midnight taking my world and Fire into my fire
       END
     end
 
@@ -142,6 +138,9 @@ RSpec.describe KaiserRuby do
         Until Tommy is nobody
         Shout "Nobody"
         If Tommy is a man
+        Take it to the top
+
+        If Tommy is the boss
         Take it to the top
 
         Shout "Until"
@@ -160,7 +159,6 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
         until @tommy == 0 || @gina == 0
           puts "Nobody"
-          @my_fire = midnight(@my_world, @fire)
         end
       RESULT
     end
@@ -173,9 +171,33 @@ RSpec.describe KaiserRuby do
             next
           end
 
+          if @tommy == @the_boss
+            next
+          end
+
           puts "Until"
         end
       RESULT
     end
   end
+
+  context 'break' do
+    it 'makes break command' do
+      expect(KaiserRuby.transpile('break')).to eq 'break'
+    end
+
+    it 'alias makes break command' do
+      expect(KaiserRuby.transpile('break it down')).to eq 'break'
+    end
+  end
+
+  context 'continue' do
+    it 'makes continue command' do
+      expect(KaiserRuby.transpile('continue')).to eq 'next'
+    end
+
+    it 'alias makes continue command' do
+      expect(KaiserRuby.transpile('Take it to the top')).to eq 'next'
+    end
+  end  
 end

@@ -55,5 +55,9 @@ RSpec.describe KaiserRuby do
     it 'ignores nonalphabetic characters in decimals' do
       expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "@my_number = 1.4"
     end
+
+    it 'assigns a literal number' do
+      expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42'
+    end    
   end
 end

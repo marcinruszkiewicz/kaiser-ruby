@@ -1,13 +1,57 @@
-# 0.1
+# 0.7
 
-- [x] Initial implementation of the Rockstar Language based using `Parslet::Parser`
+Language Implementation
 
-# 0.2
+- [ ] Full language implementation according to the spec
 
-- [x] Rewrote the Parser and Transform classes from scratch
-- [x] basic CLI and REPL
-- [x] Metal umlauts
-- [x] Most variable types, assignmnents, output, conditionals are working.
+- [x] Added forgotten `break` and `continue` keywords
+- [x] STDIN input now converts to Float or Integer as expected
+- [x] Fixed indenting of nested blocks, deep nesting works too
+- [x] Variables are scoped properly if you declare them before a function
+
+Other
+
+- [ ] Replaced parsing with Parslet with a hand-written parser in plain Ruby
+- [ ] Implemented reference tests
+
+# 0.6 - unreleased
+
+- [x] Fixed error in input from STDIN
+- [x] The transpiler now throws a SyntaxError instead of Parslet exception
+
+Test Suite
+
+- [x] Refactored the test suite to make more sense
+- [x] Added a ton of new negative and positive tests
+
+# 0.5
+
+- [x] Fixed converting decimals so "Conversion is lovestruck. lovestruck and essential seasick" results in "conversion = 0.0397" as one would expect.
+
+Other stuff
+
+- [x] Updated the REPL to work on Ruby versions earlier than 2.5 (2.3 is the minimum supported version)
+- [x] Travis CI tests on all supported Ruby versions
+
+# 0.4
+
+Language Implementation:
+
+- [x] Handle non-alpha values in quoted strings
+- [x] Ignore comments in parentheses
+- [x] Handle input from STDIN
+- [x] Handle contractions - "Janie's got a gun" should be expanded to "Janie is got a gun" and so it should transpile to "janie = 313"
+- [x] Handle pronouns - he, she, it, and others should refer to the last used variable
+- [x] Better handle input of integers from STDIN
+- [x] Print can print returned values from functions
+
+Other stuff:
+
+- [x] Updated the FizzBuzz example
+- [x] Catch exceptions in the REPL
+- [x] Suppressed warning about eval from Thor
+- [x] Move nesting indentation from main module to transformer
+- [x] Celsius to Fahrenheit example
 
 # 0.3
 
@@ -31,41 +75,13 @@ Other stuff:
 - [x] Fibonacci example is working
 - [x] Added comments to resulting ruby code flow control statements, so it's easier to see where what ends. This should help making the code more readable (and easier to figure out if it's actually correct), at least while the indentation feature is not fully working yet.
 
-# 0.4
+# 0.2
 
-Language Implementation:
+- [x] Rewrote the Parser and Transform classes from scratch
+- [x] basic CLI and REPL
+- [x] Metal umlauts
+- [x] Most variable types, assignmnents, output, conditionals are working.
 
-- [x] Handle non-alpha values in quoted strings
-- [x] Ignore comments in parentheses
-- [x] Handle input from STDIN
-- [x] Handle contractions - "Janie's got a gun" should be expanded to "Janie is got a gun" and so it should transpile to "janie = 313"
-- [x] Handle pronouns - he, she, it, and others should refer to the last used variable
-- [x] Better handle input of integers from STDIN
-- [x] Print can print returned values from functions
+# 0.1
 
-Other stuff:
-
-- [x] Updated the FizzBuzz example
-- [x] Catch exceptions in the REPL
-- [x] Suppressed warning about eval from Thor
-- [x] Move nesting indentation from main module to transformer
-- [x] Celsius to Fahrenheit example
-
-# 0.5
-
-- [x] Fixed converting decimals so "Conversion is lovestruck. lovestruck and essential seasick" results in "conversion = 0.0397" as one would expect.
-
-Other stuff
-
-- [x] Updated the REPL to work on Ruby versions earlier than 2.5 (2.3 is the minimum supported version)
-- [x] Travis CI tests on all supported Ruby versions
-
-# 0.6
-
-- [x] Fixed error in input from STDIN
-- [x] The transpiler now throws a SyntaxError instead of Parslet exception
-
-Test Suite
-
-- [ ] Refactored the test suite to make more sense
-- [ ] Added a ton of new negative and positive tests
+- [x] Initial implementation of the Rockstar Language based using `Parslet::Parser`
