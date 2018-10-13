@@ -1,4 +1,14 @@
 RSpec.describe KaiserRuby do
+  context 'poetic string literals' do
+    it 'assigns string to a variable' do
+      expect(KaiserRuby.transpile('Peter says Hello San Francisco!')).to eq '@peter = "Hello San Francisco!"'
+    end
+
+    it "doesn't strip apostrophes in the string" do
+      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %Q{@newton = "he's got a new theory to share"}
+    end
+  end
+
   context 'poetic type literals' do
     it 'assigns a true to common variable' do
       expect(KaiserRuby.transpile('My heart is true')).to eq '@my_heart = true'
@@ -15,19 +25,15 @@ RSpec.describe KaiserRuby do
     it 'assigns a nil' do
       expect(KaiserRuby.transpile('Bad Wolf is mysterious')).to eq '@bad_wolf = nil'
     end
-  end
 
-  context 'poetic string literals' do
-    it 'assigns string to a variable' do
-      expect(KaiserRuby.transpile('Peter says Hello San Francisco!')).to eq '@peter = "Hello San Francisco!"'
+    it 'assigns a string' do
+      expect(KaiserRuby.transpile('the password is "open sesame"')).to eq '@the_password = "open sesame"'
     end
 
-    it "doesn't strip apostrophes in the string" do
-      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %Q{@newton = "he's got a new theory to share"}
-    end
-  end
+    it 'assigns a literal number' do
+      expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42'
+    end    
 
-  context 'poetic number literals' do
     it 'captures a string as a numeric variable' do
       expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq '@tommy = 100'
     end
@@ -55,9 +61,5 @@ RSpec.describe KaiserRuby do
     it 'ignores nonalphabetic characters in decimals' do
       expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "@my_number = 1.4"
     end
-
-    it 'assigns a literal number' do
-      expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42'
-    end    
   end
 end

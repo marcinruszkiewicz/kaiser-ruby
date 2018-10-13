@@ -25,7 +25,7 @@ module KaiserRuby
     WHILE_KEYWORDS = %w(while)
     ELSE_KEYWORDS = %w(else)
 
-    NULL_TYPE = %w(null nothing nowhere nobody gone)
+    NULL_TYPE = %w(null nothing nowhere nobody gone empty)
     TRUE_TYPE = %w(true yes ok right)
     FALSE_TYPE = %w(false no lies wrong)
     NIL_TYPE = %w(mysterious)
@@ -46,6 +46,8 @@ module KaiserRuby
     LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
 
+    FUNCTION_RESTRICTED_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS + ['is', 'or', 'into']
+
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
     NOR_KEYWORDS = %w(nor)
@@ -57,11 +59,22 @@ module KaiserRuby
 
     def parse
       @tree = []
+
+      @tree.extend(Hashie::Extensions::DeepLocate)
+      @function_temp = []
       @nesting = 0
 
       # parse through lines to get the general structure (statements/flow control/functions/etc) out of it
       @lines.each do |line|
         parse_line(line)
+      end
+
+      func_calls = @tree.deep_locate(:passed_function_call)
+      func_calls.each do |func|
+        str = func[:passed_function_call]
+        num = Integer(str.split('_').last)
+
+        func[:passed_function_call] = parse_function_call(@function_temp[num])
       end
 
       @tree
@@ -94,10 +107,10 @@ module KaiserRuby
         else
           if matches_any?(words, POETIC_STRING_KEYWORDS)
             add_to_tree parse_poetic_string(line)
-          elsif matches_consecutive?(words, POETIC_TYPE_KEYWORDS, POETIC_TYPE_LITERALS)
-            add_to_tree parse_poetic_type(line)
+          # elsif matches_consecutive?(words, POETIC_TYPE_KEYWORDS, POETIC_TYPE_LITERALS)
+            # add_to_tree parse_poetic_type(line)
           elsif matches_any?(words, POETIC_NUMBER_KEYWORDS, contractions: true)
-            add_to_tree parse_poetic_number(line)
+            add_to_tree parse_poetic_type_all(line)
           else
             add_to_tree(parse_listen(line)) if matches_several_first?(line, LISTEN_KEYWORDS)
             add_to_tree(parse_break) if matches_several_first?(line, BREAK_KEYWORDS)
@@ -124,8 +137,10 @@ module KaiserRuby
     # statements
     def parse_print(line)
       words = line.split prepared_regexp(PRINT_KEYWORDS)
+      arg = consume_function_calls(words.last.strip)
+      argument = parse_argument(arg)
 
-      { print: parse_argument(words.last.strip) }
+      { print: argument }
     end
 
     def parse_listen(line)
@@ -136,8 +151,10 @@ module KaiserRuby
 
     def parse_return(line)
       words = line.split prepared_regexp(RETURN_KEYWORDS)
+      arg = consume_function_calls(words.last.strip)
+      argument = parse_argument(arg)
 
-      { return: parse_argument(words.last.strip) }
+      { return: argument }
     end
 
     def parse_increment(line)
@@ -211,18 +228,44 @@ module KaiserRuby
       { poetic_string: { left: left, right: right } }
     end
 
-    def parse_poetic_type(line)
-      words = line.split prepared_regexp(POETIC_TYPE_KEYWORDS)
+    def parse_poetic_type_all(line)
+      words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
       left = parse_variables(words.first.strip)
-      right = parse_type_literal(words.last.strip)
+      right = parse_type_value(words.last.strip)
       { poetic_type: { left: left, right: right } }
     end
 
-    def parse_poetic_number(line)
-      words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
-      left = parse_variables(words.first.strip)
-      right = parse_poetic_number_value(words.last.strip)
-      { poetic_number: { left: left, right: right } }
+    # def parse_poetic_type(line)
+    #   words = line.split prepared_regexp(POETIC_TYPE_KEYWORDS)
+    #   left = parse_variables(words.first.strip)
+    #   right = parse_type_literal(words.last.strip)
+    #   { poetic_type: { left: left, right: right } }
+    # end
+
+    # def parse_poetic_number(line)
+    #   words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
+    #   left = parse_variables(words.first.strip)
+    #   right = parse_poetic_number_value(words.last.strip)
+    #   { poetic_number: { left: left, right: right } }
+    # end
+
+    def parse_type_value(string)
+      num = Integer(string) rescue Float(string) rescue string
+      words = string.split /\s/
+
+      if matches_first?(words, NIL_TYPE)
+        { type: 'nil' }
+      elsif matches_first?(words, NULL_TYPE)
+        { type: 'null' }
+      elsif matches_first?(words, TRUE_TYPE)
+        { type: 'true' }
+      elsif matches_first?(words, FALSE_TYPE)
+        { type: 'false' }
+      elsif string.strip.start_with?('"') && string.end_with?('"')
+        parse_literal_string(string)
+      else
+        parse_poetic_number_value(string)
+      end
     end
 
     def parse_type_literal(string)
@@ -252,19 +295,23 @@ module KaiserRuby
 
     def parse_if(line)
       words = line.split prepared_regexp(IF_KEYWORDS)
-      argument = parse_argument(words.last.strip)
+
+      arg = consume_function_calls(words.last.strip)
+      argument = parse_argument(arg)
       { if: { argument: argument } }
     end
 
     def parse_until(line)
       words = line.split prepared_regexp(UNTIL_KEYWORDS)
-      argument = parse_argument(words.last.strip)
+      arg = consume_function_calls(words.last.strip)
+      argument = parse_argument(arg)
       { until: { argument: argument } }
     end
 
     def parse_while(line)
       words = line.split prepared_regexp(WHILE_KEYWORDS)
-      argument = parse_argument(words.last.strip)
+      arg = consume_function_calls(words.last.strip)
+      argument = parse_argument(arg)
       { while: { argument: argument } }
     end
 
@@ -275,7 +322,29 @@ module KaiserRuby
       { function: { name: funcname, argument: argument } }
     end
 
+    def consume_function_calls(string)
+      if string =~ prepared_regexp(FUNCTION_CALL_KEYWORDS)
+        words = string.split prepared_regexp(FUNCTION_RESTRICTED_KEYWORDS)
+        found_string = words.select { |w| w =~ (/\btaking\b/) }.first
+        @function_temp << found_string
+        string = string.gsub(found_string, " func_#{@function_temp.count - 1} ")
+      end
+
+      string
+    end
+
+    def pass_function_calls(string)
+      if string.strip =~ /func_\d+\Z/
+        { passed_function_call: string }
+      else
+        return false
+      end
+    end
+
     def parse_argument(string)
+      str = parse_literal_string(string)
+      return str if str
+
       exp = parse_logic_operation(string)
       return exp if exp  
 
@@ -284,6 +353,9 @@ module KaiserRuby
 
       math = parse_math_operations(string)
       return math if math 
+
+      fcl2 = pass_function_calls(string)
+      return fcl2 if fcl2
 
       fcl = parse_function_call(string)
       return fcl if fcl      
@@ -321,6 +393,7 @@ module KaiserRuby
       elsif string =~ prepared_regexp(OR_KEYWORDS)
         return parse_or(string)
       elsif string =~ prepared_regexp(NOR_KEYWORDS)
+        # TODO
       end
 
       return false
@@ -460,7 +533,7 @@ module KaiserRuby
     end
 
     def parse_pronoun
-      { pronoun: nil}
+      { pronoun: nil }
     end
 
     def parse_math_operations(string)
@@ -531,6 +604,8 @@ module KaiserRuby
     #private
 
     def add_to_tree(object)
+      object.extend(Hashie::Extensions::DeepLocate)
+
       object[:nesting] = @nesting if @nesting > 0
       @tree << object
     end

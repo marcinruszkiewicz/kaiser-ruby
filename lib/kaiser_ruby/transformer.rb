@@ -158,6 +158,10 @@ module KaiserRuby
       "#{func_name}(#{argument})"
     end
 
+    def transform_passed_function_call(object)
+      return transform_function_call(object[:passed_function_call])
+    end
+
     def transform_poetic_string(object)
       var = select_transformer(object[:poetic_string][:left])
       value = select_transformer(object[:poetic_string][:right])

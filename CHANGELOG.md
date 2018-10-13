@@ -8,6 +8,8 @@ Language Implementation
 - [x] STDIN input now converts to Float or Integer as expected
 - [x] Fixed indenting of nested blocks, deep nesting works too
 - [x] Variables are scoped properly if you declare them before a function
+- [x] Handle ',' and 'and' in function calls together with precedence of &&
+- [x] Poetic assignment works with string and number literals
 
 Other
 
