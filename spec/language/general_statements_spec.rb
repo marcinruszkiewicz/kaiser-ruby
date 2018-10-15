@@ -24,6 +24,11 @@ RSpec.describe KaiserRuby do
         expect(KaiserRuby.execute(input)).to eq "1, 0\n"
       end
     end
+
+    it 'ignores stuff in quotes' do
+      # expect(KaiserRuby.transpile('say "this should not print since 0 is false"')).to eq 'puts "this should not print since 0 is false"'
+      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + 0'
+    end
   end
 
   context 'input from STDIN' do

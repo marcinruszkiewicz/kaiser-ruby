@@ -41,6 +41,7 @@ module KaiserRuby
     SUBTRACTION_KEYWORDS = %w(minus without)
     MULTIPLICATION_KEYWORDS = %w(times of)
     DIVISION_KEYWORDS = %w(over)
+    MATH_OP_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS
 
     EQUALITY_KEYWORDS = %w(is)
     INEQUALITY_KEYWORDS = %w(isn't isnt ain't aint)
@@ -48,12 +49,16 @@ module KaiserRuby
     GTE_KEYWORDS = ['is as high as', 'is as great as', 'is as big as', 'is as strong as']
     LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
+    COMPARISON_KEYWORDS = EQUALITY_KEYWORDS + INEQUALITY_KEYWORDS + GT_KEYWORDS + GTE_KEYWORDS + LT_KEYWORDS + LTE_KEYWORDS
 
-    FUNCTION_RESTRICTED_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS + ['^,^ +and', 'is', 'or', 'into']
+    FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['^,^ +and', 'is', 'or', 'into']
 
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
     NOR_KEYWORDS = %w(nor)
+    LOGIC_KEYWORDS = %w(and or nor)
+
+    RESERVED_KEYWORDS = LOGIC_KEYWORDS + MATH_OP_KEYWORDS + POETIC_TYPE_LITERALS
 
     def initialize(input)
       @raw_input = input
@@ -262,7 +267,7 @@ module KaiserRuby
         { type: 'true' }
       elsif matches_first?(words, FALSE_TYPE)
         { type: 'false' }
-      elsif string.strip.start_with?('"') && string.end_with?('"')
+      elsif string.strip.start_with?('"') && string.strip.end_with?('"')
         parse_literal_string(string)
       else
         parse_poetic_number_value(string)
@@ -389,6 +394,9 @@ module KaiserRuby
     end
 
     def parse_logic_operation(string)
+      testable = string.partition(prepared_regexp(LOGIC_KEYWORDS))
+      return false if testable.first.count('"').odd? || testable.last.count('"').odd?
+
       if string =~ prepared_regexp(AND_KEYWORDS)
         return parse_and(string)
       elsif string =~ prepared_regexp(OR_KEYWORDS)
@@ -418,6 +426,7 @@ module KaiserRuby
     end    
 
     def parse_comparison(string)
+      return false if string.strip.start_with?('"') && string.strip.strip.end_with?('"') && string.count('"') == 2
       words = string.split(/\s/)
 
       if string =~ prepared_regexp(GT_KEYWORDS)
@@ -494,7 +503,7 @@ module KaiserRuby
         return parse_pronoun
       elsif matches_first?(words, COMMON_VARIABLE_KEYWORDS)
         return parse_common_variable(string)
-      elsif matches_all?(words, /\A[[:upper:]]/)
+      elsif matches_all?(words, /\A[[:upper:]]/) && string !~ prepared_regexp(RESERVED_KEYWORDS)
         return parse_proper_variable(string)
       end
 
@@ -538,6 +547,7 @@ module KaiserRuby
     end
 
     def parse_math_operations(string)
+      return false if string.strip.start_with?('"') && string.strip.end_with?('"') && string.count('"') == 2
       words = string.split(/\s/)
 
       if matches_any?(words, MULTIPLICATION_KEYWORDS)
@@ -586,7 +596,7 @@ module KaiserRuby
     end
 
     def parse_literal_string(string)
-      if string.strip.start_with?('"') && string.end_with?('"')
+      if string.strip.start_with?('"') && string.strip.end_with?('"') && string.count('"') == 2
         { string: string }
       else
         return false

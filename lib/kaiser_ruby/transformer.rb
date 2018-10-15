@@ -216,16 +216,21 @@ module KaiserRuby
 
     def additional_argument_transformation(argument)
       if @method_names.include?(argument)
-        return "defined?(#{argument})"
+        arg = "defined?(#{argument})"
+      else
+        arg = argument
       end
 
-      return argument
+      if arg !~ /==|>|>=|<|<=|!=/
+        arg = "#{arg}.to_bool"
+      end
+
+      return arg
     end
 
     def transform_if(object)
       argument = select_transformer(object[:if][:argument])
       argument = additional_argument_transformation(argument)
-
       "if #{argument}"
     end
 
@@ -235,11 +240,13 @@ module KaiserRuby
 
     def transform_while(object)
       argument = select_transformer(object[:while][:argument])
+      argument = additional_argument_transformation(argument)
       "while #{argument}"
     end
 
     def transform_until(object)
       argument = select_transformer(object[:until][:argument])
+      argument = additional_argument_transformation(argument)
       "until #{argument}"
     end
 

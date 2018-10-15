@@ -31,6 +31,14 @@ RSpec.describe KaiserRuby do
     it 'adds a value to a variable' do
       expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts @you + "my axe"'
     end
+
+    it 'adds multiple variables' do
+      expect(KaiserRuby.transpile('say 5 plus 8 plus 10.5')).to eq 'puts 5 + 8 + 10.5'
+    end
+
+    it 'adds strings' do
+      expect(KaiserRuby.transpile('say "ab" plus "cd"')).to eq 'puts "ab" + "cd"'
+    end
   end
 
   context 'subtraction expression' do
