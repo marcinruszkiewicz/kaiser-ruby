@@ -18,7 +18,7 @@ say I
 (end loop)
 
 put 0 into I
-while True
+while 1 is 1
 build I up
 if I is stronger than 5
 break
@@ -30,7 +30,7 @@ put 0 into I
 while I is weaker than 3
 build I up
 put 0 into J
-while True
+while 1 is 1
 build J up
 if J is bigger than 3
 break it down

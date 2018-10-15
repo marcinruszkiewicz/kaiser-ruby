@@ -1,7 +1,28 @@
 RSpec.describe KaiserRuby do
   context 'print statement' do
+    let(:input) do <<~END
+        put 0 into I
+        put 1 into J
+        say J plus ", " plus I
+      END
+    end
+
     it 'prints values' do
       expect(KaiserRuby.transpile('Scream my love')).to eq 'puts @my_love'
+    end
+
+    context 'different types' do
+      it 'converts types' do
+        expect(KaiserRuby.transpile(input)).to eq <<~RESULT
+          @i = 0
+          @j = 1
+          puts @j + ", " + @i
+        RESULT
+      end
+
+      it 'executes correctly' do 
+        expect(KaiserRuby.execute(input)).to eq "1, 0\n"
+      end
     end
   end
 

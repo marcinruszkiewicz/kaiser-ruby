@@ -1,6 +1,7 @@
 require 'hashie'
 require 'kaiser_ruby/parser'
 require 'kaiser_ruby/transformer'
+require 'kaiser_ruby/refinements'
 require 'pry'
 
 module KaiserRuby
@@ -17,6 +18,8 @@ module KaiserRuby
     KaiserRuby::Transformer.new(tree).transform
   end
 
+  using KaiserRuby::Refinements
+  
   def self.execute(input)
     with_captured_stdout do
       instance_eval transpile(input)
