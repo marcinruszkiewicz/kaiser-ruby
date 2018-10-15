@@ -3,33 +3,21 @@ module KaiserRuby
     refine Integer do
       alias_method :old_add, :+
       def +(other)
-        if other.is_a? String
-          self.to_s + other
-        else
-          self.old_add(other)
-        end
+        other.is_a?(String) ? self.to_s + other : self.old_add(other)          
       end
     end
 
     refine Float do
       alias_method :old_add, :+
       def +(other)
-        if other.is_a? String
-          self.to_s + other
-        else
-          self.old_add(other)
-        end
+        other.is_a?(String) ? self.to_s + other : self.old_add(other)
       end
     end
 
     refine String do
       alias_method :old_add, :+
       def +(other)
-        unless other.is_a? String
-          self + other.to_s
-        else
-          self.old_add(other)
-        end
+        other.is_a?(String) ? self.old_add(other) : self + other.to_s 
       end
     end
   end
