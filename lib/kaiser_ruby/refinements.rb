@@ -1,12 +1,21 @@
 module KaiserRuby
   module Refinements
-    refine Integer do
-      alias_method :old_add, :+
-      def +(other)
-        other.is_a?(String) ? self.to_s + other : self.old_add(other)          
+    if RUBY_VERSION =~ /2\.3\./
+      refine Fixnum do
+        alias_method :old_add, :+
+        def +(other)
+          other.is_a?(String) ? self.to_s + other : self.old_add(other)          
+        end
+      end
+    else
+      refine Integer do
+        alias_method :old_add, :+
+        def +(other)
+          other.is_a?(String) ? self.to_s + other : self.old_add(other)          
+        end
       end
     end
-
+    
     refine Float do
       alias_method :old_add, :+
       def +(other)
