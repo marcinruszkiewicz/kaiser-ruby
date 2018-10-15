@@ -18,8 +18,7 @@ RSpec.configure do |config|
 end
 
 def file_fixture(fixture_name)
-  file_fixture_path = File.dirname __FILE__
-  path = Pathname.new(File.join(file_fixture_path, 'fixtures', fixture_name))
+  path = Pathname.new(File.join(fixture_name))
 
   if path.exist?
     path
