@@ -13,6 +13,25 @@ RSpec.describe KaiserRuby do
       END
     end
 
+    let(:two_arguments_output) do <<~RESULT
+        def midnight(hate, desire)
+          puts desire
+        end
+      RESULT
+    end
+
+    let(:two_arguments_contracted) do <<~END
+        Midnight takes Hate 'n' Desire
+        Shout Desire
+      END
+    end
+
+    let(:two_arguments_ampersand) do <<~END
+        Midnight takes Hate & Desire
+        Shout Desire
+      END
+    end
+
     it 'makes a function definition' do
       expect(KaiserRuby.transpile(one_argument)).to eq <<~RESULT
         def midnight(hate)
@@ -23,11 +42,15 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a function definition with two arguments' do
-      expect(KaiserRuby.transpile(two_arguments)).to eq <<~RESULT
-        def midnight(hate, desire)
-          puts desire
-        end
-      RESULT
+      expect(KaiserRuby.transpile(two_arguments)).to eq two_arguments_output
+    end
+
+    it "works with contraction" do
+      expect(KaiserRuby.transpile(two_arguments_contracted)).to eq two_arguments_output
+    end
+
+    it 'works with ampersand' do
+      expect(KaiserRuby.transpile(two_arguments_ampersand)).to eq two_arguments_output
     end
   end
 

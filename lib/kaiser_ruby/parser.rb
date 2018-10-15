@@ -20,6 +20,7 @@ module KaiserRuby
     ASSIGNMENT_SECOND_KEYWORDS = %w(into)
 
     FUNCTION_KEYWORDS = %w(takes)
+    FUNCTION_SEPARATORS = ['and', ', and', "'n'", '&', ',']
     FUNCTION_CALL_KEYWORDS = %w(taking)
     FUNCTION_CALL_SEPARATORS = [', and', "'n'", '&', ',']
     IF_KEYWORDS = %w(if)
@@ -190,10 +191,10 @@ module KaiserRuby
     end
 
     def parse_function_definition_arguments(string)
-      words = string.split /and|,/
+      words = string.split Regexp.new(FUNCTION_SEPARATORS.join('|'))
       arguments = []
       words.each do |w|
-        arg = parse_argument(w.strip)
+        arg = parse_value_or_variable(w.strip)
         arg[:local_variable_name] = arg.delete(:variable_name)
         arguments << arg
       end
