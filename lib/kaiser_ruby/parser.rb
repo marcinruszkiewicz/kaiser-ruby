@@ -11,7 +11,7 @@ module KaiserRuby
     BREAK_KEYWORDS = ['break', 'break it down']
     CONTINUE_KEYWORDS = ['continue', 'take it to the top']
     RETURN_KEYWORDS = ['give back']
-    FUNCTION_CALL_KEYWORDS = %w(taking)
+
     INCREMENT_FIRST_KEYWORDS = %w(build)
     INCREMENT_SECOND_KEYWORDS = %w(up)
     DECREMENT_FIRST_KEYWORDS = %w(knock)
@@ -20,6 +20,8 @@ module KaiserRuby
     ASSIGNMENT_SECOND_KEYWORDS = %w(into)
 
     FUNCTION_KEYWORDS = %w(takes)
+    FUNCTION_CALL_KEYWORDS = %w(taking)
+    FUNCTION_CALL_SEPARATORS = [', and', "'n'", '&', ',']
     IF_KEYWORDS = %w(if)
     UNTIL_KEYWORDS = %w(until)
     WHILE_KEYWORDS = %w(while)
@@ -46,7 +48,7 @@ module KaiserRuby
     LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
 
-    FUNCTION_RESTRICTED_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS + ['is', 'or', 'into']
+    FUNCTION_RESTRICTED_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS + ['^,^ +and', 'is', 'or', 'into']
 
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
@@ -200,7 +202,7 @@ module KaiserRuby
     end
 
     def parse_function_call_arguments(string)
-      words = string.split /and|,/
+      words = string.split(Regexp.new(FUNCTION_CALL_SEPARATORS.join('|')))
       arguments = []
       words.each do |w|
         arguments << parse_value_or_variable(w.strip)

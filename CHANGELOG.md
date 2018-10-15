@@ -10,10 +10,11 @@ Language Implementation
 - [x] Variables are scoped properly if you declare them before a function
 - [x] Handle ',' and 'and' in function calls together with precedence of &&
 - [x] Poetic assignment works with string and number literals
+- [x] Function calls should work with `, `, `, and`, `'n'` and `&` as argument separators. `and` without the comma is deprecated.
 
 Other
 
-- [ ] Replaced parsing with Parslet with a hand-written parser in plain Ruby
+- [x] Replaced parsing with Parslet with a hand-written parser in plain Ruby
 - [ ] Implemented reference tests
 
 # 0.6 - unreleased
