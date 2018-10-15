@@ -63,12 +63,4 @@ RSpec.describe KaiserRuby do
       RESULT
     end
   end
-
-  context 'contractions' do
-    let(:contraction) { "Janie's got a gun" }
-
-    it 'changes contraction to is' do
-      expect(KaiserRuby.transpile(contraction)).to eq "@janie = 313"
-    end
-  end
 end

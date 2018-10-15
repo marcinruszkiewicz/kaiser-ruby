@@ -3,7 +3,7 @@ module KaiserRuby
     attr_reader :lines, :raw_input, :tree
 
     POETIC_STRING_KEYWORDS = %w(says)
-    POETIC_NUMBER_KEYWORDS = %w(is was were are)
+    POETIC_NUMBER_KEYWORDS = %w(is was were are 's 're)
     POETIC_NUMBER_CONTRACTIONS = %w('s 're)
     POETIC_TYPE_KEYWORDS = %w(is)
     PRINT_KEYWORDS = %w(say whisper shout scream)
@@ -110,9 +110,7 @@ module KaiserRuby
         else
           if matches_any?(words, POETIC_STRING_KEYWORDS)
             add_to_tree parse_poetic_string(line)
-          # elsif matches_consecutive?(words, POETIC_TYPE_KEYWORDS, POETIC_TYPE_LITERALS)
-            # add_to_tree parse_poetic_type(line)
-          elsif matches_any?(words, POETIC_NUMBER_KEYWORDS, contractions: true)
+          elsif matches_any?(words, POETIC_NUMBER_KEYWORDS)
             add_to_tree parse_poetic_type_all(line)
           else
             add_to_tree(parse_listen(line)) if matches_several_first?(line, LISTEN_KEYWORDS)
@@ -225,14 +223,14 @@ module KaiserRuby
     end
 
     def parse_poetic_string(line)
-      words = line.split prepared_regexp(POETIC_STRING_KEYWORDS)
+      words = line.partition prepared_regexp(POETIC_STRING_KEYWORDS)
       left = parse_variables(words.first.strip)
       right = { string: "\"#{words.last.strip}\"" }
       { poetic_string: { left: left, right: right } }
     end
 
     def parse_poetic_type_all(line)
-      words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
+      words = line.partition prepared_regexp(POETIC_NUMBER_KEYWORDS)
       left = parse_variables(words.first.strip)
       right = parse_type_value(words.last.strip)
       { poetic_type: { left: left, right: right } }
@@ -613,12 +611,8 @@ module KaiserRuby
       @tree << object
     end
 
-    def prepared_regexp(array, contractions: false)
-      if contractions
-        rxp = (array.map { |a| '\b' + a + '\b' } + POETIC_NUMBER_CONTRACTIONS.map { |a| a + '\b' }).join('|')
-      else
-        rxp = array.map { |a| '\b' + a + '\b' }.join('|')
-      end
+    def prepared_regexp(array)
+      rxp = array.map { |a| '\b' + a + '\b' }.join('|')
       Regexp.new(rxp, Regexp::IGNORECASE)
     end
 
@@ -628,13 +622,13 @@ module KaiserRuby
       Regexp.new(frxp + '(.*?)' + srxp + '(.*)', Regexp::IGNORECASE)
     end
 
-    def matches_any?(words, rxp, contractions: false)
-      regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp, contractions: contractions)
+    def matches_any?(words, rxp)
+      regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp)
       words.any? { |w| w =~ regexp } 
     end
 
-    def matches_all?(words, rxp, contractions: false)
-      regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp, contractions: contractions)
+    def matches_all?(words, rxp)
+      regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp)
       words.all? { |w| w =~ regexp } 
     end
 
@@ -645,8 +639,8 @@ module KaiserRuby
       second_idx != nil && first_idx != nil && second_idx.to_i - first_idx.to_i == 1
     end
 
-    def matches_first?(words, rxp, contractions: false)
-      words.index { |w| w =~ prepared_regexp(rxp, contractions: contractions) } == 0
+    def matches_first?(words, rxp)
+      words.index { |w| w =~ prepared_regexp(rxp) } == 0
     end
 
     def matches_several_first?(line, rxp)

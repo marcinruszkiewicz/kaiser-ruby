@@ -62,4 +62,14 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "@my_number = 1.4"
     end
   end
+
+  context 'contractions' do
+    it 'changes contraction to is' do
+      expect(KaiserRuby.transpile("Janie's got a gun")).to eq "@janie = 313"
+    end
+
+    it "doesn't contract in number literals" do
+      expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq "@janie = 65"
+    end
+  end  
 end
