@@ -1,31 +1,5 @@
 module KaiserRuby
   module Refinements
-    if RUBY_VERSION =~ /\A2\.3/
-      refine Fixnum do
-        alias_method :old_add, :+
-        def +(other)
-          other.is_a?(String) ? self.to_s + other : self.old_add(other)          
-        end
-
-        def to_bool
-          return false if self.zero?
-          true
-        end
-      end
-    else
-      refine Integer do
-        alias_method :old_add, :+
-        def +(other)
-          other.is_a?(String) ? self.to_s + other : self.old_add(other)          
-        end
-
-        def to_bool
-          return false if self.zero?
-          true
-        end
-      end
-    end
-
     refine NilClass do
       def to_bool
         false
@@ -49,7 +23,7 @@ module KaiserRuby
       def to_bool
         return false if self.zero?
         true
-      end      
+      end
     end
 
     refine String do

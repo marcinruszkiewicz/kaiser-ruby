@@ -15,7 +15,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns a zero to proper variable' do
-      expect(KaiserRuby.transpile('Tommy is nobody')).to eq '@tommy = 0'
+      expect(KaiserRuby.transpile('Tommy is nobody')).to eq '@tommy = 0.0'
     end
 
     it 'assigns a false' do
@@ -31,15 +31,15 @@ RSpec.describe KaiserRuby do
     end
 
     it 'assigns a literal number' do
-      expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42'
+      expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42.0'
     end    
 
     it 'captures a string as a numeric variable' do
-      expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq '@tommy = 100'
+      expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq '@tommy = 100.0'
     end
 
     it 'ignores reserved words in the string' do
-      expect(KaiserRuby.transpile('Mary is a rebel gone without lies')).to eq '@mary = 15474'
+      expect(KaiserRuby.transpile('Mary is a rebel gone without lies')).to eq '@mary = 15474.0'
     end
 
     it 'ignores apostrophes and other nonalpha chars' do
@@ -55,7 +55,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores nonalphabetic characters' do
-      expect(KaiserRuby.transpile("my number is a 57 + true 43")).to eq "@my_number = 14"
+      expect(KaiserRuby.transpile("my number is a 57 + true 43")).to eq "@my_number = 14.0"
     end
 
     it 'ignores nonalphabetic characters in decimals' do
@@ -65,11 +65,11 @@ RSpec.describe KaiserRuby do
 
   context 'contractions' do
     it 'changes contraction to is' do
-      expect(KaiserRuby.transpile("Janie's got a gun")).to eq "@janie = 313"
+      expect(KaiserRuby.transpile("Janie's got a gun")).to eq "@janie = 313.0"
     end
 
     it "doesn't contract in number literals" do
-      expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq "@janie = 65"
+      expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq "@janie = 65.0"
     end
   end  
 end

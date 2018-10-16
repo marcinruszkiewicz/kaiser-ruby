@@ -1,7 +1,7 @@
 RSpec.describe KaiserRuby do
   describe 'correct specs' do
     Dir.glob("spec/fixtures/reference/correct/*.rock").each do |filename|
-      context "#{filename}" do
+      context "#{filename.split('/').last}" do
         let(:source) { file_fixture "#{filename}" }
         let(:output) { file_fixture "#{filename}.out" }
 
@@ -13,8 +13,8 @@ RSpec.describe KaiserRuby do
   end
 
   describe 'operator specs' do
-    Dir.glob("spec/fixtures/reference/correct/operators/*.rock").each do |filename|
-      context "#{filename}" do
+    Dir.glob("spec/fixtures/reference/todo/operators/*.rock").each do |filename|
+      context "#{filename.split('/').last}" do
         let(:source) { file_fixture "#{filename}" }
         let(:output) { file_fixture "#{filename}.out" }
 

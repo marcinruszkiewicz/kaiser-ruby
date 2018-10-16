@@ -66,9 +66,9 @@ RSpec.describe KaiserRuby do
 
     it 'converts pronouns to last used variable' do
       expect(KaiserRuby.transpile(example)).to eq <<~RESULT
-        @desire = 16
+        @desire = 16.0
         puts @desire
-        @union = 426
+        @union = 426.0
         puts @union
       RESULT
     end

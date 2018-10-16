@@ -11,16 +11,16 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transpiles a string' do
-      expect(KaiserRuby.transpile('Tommy is a vampire')).to eq '@tommy = 17'
+      expect(KaiserRuby.transpile('Tommy is a vampire')).to eq '@tommy = 17.0'
     end
 
     it 'transpiles a single line' do
-      expect(KaiserRuby.transpile("Put 3 into your mind\n")).to eq "@your_mind = 3"
+      expect(KaiserRuby.transpile("Put 3 into your mind\n")).to eq "@your_mind = 3.0"
     end
 
     it 'transpiles multiple lines' do
       expect(KaiserRuby.transpile(more_lines)).to eq <<~RESULT
-        @your_heart = 5
+        @your_heart = 5.0
         puts @your_heart
       RESULT
     end
@@ -38,7 +38,7 @@ RSpec.describe KaiserRuby do
 
     it 'transpiles multiple blocks of code' do
       expect(KaiserRuby.transpile(lyrics)).to eq <<~RESULT
-        @your_heart = 5
+        @your_heart = 5.0
         puts @your_heart
 
         @a_rockstar = "Ruby"
@@ -57,9 +57,9 @@ RSpec.describe KaiserRuby do
 
     it 'consumes comments' do
       expect(KaiserRuby.transpile(comments)).to eq <<~RESULT
-        @ruby = 18
+        @ruby = 18.0
 
-        @javascript = 18
+        @javascript = 18.0
       RESULT
     end
   end

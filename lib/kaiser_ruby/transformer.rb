@@ -188,7 +188,7 @@ module KaiserRuby
           str_to_num(sub.strip)
         end.join('.').to_f
       else
-        str_to_num(string).to_i
+        str_to_num(string).to_f
       end
     end
 
@@ -197,7 +197,7 @@ module KaiserRuby
       when "nil"
         'nil'
       when "null"
-        '0'
+        '0.0'
       when "true"
         'true'
       when "false"

@@ -51,7 +51,7 @@ module KaiserRuby
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
     COMPARISON_KEYWORDS = EQUALITY_KEYWORDS + INEQUALITY_KEYWORDS + GT_KEYWORDS + GTE_KEYWORDS + LT_KEYWORDS + LTE_KEYWORDS
 
-    FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['^,^ +and', 'is', 'or', 'into']
+    FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['(?<!, )and', 'is', 'or', 'into']
 
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
@@ -159,7 +159,6 @@ module KaiserRuby
       words = line.split prepared_regexp(RETURN_KEYWORDS)
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
-
       { return: argument }
     end
 
@@ -241,22 +240,7 @@ module KaiserRuby
       { poetic_type: { left: left, right: right } }
     end
 
-    # def parse_poetic_type(line)
-    #   words = line.split prepared_regexp(POETIC_TYPE_KEYWORDS)
-    #   left = parse_variables(words.first.strip)
-    #   right = parse_type_literal(words.last.strip)
-    #   { poetic_type: { left: left, right: right } }
-    # end
-
-    # def parse_poetic_number(line)
-    #   words = line.split prepared_regexp(POETIC_NUMBER_KEYWORDS, contractions: true)
-    #   left = parse_variables(words.first.strip)
-    #   right = parse_poetic_number_value(words.last.strip)
-    #   { poetic_number: { left: left, right: right } }
-    # end
-
     def parse_type_value(string)
-      num = Integer(string) rescue Float(string) rescue string
       words = string.split /\s/
 
       if matches_first?(words, NIL_TYPE)
@@ -604,8 +588,8 @@ module KaiserRuby
     end
 
     def parse_literal_number(string)
-      num = Integer(string) rescue Float(string) rescue string
-      if num.is_a?(Float) || num.is_a?(Integer)
+      num = Float(string) rescue string
+      if num.is_a?(Float)
         { number: num }
       else
         return false
