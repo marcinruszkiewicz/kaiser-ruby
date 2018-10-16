@@ -302,6 +302,11 @@ module KaiserRuby
       "#{left} && #{right}"
     end
 
+    def transform_not(object)
+      arg = select_transformer(object[:not])
+      "!#{arg}"
+    end
+
     def transform_or(object)
       left = select_transformer(object[:or][:left])
       right = select_transformer(object[:or][:right])

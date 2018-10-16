@@ -44,7 +44,7 @@ module KaiserRuby
     MATH_OP_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS
 
     EQUALITY_KEYWORDS = %w(is)
-    INEQUALITY_KEYWORDS = %w(isn't isnt ain't aint)
+    INEQUALITY_KEYWORDS = %w(isn't isnt ain't aint is\ not)
     GT_KEYWORDS = ['is higher than', 'is greater than', 'is bigger than', 'is stronger than']
     GTE_KEYWORDS = ['is as high as', 'is as great as', 'is as big as', 'is as strong as']
     LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
@@ -56,7 +56,8 @@ module KaiserRuby
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
     NOR_KEYWORDS = %w(nor)
-    LOGIC_KEYWORDS = %w(and or nor)
+    NOT_KEYWORDS = ['(?<!is )not']
+    LOGIC_KEYWORDS = AND_KEYWORDS + OR_KEYWORDS + NOT_KEYWORDS + NOR_KEYWORDS
 
     RESERVED_KEYWORDS = LOGIC_KEYWORDS + MATH_OP_KEYWORDS + POETIC_TYPE_LITERALS
 
@@ -355,6 +356,9 @@ module KaiserRuby
     end
 
     def parse_value_or_variable(string)
+      nt = parse_not(string)
+      return nt if nt
+
       str = parse_literal_string(string)
       return str if str
 
@@ -407,6 +411,14 @@ module KaiserRuby
       right = parse_argument(words.last.strip)
 
       { or: { left: left, right: right } }
+    end
+
+    def parse_not(string)
+      return false if string !~ /(?<!is )\bnot\b/i
+      words = string.split prepared_regexp(NOT_KEYWORDS)
+      argument = parse_argument(words.last.strip)
+
+      { not: argument }
     end
 
     def parse_comparison(string)

@@ -9,8 +9,11 @@ Language Implementation
 - [x] Fixed indenting of nested blocks, deep nesting works too
 - [x] Variables are scoped properly if you declare them before a function
 - [x] Handle ',' and 'and' in function calls together with precedence of &&
-- [x] Poetic assignment works with string and number literals
 - [x] Function calls should work with `, `, `, and`, `'n'` and `&` as argument separators. `and` without the comma is deprecated.
+- [x] Poetic assignment works with string and number literals
+- [x] All numbers are represented as floats
+- [x] Implement refinements to make math operations and comparisons work properly
+- [x] Handle NOT operator
 
 Other
 

@@ -102,5 +102,21 @@ module KaiserRuby
         'false' + other if other.is_a?(String)
       end
     end
+
+    refine BasicObject do
+      alias_method :old_not, :!
+
+      def !
+        if self.is_a?(String)
+          return self.size == 0 ? true : false
+        elsif self.is_a?(Float)
+          return self.zero? ? true : false
+        elsif self.is_a?(NilClass)
+          return true
+        else
+          self.old_not
+        end
+      end
+    end
   end
 end

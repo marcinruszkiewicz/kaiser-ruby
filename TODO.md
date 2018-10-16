@@ -2,10 +2,10 @@
 
 ## Language Implementation
 
+- [ ] Handle NOR operation
+
 - [ ] `Listen` should just wait for user input and do nothing with it
 - [ ] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
-- [ ] Handle NOR operation
-- [ ] Handle NOT operator
 
 - [ ] Handle testing STDIN in RSpec tests
 
