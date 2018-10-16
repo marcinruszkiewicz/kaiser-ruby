@@ -14,6 +14,8 @@ Language Implementation
 - [x] All numbers are represented as floats
 - [x] Implement refinements to make math operations and comparisons work properly
 - [x] Handle NOT operator
+- [x] Handle NOR operation
+- [x] Handle equality
 
 Other
 

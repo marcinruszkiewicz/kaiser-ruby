@@ -51,7 +51,7 @@ module KaiserRuby
     LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
     COMPARISON_KEYWORDS = EQUALITY_KEYWORDS + INEQUALITY_KEYWORDS + GT_KEYWORDS + GTE_KEYWORDS + LT_KEYWORDS + LTE_KEYWORDS
 
-    FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['(?<!, )and', 'is', 'or', 'into']
+    FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['(?<!, )and', 'is', 'or', 'into', 'nor']
 
     AND_KEYWORDS = %w(and)
     OR_KEYWORDS = %w(or)
@@ -390,7 +390,7 @@ module KaiserRuby
       elsif string =~ prepared_regexp(OR_KEYWORDS)
         return parse_or(string)
       elsif string =~ prepared_regexp(NOR_KEYWORDS)
-        # TODO
+        return parse_nor(string)
       end
 
       return false
@@ -411,6 +411,15 @@ module KaiserRuby
       right = parse_argument(words.last.strip)
 
       { or: { left: left, right: right } }
+    end
+
+    def parse_nor(string)
+      words = string.rpartition prepared_regexp(NOR_KEYWORDS)
+
+      left = parse_argument(words.first.strip)
+      right = parse_argument(words.last.strip)
+
+      { nor: { left: left, right: right } }
     end
 
     def parse_not(string)

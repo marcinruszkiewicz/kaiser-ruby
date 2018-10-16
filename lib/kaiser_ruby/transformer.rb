@@ -314,6 +314,13 @@ module KaiserRuby
       "#{left} || #{right}"
     end
 
+    def transform_nor(object)
+      left = select_transformer(object[:nor][:left])
+      right = select_transformer(object[:nor][:right])
+
+      "!(#{left} || #{right})"
+    end
+
     # private
 
     def str_to_num(string)

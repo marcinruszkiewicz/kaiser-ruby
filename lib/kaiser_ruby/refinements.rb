@@ -21,6 +21,7 @@ module KaiserRuby
       alias_method :old_gte, :<=
       alias_method :old_lt, :>
       alias_method :old_lte, :>=
+      alias_method :old_eq, :==
 
       def to_bool
         self.zero? ? false : true
@@ -49,6 +50,17 @@ module KaiserRuby
       def >=(other)
         other.is_a?(String) ? self >= Float(other) : self.old_lte(other)
       end
+
+      def ==(other)
+        if other.is_a?(TrueClass) || other.is_a?(FalseClass)
+          self.to_bool == other
+        elsif other.is_a?(String)
+          t = Float(other) rescue other
+          self.old_eq(t)
+        else
+          self.old_eq(other)
+        end
+      end
     end
 
     refine String do
@@ -57,9 +69,20 @@ module KaiserRuby
       alias_method :old_gte, :<=
       alias_method :old_lt, :>
       alias_method :old_lte, :>=
+      alias_method :old_eq, :==
 
       def to_bool
         self.size == 0 ? false : true
+      end
+
+      def __booleanize
+        if self =~ /\A\bfalse\b|\bno\b|\blies\b|\bwrong\b\Z/i
+          return false
+        elsif self =~ /\A\btrue\b|\byes\b|\bok\b|\bright\b\Z/i
+          return true
+        end
+
+        return self
       end
 
       def +(other)
@@ -81,25 +104,60 @@ module KaiserRuby
       def >=(other)
         other.is_a?(Float) ? Float(self) >= other : self.old_lte(other)
       end
+
+      def ==(other)
+        if other.is_a?(TrueClass) || other.is_a?(FalseClass)
+          self.__booleanize == other
+        elsif other.is_a?(Float)
+          t = Float(self) rescue self
+          t == other
+        else
+          self.old_eq(other)
+        end
+      end
     end
 
     refine TrueClass do
+      alias_method :old_eq, :==
+
       def to_bool
         true
       end
 
       def +(other)
-         'true' + other if other.is_a?(String)
+        'true' + other if other.is_a?(String)
+      end
+
+      def ==(other)
+        if other.is_a?(Float)
+          self == other.to_bool
+        elsif other.is_a?(String)
+          self.old_eq(other.__booleanize)
+        else
+          self.old_eq(other)
+        end
       end
     end
 
     refine FalseClass do
+      alias_method :old_eq, :==
+
       def to_bool
         false
       end
 
       def +(other)
         'false' + other if other.is_a?(String)
+      end
+
+      def ==(other)
+        if other.is_a?(Float)
+          self == other.to_bool
+        elsif other.is_a?(String)
+          self.old_eq(other.__booleanize)
+        else
+          self.old_eq(other)
+        end
       end
     end
 
