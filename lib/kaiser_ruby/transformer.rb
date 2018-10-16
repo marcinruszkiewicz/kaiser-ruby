@@ -41,7 +41,7 @@ module KaiserRuby
       send("transform_#{key}", object)
     end
 
-    def method_missing(m, *args, &block)  
+    def method_missing(m, *args, &block)
       raise ArgumentError, "missing Transform rule: #{m}, #{args}"
     end
 
@@ -266,25 +266,25 @@ module KaiserRuby
       left = select_transformer(object[:gt][:left])
       right = select_transformer(object[:gt][:right])
       "#{left} > #{right}"
-    end    
-    
+    end
+
     def transform_gte(object)
       left = select_transformer(object[:gte][:left])
       right = select_transformer(object[:gte][:right])
       "#{left} >= #{right}"
-    end    
+    end
 
     def transform_lt(object)
       left = select_transformer(object[:lt][:left])
       right = select_transformer(object[:lt][:right])
       "#{left} < #{right}"
-    end    
-    
+    end
+
     def transform_lte(object)
       left = select_transformer(object[:lte][:left])
       right = select_transformer(object[:lte][:right])
       "#{left} <= #{right}"
-    end    
+    end
 
     def transform_function(object)
       funcname = transform_function_name(object[:function][:name])
@@ -317,6 +317,6 @@ module KaiserRuby
 
     def filter_string(string, rxp: /[[:alpha:]]/)
       string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }.reject { |a| a.empty? }
-    end    
+    end
   end
 end

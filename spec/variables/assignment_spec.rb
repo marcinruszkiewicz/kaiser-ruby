@@ -22,6 +22,6 @@ RSpec.describe KaiserRuby do
 
     it 'assigns a returned value to a variable' do
       expect(KaiserRuby.transpile('Put Midnight taking Dreams into my hands')).to eq '@my_hands = midnight(@dreams)'
-    end    
+    end
   end
 end

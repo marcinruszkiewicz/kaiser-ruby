@@ -32,7 +32,7 @@ RSpec.describe KaiserRuby do
 
     it 'assigns a literal number' do
       expect(KaiserRuby.transpile('Answer is 42')).to eq '@answer = 42.0'
-    end    
+    end
 
     it 'captures a string as a numeric variable' do
       expect(KaiserRuby.transpile('Tommy was a lovestruck ladykiller')).to eq '@tommy = 100.0'
@@ -71,5 +71,5 @@ RSpec.describe KaiserRuby do
     it "doesn't contract in number literals" do
       expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq "@janie = 65.0"
     end
-  end  
+  end
 end

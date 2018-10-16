@@ -20,7 +20,7 @@ RSpec.describe KaiserRuby do
         RESULT
       end
 
-      it 'executes correctly' do 
+      it 'executes correctly' do
         expect(KaiserRuby.execute(input)).to eq "1.0, 0.0\n"
       end
     end

@@ -199,5 +199,5 @@ RSpec.describe KaiserRuby do
     it 'alias makes continue command' do
       expect(KaiserRuby.transpile('Take it to the top')).to eq 'next'
     end
-  end  
+  end
 end

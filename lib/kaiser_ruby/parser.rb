@@ -126,13 +126,13 @@ module KaiserRuby
             if matches_separate?(words, INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
               add_to_tree parse_increment(line)
             end
-            
+
             if matches_separate?(words, DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
               add_to_tree parse_decrement(line)
             end
 
             if matches_any?(words, FUNCTION_KEYWORDS)
-              add_to_tree(parse_function(line)) 
+              add_to_tree(parse_function(line))
               @nesting += 1
             end
           end
@@ -336,19 +336,19 @@ module KaiserRuby
       return str if str
 
       exp = parse_logic_operation(string)
-      return exp if exp  
+      return exp if exp
 
       cmp = parse_comparison(string)
       return cmp if cmp
 
       math = parse_math_operations(string)
-      return math if math 
+      return math if math
 
       fcl2 = pass_function_calls(string)
       return fcl2 if fcl2
 
       fcl = parse_function_call(string)
-      return fcl if fcl      
+      return fcl if fcl
 
       vals = parse_value_or_variable(string)
       return vals if vals
@@ -371,7 +371,7 @@ module KaiserRuby
     def parse_poetic_number_value(string)
       num = parse_literal_number(string)
       if num
-        return num 
+        return num
       else
         return { number_literal: string.strip }
       end
@@ -407,7 +407,7 @@ module KaiserRuby
       right = parse_argument(words.last.strip)
 
       { or: { left: left, right: right } }
-    end    
+    end
 
     def parse_comparison(string)
       return false if string.strip.start_with?('"') && string.strip.strip.end_with?('"') && string.count('"') == 2
@@ -520,7 +520,7 @@ module KaiserRuby
       copied.shift
       copied.each do |w|
         raise SyntaxError, "invalid proper variable name: #{string}" unless w =~ /\A[[:upper:]]/
-      end      
+      end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
       { variable_name: words.map { |w| w.downcase }.join('_') }
@@ -618,12 +618,12 @@ module KaiserRuby
 
     def matches_any?(words, rxp)
       regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp)
-      words.any? { |w| w =~ regexp } 
+      words.any? { |w| w =~ regexp }
     end
 
     def matches_all?(words, rxp)
       regexp = rxp.is_a?(Regexp) ? rxp : prepared_regexp(rxp)
-      words.all? { |w| w =~ regexp } 
+      words.all? { |w| w =~ regexp }
     end
 
     def matches_consecutive?(words, first_rxp, second_rxp)

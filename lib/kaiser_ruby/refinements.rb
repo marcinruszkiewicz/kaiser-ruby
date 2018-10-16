@@ -13,29 +13,73 @@ module KaiserRuby
         'mysterious'
       end
     end
-    
+
     refine Float do
       alias_method :old_add, :+
+      alias_method :old_mul, :*
+      alias_method :old_gt, :<
+      alias_method :old_gte, :<=
+      alias_method :old_lt, :>
+      alias_method :old_lte, :>=
+
+      def to_bool
+        self.zero? ? false : true
+      end
+
       def +(other)
         other.is_a?(String) ? self.to_s + other : self.old_add(other)
       end
 
-      def to_bool
-        return false if self.zero?
-        true
+      def *(other)
+        other.is_a?(String) ? other * self : self.old_mul(other)
+      end
+
+      def <(other)
+        other.is_a?(String) ? self < Float(other) : self.old_gt(other)
+      end
+
+      def <=(other)
+        other.is_a?(String) ? self <= Float(other) : self.old_gte(other)
+      end
+
+      def >(other)
+        other.is_a?(String) ? self > Float(other) : self.old_lt(other)
+      end
+
+      def >=(other)
+        other.is_a?(String) ? self >= Float(other) : self.old_lte(other)
       end
     end
 
     refine String do
       alias_method :old_add, :+
-      def +(other)
-        other.is_a?(String) ? self.old_add(other) : self + other.to_s 
-      end
+      alias_method :old_gt, :<
+      alias_method :old_gte, :<=
+      alias_method :old_lt, :>
+      alias_method :old_lte, :>=
 
       def to_bool
-        return false if self.size == 0
+        self.size == 0 ? false : true
+      end
 
-        true
+      def +(other)
+        other.is_a?(String) ? self.old_add(other) : self + other.to_s
+      end
+
+      def <(other)
+        other.is_a?(Float) ? Float(self) < other : self.old_gt(other)
+      end
+
+      def <=(other)
+        other.is_a?(Float) ? Float(self) <= other : self.old_gte(other)
+      end
+
+      def >(other)
+        other.is_a?(Float) ? Float(self) > other : self.old_lt(other)
+      end
+
+      def >=(other)
+        other.is_a?(Float) ? Float(self) >= other : self.old_lte(other)
       end
     end
 

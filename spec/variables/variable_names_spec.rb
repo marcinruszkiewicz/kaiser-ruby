@@ -14,7 +14,7 @@ RSpec.describe KaiserRuby do
 
     it 'handles metal umlauts' do
       expect(KaiserRuby.transpile('say Motörhead')).to eq 'puts @motörhead'
-    end  
+    end
 
     it 'handles single uppercase letters' do
       expect(KaiserRuby.transpile('say X')).to eq 'puts @x'
@@ -52,7 +52,7 @@ RSpec.describe KaiserRuby do
 
     it 'handles metal umlauts' do
       expect(KaiserRuby.transpile('say the öyster')).to eq "puts @the_öyster"
-    end    
+    end
   end
 
   context 'pronouns' do
@@ -72,5 +72,5 @@ RSpec.describe KaiserRuby do
         puts @union
       RESULT
     end
-  end  
+  end
 end

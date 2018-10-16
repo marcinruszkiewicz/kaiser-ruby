@@ -19,7 +19,7 @@ module KaiserRuby
   end
 
   using KaiserRuby::Refinements
-  
+
   def self.execute(input)
     with_captured_stdout do
       instance_eval transpile(input)
