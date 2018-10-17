@@ -46,7 +46,7 @@ RSpec.describe KaiserRuby do
     it 'transforms into ruby' do
       expect(KaiserRuby.transpile(input)).to eq <<~RESULT
         print '> '
-        __input = STDIN.gets.chomp
+        __input = $stdin.gets.chomp
         @the_news = Float(__input) rescue __input
         puts @the_news
       RESULT
@@ -55,7 +55,7 @@ RSpec.describe KaiserRuby do
     it 'version without a variable' do
       expect(KaiserRuby.transpile(single)).to eq <<~RESULT
         print '> '
-        STDIN.gets.chomp
+        $stdin.gets.chomp
         puts @the_news
       RESULT
     end

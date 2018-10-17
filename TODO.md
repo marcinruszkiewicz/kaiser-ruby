@@ -2,9 +2,6 @@
 
 ## Language Implementation
 
-- [ ] `Listen` should just wait for user input and do nothing with it
-- [ ] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
-
 ## Examples
 
 - [ ] Should be able to run the [Cellular Rockomata](https://github.com/Rifhutch/cellular-rocktomata)
@@ -16,5 +13,3 @@
 - [ ] Add code history to the REPL
 - [ ] Make REPL work with multiline input also, not only singular lines
 - [ ] Make a demo visitor that evals the code and waits a bit between commands, so it's more music video-ish. Maybe should change the console colors while at it?
-
-- [ ] Handle testing STDIN in RSpec tests

@@ -55,11 +55,11 @@ module KaiserRuby
 
     def transform_listen_to(object)
       var = select_transformer(object[:listen_to])
-      "print '> '\n__input = STDIN.gets.chomp\n#{var} = Float(__input) rescue __input"
+      "print '> '\n__input = $stdin.gets.chomp\n#{var} = Float(__input) rescue __input"
     end
 
     def transform_listen(_object)
-      "print '> '\nSTDIN.gets.chomp"
+      "print '> '\n$stdin.gets.chomp"
     end
 
     def transform_return(object)

@@ -16,11 +16,15 @@ Language Implementation
 - [x] Handle NOT operator
 - [x] Handle NOR operation
 - [x] Handle equality
+- [x] `Listen` should just wait for user input and do nothing with it
+- [ ] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
+- [ ] Handle global variables if they're declared after function definition that uses them
 
 Other
 
 - [x] Replaced parsing with Parslet with a hand-written parser in plain Ruby
-- [ ] Implemented reference tests
+- [x] Implemented reference tests
+- [x] Handle testing STDIN in RSpec tests
 
 # 0.6 - unreleased
 
