@@ -7,7 +7,8 @@ module KaiserRuby
     POETIC_NUMBER_CONTRACTIONS = %w('s 're)
     POETIC_TYPE_KEYWORDS = %w(is)
     PRINT_KEYWORDS = %w(say whisper shout scream)
-    LISTEN_KEYWORDS = ['listen to']
+    LISTEN_TO_KEYWORDS = ['listen to']
+    LISTEN_KEYWORDS = ['listen']
     BREAK_KEYWORDS = ['break', 'break it down']
     CONTINUE_KEYWORDS = ['continue', 'take it to the top']
     RETURN_KEYWORDS = ['give back']
@@ -137,7 +138,8 @@ module KaiserRuby
         elsif matches_any?(words, POETIC_NUMBER_KEYWORDS)
           return parse_poetic_type_all(line)
         else
-          return(parse_listen(line)) if matches_several_first?(line, LISTEN_KEYWORDS)
+          return(parse_listen_to(line)) if matches_several_first?(line, LISTEN_TO_KEYWORDS)
+          return(parse_listen(line)) if matches_first?(words, LISTEN_KEYWORDS)
           return(parse_break) if matches_several_first?(line, BREAK_KEYWORDS)
           return(parse_continue) if matches_several_first?(line, CONTINUE_KEYWORDS)
           return(parse_function_call(line)) if matches_any?(words, FUNCTION_CALL_KEYWORDS)
@@ -168,10 +170,14 @@ module KaiserRuby
       { print: argument }
     end
 
-    def parse_listen(line)
-      words = line.split prepared_regexp(LISTEN_KEYWORDS)
+    def parse_listen_to(line)
+      words = line.split prepared_regexp(LISTEN_TO_KEYWORDS)
 
-      { listen: parse_variables(words.last.strip) }
+      { listen_to: parse_variables(words.last.strip) }
+    end
+
+    def parse_listen(line)
+      { listen: nil }
     end
 
     def parse_return(line)

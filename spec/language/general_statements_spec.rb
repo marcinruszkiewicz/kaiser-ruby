@@ -26,7 +26,6 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores stuff in quotes' do
-      # expect(KaiserRuby.transpile('say "this should not print since 0 is false"')).to eq 'puts "this should not print since 0 is false"'
       expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + 0.0'
     end
   end
@@ -38,11 +37,25 @@ RSpec.describe KaiserRuby do
       END
     end
 
+    let(:single) do <<~END
+        Listen
+        Shout the news
+      END
+    end
+
     it 'transforms into ruby' do
       expect(KaiserRuby.transpile(input)).to eq <<~RESULT
         print '> '
         __input = STDIN.gets.chomp
         @the_news = Float(__input) rescue __input
+        puts @the_news
+      RESULT
+    end
+
+    it 'version without a variable' do
+      expect(KaiserRuby.transpile(single)).to eq <<~RESULT
+        print '> '
+        STDIN.gets.chomp
         puts @the_news
       RESULT
     end
