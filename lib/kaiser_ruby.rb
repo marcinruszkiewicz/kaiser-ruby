@@ -5,6 +5,9 @@ require 'kaiser_ruby/refinements'
 require 'pry'
 
 module KaiserRuby
+  class RockstarSyntaxError < SyntaxError
+  end
+
   def self.parse(input)
     # eat comments since we don't care about them
     input = input.gsub(/\n *\(.*?\) *\n/m, "\n\n")

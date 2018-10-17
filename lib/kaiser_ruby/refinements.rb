@@ -17,6 +17,7 @@ module KaiserRuby
     refine Float do
       alias_method :old_add, :+
       alias_method :old_mul, :*
+      alias_method :old_div, :/
       alias_method :old_gt, :<
       alias_method :old_gte, :<=
       alias_method :old_lt, :>
@@ -33,6 +34,11 @@ module KaiserRuby
 
       def *(other)
         other.is_a?(String) ? other * self : self.old_mul(other)
+      end
+
+      def /(other)
+        raise ZeroDivisionError if other.zero?
+        self.old_div(other)
       end
 
       def <(other)

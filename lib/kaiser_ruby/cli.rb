@@ -34,6 +34,7 @@ module KaiserRuby
       say
     end
 
+    using KaiserRuby::Refinements
     desc "rock", "opens an interactive console that accepts and evaluates Rockstar code"
     option :debug, type: :boolean, desc: "also shows transpiled code"
     def rock
@@ -53,8 +54,8 @@ module KaiserRuby
           output = b.eval(code)
           output = 'nil' if output.nil?
           say "  => #{output}\n"
-        rescue
-          say "THE STAGE IS ON FIRE!"
+        rescue Exception => e
+          say "THE STAGE IS ON FIRE! #{e}: #{e.message}"
         end
       end
     end
