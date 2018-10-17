@@ -151,12 +151,14 @@ module KaiserRuby
 
     def transform_decrement(object)
       argument = select_transformer(object[:decrement])
-      "#{argument} -= 1"
+      amount = object.dig(:decrement, :amount)
+      "#{argument} -= #{amount}"
     end
 
     def transform_increment(object)
       argument = select_transformer(object[:increment])
-      "#{argument} += 1"
+      amount = object.dig(:increment, :amount)
+      "#{argument} += #{amount}"
     end
 
     def transform_function_call(object)

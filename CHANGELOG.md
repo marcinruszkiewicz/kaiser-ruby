@@ -17,7 +17,7 @@ Language Implementation
 - [x] Handle NOR operation
 - [x] Handle equality
 - [x] `Listen` should just wait for user input and do nothing with it
-- [ ] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
+- [x] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
 - [ ] Handle global variables if they're declared after function definition that uses them
 
 Other

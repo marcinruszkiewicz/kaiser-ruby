@@ -189,15 +189,19 @@ module KaiserRuby
 
     def parse_increment(line)
       match_rxp = prepared_capture(INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
-      capture = parse_variables(line.match(match_rxp).captures.first.strip)
+      var = line.match(match_rxp).captures.first.strip
+      capture = parse_variables(var)
 
+      capture[:amount] = line.split(var).last.scan(/\bup\b/i).count
       { increment: capture }
     end
 
     def parse_decrement(line)
       match_rxp = prepared_capture(DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
-      capture = parse_variables(line.match(match_rxp).captures.first.strip)
+      var = line.match(match_rxp).captures.first.strip
+      capture = parse_variables(var)
 
+      capture[:amount] = line.split(var).last.scan(/\bdown\b/i).count
       { decrement: capture }
     end
 

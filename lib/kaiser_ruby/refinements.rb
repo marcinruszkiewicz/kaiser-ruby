@@ -9,6 +9,10 @@ module KaiserRuby
         'mysterious' + other if other.is_a?(String)
       end
 
+      def -(other)
+        'mysterious' + other if other.is_a?(String)
+      end
+
       def to_s
         'mysterious'
       end
@@ -131,7 +135,12 @@ module KaiserRuby
       end
 
       def +(other)
-        'true' + other if other.is_a?(String)
+        return 'true' + other if other.is_a?(String)
+        other.even? ? self : !self
+      end
+
+      def -(other)
+        other.even? ? self : !self
       end
 
       def ==(other)
@@ -153,7 +162,12 @@ module KaiserRuby
       end
 
       def +(other)
-        'false' + other if other.is_a?(String)
+        return 'false' + other if other.is_a?(String)
+        other.even? ? self : !self
+      end
+
+      def -(other)
+        other.even? ? self : !self
       end
 
       def ==(other)

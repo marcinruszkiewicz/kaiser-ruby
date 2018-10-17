@@ -7,6 +7,10 @@ RSpec.describe KaiserRuby do
     it 'increments a proper variable' do
       expect(KaiserRuby.transpile('Build Best City up')).to eq '@best_city += 1'
     end
+
+    it 'increments multiple times' do
+      expect(KaiserRuby.transpile('Build my world up up, up up')).to eq '@my_world += 4'
+    end
   end
 
   context 'decrement expression' do
@@ -17,6 +21,10 @@ RSpec.describe KaiserRuby do
     it 'decrements a proper variable' do
       expect(KaiserRuby.transpile('Knock London Bridge down')).to eq '@london_bridge -= 1'
     end
+
+    it 'decrements multiple times' do
+      expect(KaiserRuby.transpile('Knock London Bridge down, down, down')).to eq '@london_bridge -= 3'
+    end    
   end
 
   context 'addition expression' do
