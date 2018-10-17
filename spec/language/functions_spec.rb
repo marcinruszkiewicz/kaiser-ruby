@@ -83,15 +83,31 @@ RSpec.describe KaiserRuby do
   end
 
   context 'return a value' do
-    let(:variable) { "Give back Desire" }
-    let(:expression) { "Give back the daylight with the night" }
+    let(:variable) do <<~END
+        Function takes Desire
+        Give back Desire
+      END
+    end
+    let(:expression) do <<~END
+        Function takes the daylight & the night
+        Give back the daylight with the night
+      END
+    end
 
     it 'returns a variable' do
-      expect(KaiserRuby.transpile(variable)).to eq "return @desire"
+      expect(KaiserRuby.transpile(variable)).to eq <<~END
+        def function(desire)
+          return desire
+        end
+      END
     end
 
     it 'returs an expression' do
-      expect(KaiserRuby.transpile(expression)).to eq "return @the_daylight + @the_night"
+      expect(KaiserRuby.transpile(expression)).to eq <<~END
+        def function(the_daylight, the_night)
+          return the_daylight + the_night
+        end
+      END
     end
   end
 end

@@ -5,7 +5,7 @@ RSpec.describe KaiserRuby do
         let(:source) { file_fixture "#{filename}" }
         let(:output) { file_fixture "#{filename}.out" }
 
-        it 'is correct' do
+        it 'executes correctly' do
           expect(KaiserRuby.execute(source.read)).to eq output.read
         end
       end
@@ -18,7 +18,7 @@ RSpec.describe KaiserRuby do
         let(:source) { file_fixture "#{filename}" }
         let(:output) { file_fixture "#{filename}.out" }
 
-        it 'is correct' do
+        it 'executes correctly' do
           expect(KaiserRuby.execute(source.read)).to eq output.read
         end
       end

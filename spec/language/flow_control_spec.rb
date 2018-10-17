@@ -182,22 +182,62 @@ RSpec.describe KaiserRuby do
   end
 
   context 'break' do
+    let(:break_block) do <<~END
+        While Tommy is nobody
+        Break
+      END
+    end
+
+    let(:alias_block) do <<~END
+        While Tommy is nobody
+        Break it down
+      END
+    end
+
     it 'makes break command' do
-      expect(KaiserRuby.transpile('break')).to eq 'break'
+      expect(KaiserRuby.transpile(break_block)).to eq <<~END
+        while @tommy == 0.0
+          break
+        end
+      END
     end
 
     it 'alias makes break command' do
-      expect(KaiserRuby.transpile('break it down')).to eq 'break'
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~END
+        while @tommy == 0.0
+          break
+        end
+      END
     end
   end
 
   context 'continue' do
+    let(:continue_block) do <<~END
+        While Tommy is nobody
+        Continue
+      END
+    end
+
+    let(:alias_block) do <<~END
+        While Tommy is nobody
+        Take it to the top
+      END
+    end
+
     it 'makes continue command' do
-      expect(KaiserRuby.transpile('continue')).to eq 'next'
+      expect(KaiserRuby.transpile(continue_block)).to eq <<~END
+        while @tommy == 0.0
+          next
+        end
+      END
     end
 
     it 'alias makes continue command' do
-      expect(KaiserRuby.transpile('Take it to the top')).to eq 'next'
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~END
+        while @tommy == 0.0
+          next
+        end
+      END
     end
   end
 end

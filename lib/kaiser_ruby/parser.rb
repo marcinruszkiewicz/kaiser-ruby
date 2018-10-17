@@ -72,9 +72,12 @@ module KaiserRuby
       @tree.extend(Hashie::Extensions::DeepLocate)
       @function_temp = []
       @nesting = 0
+      @nesting_start_line = 0
+      @lnum = 0
 
       # parse through lines to get the general structure (statements/flow control/functions/etc) out of it
-      @lines.each do |line|
+      @lines.each_with_index do |line, lnum|
+        @lnum = lnum
         parse_line(line)
       end
 
@@ -91,54 +94,69 @@ module KaiserRuby
 
     def parse_line(line)
       if line.strip.empty?
-        @nesting -= 1 if @nesting > 0
+        if @nesting > 0
+          @nesting -= 1
+          @nesting_start_line = nil
+        end
+
         add_to_tree(parse_empty_line)
       else
-        words = line.split /\s/
+        obj = parse_line_content(line)
+        add_to_tree obj
+        update_nesting obj
+      end
+    end
 
-        if matches_first?(words, IF_KEYWORDS)
-          add_to_tree parse_if(line)
-          @nesting += 1
-        elsif matches_first?(words, ELSE_KEYWORDS)
-          add_to_tree parse_else
-        elsif matches_first?(words, WHILE_KEYWORDS)
-          add_to_tree parse_while(line)
-          @nesting += 1
-        elsif matches_first?(words, UNTIL_KEYWORDS)
-          add_to_tree parse_until(line)
-          @nesting += 1
-        elsif matches_separate?(words, ASSIGNMENT_FIRST_KEYWORDS, ASSIGNMENT_SECOND_KEYWORDS)
-          add_to_tree parse_assignment(line)
-        elsif matches_several_first?(line, RETURN_KEYWORDS)
-          add_to_tree parse_return(line)
-        elsif matches_first?(words, PRINT_KEYWORDS)
-          add_to_tree parse_print(line)
+    def update_nesting(object)
+      if %i(if function until while).include? object.keys.first
+        @nesting += 1
+        @nesting_start_line = @lnum
+      end
+    end
+
+    def parse_line_content(line)
+      words = line.split /\s/
+
+      if matches_first?(words, IF_KEYWORDS)
+        return parse_if(line)
+      elsif matches_first?(words, ELSE_KEYWORDS)
+        return parse_else
+      elsif matches_first?(words, WHILE_KEYWORDS)
+        return parse_while(line)
+      elsif matches_first?(words, UNTIL_KEYWORDS)
+        return parse_until(line)
+      elsif matches_separate?(words, ASSIGNMENT_FIRST_KEYWORDS, ASSIGNMENT_SECOND_KEYWORDS)
+        return parse_assignment(line)
+      elsif matches_several_first?(line, RETURN_KEYWORDS)
+        return parse_return(line)
+      elsif matches_first?(words, PRINT_KEYWORDS)
+        return parse_print(line)
+      else
+        if matches_any?(words, POETIC_STRING_KEYWORDS)
+          return parse_poetic_string(line)
+        elsif matches_any?(words, POETIC_NUMBER_KEYWORDS)
+          return parse_poetic_type_all(line)
         else
-          if matches_any?(words, POETIC_STRING_KEYWORDS)
-            add_to_tree parse_poetic_string(line)
-          elsif matches_any?(words, POETIC_NUMBER_KEYWORDS)
-            add_to_tree parse_poetic_type_all(line)
-          else
-            add_to_tree(parse_listen(line)) if matches_several_first?(line, LISTEN_KEYWORDS)
-            add_to_tree(parse_break) if matches_several_first?(line, BREAK_KEYWORDS)
-            add_to_tree(parse_continue) if matches_several_first?(line, CONTINUE_KEYWORDS)
-            add_to_tree(parse_function_call(line)) if matches_any?(words, FUNCTION_CALL_KEYWORDS)
+          return(parse_listen(line)) if matches_several_first?(line, LISTEN_KEYWORDS)
+          return(parse_break) if matches_several_first?(line, BREAK_KEYWORDS)
+          return(parse_continue) if matches_several_first?(line, CONTINUE_KEYWORDS)
+          return(parse_function_call(line)) if matches_any?(words, FUNCTION_CALL_KEYWORDS)
 
-            if matches_separate?(words, INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
-              add_to_tree parse_increment(line)
-            end
+          if matches_separate?(words, INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
+            return parse_increment(line)
+          end
 
-            if matches_separate?(words, DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
-              add_to_tree parse_decrement(line)
-            end
+          if matches_separate?(words, DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
+            return parse_decrement(line)
+          end
 
-            if matches_any?(words, FUNCTION_KEYWORDS)
-              add_to_tree(parse_function(line))
-              @nesting += 1
-            end
+          if matches_any?(words, FUNCTION_KEYWORDS)
+            return(parse_function(line))
           end
         end
       end
+
+      raise KaiserRuby::RockstarSyntaxError, "couldn't parse line: #{line}"
     end
 
     # statements
@@ -245,12 +263,16 @@ module KaiserRuby
       words = string.split /\s/
 
       if matches_first?(words, NIL_TYPE)
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
         { type: 'nil' }
       elsif matches_first?(words, NULL_TYPE)
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
         { type: 'null' }
       elsif matches_first?(words, TRUE_TYPE)
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
         { type: 'true' }
       elsif matches_first?(words, FALSE_TYPE)
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
         { type: 'false' }
       elsif string.strip.start_with?('"') && string.strip.end_with?('"')
         parse_literal_string(string)
@@ -622,7 +644,10 @@ module KaiserRuby
     def add_to_tree(object)
       object.extend(Hashie::Extensions::DeepLocate)
 
-      object[:nesting] = @nesting if @nesting > 0
+      if @nesting > 0
+        object[:nesting_start_line] = @nesting_start_line
+        object[:nesting] = @nesting
+      end
       @tree << object
     end
 

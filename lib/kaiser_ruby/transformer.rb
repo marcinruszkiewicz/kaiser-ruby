@@ -14,6 +14,7 @@ module KaiserRuby
     def transform
       @last_variable = nil
       @global_variable_scope = true
+      @else_already = nil
 
       @parsed_tree.each do |line_object|
         transformed_line = select_transformer(line_object)
@@ -58,15 +59,18 @@ module KaiserRuby
     end
 
     def transform_return(object)
+      raise KaiserRuby::RockstarSyntaxError, "Return used outside of a function" if object[:nesting].to_i.zero?
       var = select_transformer(object[:return])
       "return #{var}"
     end
 
-    def transform_continue(_object)
+    def transform_continue(object)
+      raise KaiserRuby::RockstarSyntaxError, "Continue used outside of a loop" if object[:nesting].to_i.zero?
       "next"
     end
 
-    def transform_break(_object)
+    def transform_break(object)
+      raise KaiserRuby::RockstarSyntaxError, "Break used outside of a loop" if object[:nesting].to_i.zero?
       "break"
     end
 
@@ -210,6 +214,7 @@ module KaiserRuby
         @global_variable_scope = true
         return ""
       else
+        @else_already = nil
         return "end\n"
       end
     end
@@ -234,7 +239,11 @@ module KaiserRuby
       "if #{argument}"
     end
 
-    def transform_else(_object)
+    def transform_else(object)
+      raise KaiserRuby::RockstarSyntaxError, "Else outside an if block" if object[:nesting].to_i.zero?
+      raise KaiserRuby::RockstarSyntaxError, "Double else inside if block" if @else_already != nil && object[:nesting_start_line] == @else_already
+
+      @else_already = object[:nesting_start_line]
       "else"
     end
 
