@@ -5,7 +5,9 @@
 
 This tool translates a file containing a program written in the [Rockstar language](https://github.com/dylanbeattie/rockstar) to Ruby code.
 
-This is still a work in progress, however most of the language implementation is already finished and working (as are the fibonacci sequence and fizzbuzz examples in the repository). For details on what is done, see the TODO.md and CHANGELOG.md files.
+As of version 0.7, Kaiser-Ruby implements all of the Rockstar language spec and further versions will keep up with new language features as they are added.
+
+For details on what is done and what I'm still working on, see the TODO.md and CHANGELOG.md files.
 
 ## Installation
 
@@ -17,7 +19,7 @@ $ gem install kaiser-ruby
 
 This gem works best on a current Ruby version and requires Ruby 2.3 at minimum. Running it on 2.3 has the downside of metal umlauts not being entirely correct as that Ruby version doesn't know how to `.downcase` a capital umlaut letter, which was fixed in 2.4.
 
-If you're not using the umlauts, all should be fine otherwise.
+If you're not using the umlauts (or at least are careful to only replace lowercase letters with them), all should be fine otherwise.
 
 ## Usage
 
@@ -32,29 +34,48 @@ $ kaiser-ruby
 There are a few ways you can use it. First one will just output the result of the transpilation.
 
 ```
-$ kaiser-ruby transpile ./examples/assignment.rock
-tommy = 15
-puts tommy
+$ kaiser-ruby transpile ./examples/simple.rock
+@tommy = 15.0
+puts @tommy
+
+if "".to_bool
+  puts "empty strings are false"
+end
 
 ```
 
 The `--show-source` flag will output the Rockstar code along with the resulting Ruby code like this:
 
 ```
-$ kaiser-ruby transpile ./examples/assignment.rock --show-source
+$ kaiser-ruby transpile ./examples/simple.rock --show-source
 Tommy is a rebel
 Shout Tommy
+
+if ""
+Shout "empty strings are false"
 ----------------------------------------
-tommy = 15
-puts tommy
+@tommy = 15.0
+puts @tommy
+
+if "".to_bool
+  puts "empty strings are false"
+end
 
 ```
 
-You can also use the `--save=FILE` option to write the resulting transpiled code as a file instead of outputting it:
+You can also use the `--save=FILE` option to write the resulting transpiled code as a file instead of outputting it. 
 
 ```
-$ kaiser-ruby transpile ./examples/assignment.rock --save=a.rb
-Saved output in `a.rb`
+$ kaiser-ruby transpile ./examples/simple.rock --save=simple.rb
+Saved output in `simple.rb`
+
+```
+
+The saved output will have a few additional lines at the start that include the language changes necessary for Rockstar to work correctly. You need the gem installed to run this file:
+
+```
+$ ruby simple.rb 
+15.0
 
 ```
 
@@ -64,10 +85,10 @@ Another option is to run an interactive console (REPL):
 $ kaiser-ruby rock --debug
 Type 'exit' to exit the console. Otherwise, rock on!
 \m/> Put "Hello San Francisco" into the message
-\m/> the_message = "Hello San Francisco"
+\m/> @the_message = "Hello San Francisco"
   => Hello San Francisco
 \m/> Scream the message
-\m/> puts the_message
+\m/> puts @the_message
 Hello San Francisco
   => nil
 \m/> exit
@@ -77,7 +98,7 @@ $
 Finally, you can also transpile and immediately execute the code, like this:
 
 ```
-$ kaiser-ruby execute ./examples/assignment.rock
+$ kaiser-ruby execute ./examples/simple.rock
 15
 
 ```
@@ -86,37 +107,37 @@ Or even better, this:
 
 ```
 $ kaiser-ruby execute ./examples/fibonacci.rock
-1
-1
-2
-3
-5
-8
-13
-21
-34
-55
-89
-144
-233
-377
-610
-987
-1597
-2584
-4181
-6765
-10946
-17711
-28657
-46368
+1.0
+1.0
+2.0
+3.0
+5.0
+8.0
+13.0
+21.0
+34.0
+55.0
+89.0
+144.0
+233.0
+377.0
+610.0
+987.0
+1597.0
+2584.0
+4181.0
+6765.0
+10946.0
+17711.0
+28657.0
+46368.0
 
 $
 ```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/marcinruszkiewicz/kaiser-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/marcinruszkiewicz/kaiser-ruby. I'm also available for questions at the [Rockstar Developers Discord Group](https://discord.gg/kEUe5bM)
 
 ## License
 

@@ -26,6 +26,8 @@ Other
 - [x] Implemented reference tests
 - [x] Handle testing STDIN in RSpec tests
 - [x] CLI command reports which version it is
+- [x] Updated README with new examples and info
+- [x] Automatically adds require and using line to saved ruby file output
 
 # 0.6 - unreleased
 
