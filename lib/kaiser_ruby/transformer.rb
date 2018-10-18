@@ -8,6 +8,7 @@ module KaiserRuby
       @method_names = []
       @nesting = 0
       @indentation = ''
+      @lnum = 0
     end
 
     def transform
@@ -15,7 +16,8 @@ module KaiserRuby
       @else_already = nil # line number of a current if block, so we can avoid double else
       @local_variables = [] # locally defined variable names in current function block
 
-      @parsed_tree.each do |line_object|
+      @parsed_tree.each_with_index do |line_object, lnum|
+        @lnum = lnum
         transformed_line = select_transformer(line_object)
         if line_object[:nesting]
           @nesting = line_object[:nesting]
@@ -224,8 +226,10 @@ module KaiserRuby
 
     def transform_empty_line(_object)
       if @nesting == 0
-        @local_variables = []
         return ""
+      elsif @nesting == 1
+        @local_variables = []
+        return "end\n"
       else
         @else_already = nil
         return "end\n"

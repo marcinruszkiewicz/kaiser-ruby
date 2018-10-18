@@ -2,6 +2,8 @@ require 'thor'
 
 module KaiserRuby
   class CLI < Thor
+    package_name "Kaiser-Ruby v#{KaiserRuby::VERSION}"
+    
     desc "transpile FILE", "transpile a .rock FILE and output the result"
     option 'show-source'.to_sym, type: :boolean, desc: "prints out the source file along with the transpiled output"
     option :save, desc: "saves the transpiled output in SAVE"
@@ -25,16 +27,16 @@ module KaiserRuby
       say
     end
 
+    using KaiserRuby::Refinements
+
     desc "execute FILE", "transpiles and runs a .rock FILE"
     def execute(filename)
       file = File.read filename
       output = KaiserRuby.transpile(file)
-
       instance_eval output
       say
     end
 
-    using KaiserRuby::Refinements
     desc "rock", "opens an interactive console that accepts and evaluates Rockstar code"
     option :debug, type: :boolean, desc: "also shows transpiled code"
     def rock

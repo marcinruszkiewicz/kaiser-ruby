@@ -25,6 +25,7 @@ Other
 - [x] Replaced parsing with Parslet with a hand-written parser in plain Ruby
 - [x] Implemented reference tests
 - [x] Handle testing STDIN in RSpec tests
+- [x] CLI command reports which version it is
 
 # 0.6 - unreleased
 

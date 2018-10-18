@@ -139,7 +139,7 @@ module KaiserRuby
           return parse_poetic_type_all(line)
         else
           return(parse_listen_to(line)) if matches_several_first?(line, LISTEN_TO_KEYWORDS)
-          return(parse_listen(line)) if matches_first?(words, LISTEN_KEYWORDS)
+          return(parse_listen) if matches_first?(words, LISTEN_KEYWORDS)
           return(parse_break) if matches_several_first?(line, BREAK_KEYWORDS)
           return(parse_continue) if matches_several_first?(line, CONTINUE_KEYWORDS)
           return(parse_function_call(line)) if matches_any?(words, FUNCTION_CALL_KEYWORDS)
@@ -163,7 +163,7 @@ module KaiserRuby
 
     # statements
     def parse_print(line)
-      words = line.split prepared_regexp(PRINT_KEYWORDS)
+      words = line.partition prepared_regexp(PRINT_KEYWORDS)
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
 
@@ -172,11 +172,12 @@ module KaiserRuby
 
     def parse_listen_to(line)
       words = line.split prepared_regexp(LISTEN_TO_KEYWORDS)
-
-      { listen_to: parse_variables(words.last.strip) }
+      arg = parse_variables(words.last.strip)
+      arg[:type] = :assignment
+      { listen_to: arg }
     end
 
-    def parse_listen(line)
+    def parse_listen
       { listen: nil }
     end
 
