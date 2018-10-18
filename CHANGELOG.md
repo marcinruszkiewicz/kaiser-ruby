@@ -1,3 +1,9 @@
+# 0.7.1
+
+- [x] Strips all lines, so you can indent the .rock file however you want
+- [x] Adds line numbers to all parse/transform errors
+- [x] More examples
+
 # 0.7
 
 Language Implementation

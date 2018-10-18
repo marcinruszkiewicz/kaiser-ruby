@@ -94,7 +94,9 @@ module KaiserRuby
     end
 
     def parse_line(line)
-      if line.strip.empty?
+      line = line.strip
+
+      if line.empty?
         if @nesting > 0
           @nesting -= 1
           @nesting_start_line = nil
@@ -158,7 +160,7 @@ module KaiserRuby
         end
       end
 
-      raise KaiserRuby::RockstarSyntaxError, "couldn't parse line: #{line}"
+      raise KaiserRuby::RockstarSyntaxError, "couldn't parse line: #{line}:#{@lnum+1}"
     end
 
     # statements
@@ -276,16 +278,16 @@ module KaiserRuby
       words = string.split /\s/
 
       if matches_first?(words, NIL_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
         { type: 'nil' }
       elsif matches_first?(words, NULL_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
         { type: 'null' }
       elsif matches_first?(words, TRUE_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
         { type: 'true' }
       elsif matches_first?(words, FALSE_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
         { type: 'false' }
       elsif string.strip.start_with?('"') && string.strip.end_with?('"')
         parse_literal_string(string)
@@ -296,7 +298,7 @@ module KaiserRuby
 
     def parse_type_literal(string)
       words = string.split /\s/
-      raise SyntaxError, "too many words in poetic type literal: #{string}" if words.size > 1
+      raise SyntaxError, "too many words in poetic type literal: #{string}:#{@lnum+1}" if words.size > 1
 
       if matches_first?(words, NIL_TYPE)
         { type: 'nil' }
@@ -307,7 +309,7 @@ module KaiserRuby
       elsif matches_first?(words, FALSE_TYPE)
         { type: 'false' }
       else
-        raise SyntaxError, "unknown poetic type literal: #{string}"
+        raise SyntaxError, "unknown poetic type literal: #{string}:#{@lnum+1}"
       end
     end
 
@@ -562,7 +564,7 @@ module KaiserRuby
       copied = words.dup
       copied.shift
       copied.each do |w|
-        raise SyntaxError, "invalid common variable name: #{string}" if w =~ /[[:upper:]]/
+        raise SyntaxError, "invalid common variable name: #{string}:#{@lnum+1}" if w =~ /[[:upper:]]/
       end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
@@ -575,7 +577,7 @@ module KaiserRuby
       copied = words.dup
       copied.shift
       copied.each do |w|
-        raise SyntaxError, "invalid proper variable name: #{string}" unless w =~ /\A[[:upper:]]/
+        raise SyntaxError, "invalid proper variable name: #{string}:#{@lnum+1}" unless w =~ /\A[[:upper:]]/
       end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }

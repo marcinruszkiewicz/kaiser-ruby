@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kaiser-ruby (0.7)
+    kaiser-ruby (0.7.1)
       hashie
       thor (~> 0.20)
 
