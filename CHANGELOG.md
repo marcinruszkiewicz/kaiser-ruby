@@ -2,7 +2,7 @@
 
 Language Implementation
 
-- [ ] Full language implementation according to the spec
+- [x] Full language implementation according to the spec
 
 - [x] Added forgotten `break` and `continue` keywords
 - [x] STDIN input now converts to Float or Integer as expected
@@ -18,7 +18,7 @@ Language Implementation
 - [x] Handle equality
 - [x] `Listen` should just wait for user input and do nothing with it
 - [x] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
-- [ ] Handle global variables if they're declared after function definition that uses them
+- [x] Handle global variables if they're declared after function definition that uses them
 
 Other
 

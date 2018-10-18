@@ -1,20 +1,19 @@
 module KaiserRuby
   class Transformer
-    attr_reader :parsed_tree, :output, :indent, :last_variable, :method_names, :global_variables, :local_variables
+    attr_reader :parsed_tree, :output
 
     def initialize(tree)
       @parsed_tree = tree
       @output = []
       @method_names = []
-      @global_variables = []
       @nesting = 0
       @indentation = ''
     end
 
     def transform
-      @last_variable = nil
-      @global_variable_scope = true
-      @else_already = nil
+      @last_variable = nil # name of last used variable for pronouns
+      @else_already = nil # line number of a current if block, so we can avoid double else
+      @local_variables = [] # locally defined variable names in current function block
 
       @parsed_tree.each do |line_object|
         transformed_line = select_transformer(line_object)
@@ -28,11 +27,13 @@ module KaiserRuby
         @output << @indentation + transformed_line
       end
 
+      # at end of file, close all the blocks that are still started
       while @nesting > 0
         @nesting -= 1
         @indentation = '  ' * @nesting
         @output << @indentation + "end"
       end
+
       @output << '' if @output.size > 1
       @output.join("\n")
     end
@@ -79,13 +80,19 @@ module KaiserRuby
     end
 
     def transform_variable_name(object)
-      if @global_variable_scope
-        varname = "@#{object[:variable_name]}"
-        @global_variables << varname
-      else
-        varname = object[:variable_name]
-        varname = "@#{object[:variable_name]}" if @global_variables.include?("@#{object[:variable_name]}")
+      varname = object[:variable_name]
+      if object[:type] == :assignment
+        if @local_variables.empty?
+          varname = "@#{varname}"
+        else
+          @local_variables << varname
+        end
+      else  
+        unless @local_variables.include?(varname) 
+          varname = @method_names.include?(varname) ? varname : "@#{varname}" 
+        end
       end
+
       @last_variable = varname
       varname
     end
@@ -217,7 +224,7 @@ module KaiserRuby
 
     def transform_empty_line(_object)
       if @nesting == 0
-        @global_variable_scope = true
+        @local_variables = []
         return ""
       else
         @else_already = nil
@@ -226,15 +233,11 @@ module KaiserRuby
     end
 
     def additional_argument_transformation(argument)
-      if @method_names.include?(argument)
-        arg = "defined?(#{argument})"
-      else
-        arg = argument
-      end
+      # testing function existence 
+      arg = @method_names.include?(argument) ? "defined?(#{argument})" : argument
 
-      if arg !~ /==|>|>=|<|<=|!=/
-        arg = "#{arg}.to_bool"
-      end
+      # single variable without any operator needs to return a refined boolean
+      arg = "#{arg}.to_bool" if arg !~ /==|>|>=|<|<=|!=/
 
       return arg
     end
@@ -303,9 +306,11 @@ module KaiserRuby
 
     def transform_function(object)
       funcname = transform_function_name(object[:function][:name])
-      @method_names << funcname
       argument = select_transformer(object[:function][:argument])
-      @global_variable_scope = false
+
+      # save method name and make local variables out of the function arguments
+      @method_names << funcname
+      @local_variables = argument.split(', ')
 
       "def #{funcname}(#{argument})"
     end

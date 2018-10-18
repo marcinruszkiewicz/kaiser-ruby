@@ -13,3 +13,5 @@
 - [ ] Add code history to the REPL
 - [ ] Make REPL work with multiline input also, not only singular lines
 - [ ] Make a demo visitor that evals the code and waits a bit between commands, so it's more music video-ish. Maybe should change the console colors while at it?
+- [ ] Update README with new examples and info
+- [ ] Automatically add require and using line to saved ruby file output

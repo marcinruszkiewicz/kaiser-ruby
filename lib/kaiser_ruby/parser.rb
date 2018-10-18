@@ -259,6 +259,7 @@ module KaiserRuby
       words = line.partition prepared_regexp(POETIC_STRING_KEYWORDS)
       left = parse_variables(words.first.strip)
       right = { string: "\"#{words.last.strip}\"" }
+      left[:type] = :assignment
       { poetic_string: { left: left, right: right } }
     end
 
@@ -266,6 +267,7 @@ module KaiserRuby
       words = line.partition prepared_regexp(POETIC_NUMBER_KEYWORDS)
       left = parse_variables(words.first.strip)
       right = parse_type_value(words.last.strip)
+      left[:type] = :assignment
       { poetic_type: { left: left, right: right } }
     end
 
@@ -312,7 +314,7 @@ module KaiserRuby
       match_rxp = prepared_capture(ASSIGNMENT_FIRST_KEYWORDS, ASSIGNMENT_SECOND_KEYWORDS)
       right = parse_argument(line.match(match_rxp).captures.first.strip)
       left = parse_variables(line.match(match_rxp).captures.last.strip)
-
+      left[:type] = :assignment
       { assignment: { left: left, right: right } }
     end
 

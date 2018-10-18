@@ -3,7 +3,7 @@ RSpec.describe KaiserRuby do
     let(:one_argument) do <<~END
         Midnight takes Hate
         Shout Desire
-        Give back Desire
+        Give back Hate
       END
     end
 
@@ -35,8 +35,8 @@ RSpec.describe KaiserRuby do
     it 'makes a function definition' do
       expect(KaiserRuby.transpile(one_argument)).to eq <<~RESULT
         def midnight(hate)
-          puts desire
-          return desire
+          puts @desire
+          return hate
         end
       RESULT
     end
