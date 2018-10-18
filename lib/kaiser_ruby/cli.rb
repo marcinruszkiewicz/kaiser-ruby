@@ -18,6 +18,11 @@ module KaiserRuby
 
       if options[:save]
         out = File.new(options[:save], 'w')
+        out.write <<~REQ
+          require 'kaiser_ruby/refinements'
+          using KaiserRuby::Refinements
+          
+        REQ
         out.write output
         out.close
         say "Saved output in `#{options[:save]}`", :green
