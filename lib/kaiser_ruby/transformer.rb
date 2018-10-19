@@ -89,9 +89,9 @@ module KaiserRuby
         else
           @local_variables << varname
         end
-      else  
-        unless @local_variables.include?(varname) 
-          varname = @method_names.include?(varname) ? varname : "@#{varname}" 
+      else
+        unless @local_variables.include?(varname)
+          varname = @method_names.include?(varname) ? varname : "@#{varname}"
         end
       end
 
@@ -237,7 +237,7 @@ module KaiserRuby
     end
 
     def additional_argument_transformation(argument)
-      # testing function existence 
+      # testing function existence
       arg = @method_names.include?(argument) ? "defined?(#{argument})" : argument
 
       # single variable without any operator needs to return a refined boolean

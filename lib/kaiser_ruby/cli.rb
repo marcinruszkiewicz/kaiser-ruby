@@ -3,7 +3,7 @@ require 'thor'
 module KaiserRuby
   class CLI < Thor
     package_name "Kaiser-Ruby v#{KaiserRuby::VERSION}"
-    
+
     desc "transpile FILE", "transpile a .rock FILE and output the result"
     option 'show-source'.to_sym, type: :boolean, desc: "prints out the source file along with the transpiled output"
     option :save, desc: "saves the transpiled output in SAVE"
@@ -21,7 +21,7 @@ module KaiserRuby
         out.write <<~REQ
           require 'kaiser_ruby/refinements'
           using KaiserRuby::Refinements
-          
+
         REQ
         out.write output
         out.close

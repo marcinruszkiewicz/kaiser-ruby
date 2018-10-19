@@ -63,7 +63,7 @@ end
 
 ```
 
-You can also use the `--save=FILE` option to write the resulting transpiled code as a file instead of outputting it. 
+You can also use the `--save=FILE` option to write the resulting transpiled code as a file instead of outputting it.
 
 ```
 $ kaiser-ruby transpile ./examples/simple.rock --save=simple.rb
@@ -74,7 +74,7 @@ Saved output in `simple.rb`
 The saved output will have a few additional lines at the start that include the language changes necessary for Rockstar to work correctly. You need the gem installed to run this file:
 
 ```
-$ ruby simple.rb 
+$ ruby simple.rb
 15.0
 
 ```
