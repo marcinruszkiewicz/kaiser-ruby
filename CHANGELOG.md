@@ -3,6 +3,7 @@
 - [x] Strips all lines while parsing, so you can indent the .rock file however you want
 - [x] Adds line numbers to all parse/transform errors
 - [x] More examples
+- [x] Fix CLI (@jzaia18)
 
 # 0.7
 
