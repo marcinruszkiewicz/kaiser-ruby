@@ -1,4 +1,5 @@
 require 'thor'
+require_relative 'version'
 
 module KaiserRuby
   class CLI < Thor
