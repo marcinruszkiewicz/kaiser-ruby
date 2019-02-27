@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module KaiserRuby
+  # Parser class goes through the Rockstar code provided and generates
+  # an intermediate tree from which we can output a proper Ruby program
   class Parser
     attr_reader :lines, :raw_input, :tree
 
@@ -569,7 +571,7 @@ module KaiserRuby
       end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
-      { variable_name: words.map { |w| w.downcase }.join('_') }
+      { variable_name: words.map(&:downcase).join('_') }
     end
 
     def parse_proper_variable(string)

@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module KaiserRuby
+  # Breaking Ruby for fun and profit!
+  #
+  # This module is required to run the code that the transpiler generated, as Rockstar
+  # expects somewhat different behaviour of types than Ruby.
+  #
+  # You should probably never use this code outside this gem.
   module Refinements
     refine NilClass do
       def to_bool
@@ -44,6 +50,7 @@ module KaiserRuby
 
       def /(other)
         raise ZeroDivisionError if other.zero?
+
         self.old_div(other)
       end
 
@@ -84,15 +91,12 @@ module KaiserRuby
       alias_method :old_eq, :==
 
       def to_bool
-        self.size == 0 ? false : true
+        self.size.zero? ? false : true
       end
 
       def __booleanize
-        if self =~ /\A\bfalse\b|\bno\b|\blies\b|\bwrong\b\Z/i
-          return false
-        elsif self =~ /\A\btrue\b|\byes\b|\bok\b|\bright\b\Z/i
-          return true
-        end
+        return false if self =~ /\A\bfalse\b|\bno\b|\blies\b|\bwrong\b\Z/i
+        return true if self =~ /\A\btrue\b|\byes\b|\bok\b|\bright\b\Z/i
 
         return self
       end
@@ -138,6 +142,7 @@ module KaiserRuby
 
       def +(other)
         return 'true' + other if other.is_a?(String)
+
         other.even? ? self : !self
       end
 
@@ -165,6 +170,7 @@ module KaiserRuby
 
       def +(other)
         return 'false' + other if other.is_a?(String)
+
         other.even? ? self : !self
       end
 
@@ -188,11 +194,11 @@ module KaiserRuby
 
       def !
         if self.is_a?(String)
-          return self.size == 0 ? true : false
+          self.size.zero?
         elsif self.is_a?(Float)
-          return self.zero? ? true : false
+          self.zero?
         elsif self.is_a?(NilClass)
-          return true
+          true
         else
           self.old_not
         end

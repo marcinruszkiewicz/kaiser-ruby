@@ -3,8 +3,8 @@
 RSpec.describe KaiserRuby do
   describe 'trying to call a non-function' do
     Dir.glob('spec/fixtures/reference/runtime-errors/notCallable/*.rock').each do |filename|
-      context "#{filename.split('/').last}" do
-        let(:source) { file_fixture "#{filename}" }
+      context filename.split('/').last.to_s do
+        let(:source) { file_fixture filename.to_s }
 
         it 'raises no method error' do
           expect { KaiserRuby.execute(source.read) }.to raise_error NoMethodError

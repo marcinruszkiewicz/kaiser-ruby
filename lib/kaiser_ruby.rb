@@ -2,10 +2,11 @@
 
 require 'hashie'
 require 'kaiser_ruby/parser'
-require 'kaiser_ruby/transformer'
 require 'kaiser_ruby/refinements'
+require 'kaiser_ruby/transformer'
 require 'pry'
 
+# Transpile Rockstar into Ruby code
 module KaiserRuby
   class RockstarSyntaxError < SyntaxError
   end
@@ -30,8 +31,6 @@ module KaiserRuby
       instance_eval transpile(input)
     end
   end
-
-  private
 
   def self.with_captured_stdout
     old_stdout = $stdout

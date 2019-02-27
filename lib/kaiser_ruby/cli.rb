@@ -4,6 +4,7 @@ require 'thor'
 require_relative 'version'
 
 module KaiserRuby
+  # command line interface for kaiser-ruby command
   class CLI < Thor
     package_name "Kaiser-Ruby v#{KaiserRuby::VERSION}"
 

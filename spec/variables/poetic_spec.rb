@@ -7,7 +7,7 @@ RSpec.describe KaiserRuby do
     end
 
     it "doesn't strip apostrophes in the string" do
-      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %Q(@newton = "he's got a new theory to share")
+      expect(KaiserRuby.transpile("Newton says he's got a new theory to share")).to eq %q(@newton = "he's got a new theory to share")
     end
   end
 

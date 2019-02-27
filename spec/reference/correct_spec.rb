@@ -3,8 +3,8 @@
 RSpec.describe KaiserRuby do
   describe 'correct specs' do
     Dir.glob('spec/fixtures/reference/correct/*.rock').each do |filename|
-      context "#{filename.split('/').last}" do
-        let(:source) { file_fixture "#{filename}" }
+      context filename.split('/').last.to_s do
+        let(:source) { file_fixture filename.to_s }
         let(:output) { file_fixture "#{filename}.out" }
 
         it 'executes correctly' do
@@ -16,8 +16,8 @@ RSpec.describe KaiserRuby do
 
   describe 'operator specs' do
     Dir.glob('spec/fixtures/reference/correct/operators/*.rock').each do |filename|
-      context "#{filename.split('/').last}" do
-        let(:source) { file_fixture "#{filename}" }
+      context filename.split('/').last.to_s do
+        let(:source) { file_fixture filename.to_s }
         let(:output) { file_fixture "#{filename}.out" }
 
         it 'executes correctly' do
@@ -29,8 +29,8 @@ RSpec.describe KaiserRuby do
 
   describe 'input specs' do
     Dir.glob('spec/fixtures/reference/correct/input/*.rock').each do |filename|
-      context "#{filename.split('/').last}" do
-        let(:source) { file_fixture "#{filename}" }
+      context filename.split('/').last.to_s do
+        let(:source) { file_fixture filename.to_s }
         let(:input) { file_fixture "#{filename}.in'" }
         let(:output) { file_fixture "#{filename}.out" }
 

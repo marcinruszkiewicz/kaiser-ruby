@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module KaiserRuby
+  # taking the intermediate tree output of parsing, output Ruby code
   class Transformer
     attr_reader :parsed_tree, :output
 
@@ -45,8 +46,6 @@ module KaiserRuby
     def method_missing(rule, *args, &_block)
       raise ArgumentError, "missing Transform rule: #{rule}, #{args}"
     end
-
-    # transform language tree into Ruby
 
     def transform_print(object)
       var = select_transformer(object[:print])
@@ -131,42 +130,49 @@ module KaiserRuby
     def transform_addition(object)
       left = select_transformer(object[:addition][:left])
       right = select_transformer(object[:addition][:right])
+
       "#{left} + #{right}"
     end
 
     def transform_multiplication(object)
       left = select_transformer(object[:multiplication][:left])
       right = select_transformer(object[:multiplication][:right])
+
       "#{left} * #{right}"
     end
 
     def transform_subtraction(object)
       left = select_transformer(object[:subtraction][:left])
       right = select_transformer(object[:subtraction][:right])
+
       "#{left} - #{right}"
     end
 
     def transform_division(object)
       left = select_transformer(object[:division][:left])
       right = select_transformer(object[:division][:right])
+
       "#{left} / #{right}"
     end
 
     def transform_assignment(object)
       left = select_transformer(object[:assignment][:left])
       right = select_transformer(object[:assignment][:right])
+
       "#{left} = #{right}"
     end
 
     def transform_decrement(object)
       argument = select_transformer(object[:decrement])
       amount = object.dig(:decrement, :amount)
+
       "#{argument} -= #{amount}"
     end
 
     def transform_increment(object)
       argument = select_transformer(object[:increment])
       amount = object.dig(:increment, :amount)
+
       "#{argument} += #{amount}"
     end
 
@@ -191,12 +197,14 @@ module KaiserRuby
     def transform_poetic_type(object)
       var = select_transformer(object[:poetic_type][:left])
       value = select_transformer(object[:poetic_type][:right])
+
       "#{var} = #{value}"
     end
 
     def transform_poetic_number(object)
       var = select_transformer(object[:poetic_number][:left])
       value = select_transformer(object[:poetic_number][:right])
+
       "#{var} = #{value}"
     end
 
@@ -255,7 +263,7 @@ module KaiserRuby
 
     def transform_else(object)
       raise KaiserRuby::RockstarSyntaxError, 'Else outside an if block' if object[:nesting].to_i.zero?
-      raise KaiserRuby::RockstarSyntaxError, 'Double else inside if block' if @else_already != nil && object[:nesting_start_line] == @else_already
+      raise KaiserRuby::RockstarSyntaxError, 'Double else inside if block' if !@else_already.nil? && object[:nesting_start_line] == @else_already
 
       @else_already = object[:nesting_start_line]
 
