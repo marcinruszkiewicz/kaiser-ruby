@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "kaiser_ruby"
-require "pry"
+require 'bundler/setup'
+require 'kaiser_ruby'
+require 'pry'
 Pry.start

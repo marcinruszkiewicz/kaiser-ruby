@@ -5,16 +5,16 @@ module KaiserRuby
   class CLI < Thor
     package_name "Kaiser-Ruby v#{KaiserRuby::VERSION}"
 
-    desc "transpile FILE", "transpile a .rock FILE and output the result"
-    option 'show-source'.to_sym, type: :boolean, desc: "prints out the source file along with the transpiled output"
-    option :save, desc: "saves the transpiled output in SAVE"
+    desc 'transpile FILE', 'transpile a .rock FILE and output the result'
+    option 'show-source'.to_sym, type: :boolean, desc: 'prints out the source file along with the transpiled output'
+    option :save, desc: 'saves the transpiled output in SAVE'
     def transpile(filename)
       file = File.read filename
       output = KaiserRuby.transpile(file)
 
       if options['show-source'.to_sym]
         say file
-        say "-" * 40, :green
+        say '-' * 40, :green
       end
 
       if options[:save]
@@ -35,7 +35,7 @@ module KaiserRuby
 
     using KaiserRuby::Refinements
 
-    desc "execute FILE", "transpiles and runs a .rock FILE"
+    desc 'execute FILE', 'transpiles and runs a .rock FILE'
     def execute(filename)
       file = File.read filename
       output = KaiserRuby.transpile(file)
@@ -43,8 +43,8 @@ module KaiserRuby
       say
     end
 
-    desc "rock", "opens an interactive console that accepts and evaluates Rockstar code"
-    option :debug, type: :boolean, desc: "also shows transpiled code"
+    desc 'rock', 'opens an interactive console that accepts and evaluates Rockstar code'
+    option :debug, type: :boolean, desc: 'also shows transpiled code'
     def rock
       say "Type 'exit' to exit the console. Otherwise, rock on!"
 

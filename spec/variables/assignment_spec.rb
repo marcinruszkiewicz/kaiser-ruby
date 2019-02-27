@@ -1,7 +1,7 @@
 RSpec.describe KaiserRuby do
   context 'assignment statement' do
     it 'assigns common variables' do
-      expect(KaiserRuby.transpile("Put the love into the heart")).to eq "@the_heart = @the_love"
+      expect(KaiserRuby.transpile('Put the love into the heart')).to eq '@the_heart = @the_love'
     end
 
     it 'assigns proper variables' do

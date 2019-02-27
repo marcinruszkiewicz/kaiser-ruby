@@ -43,33 +43,33 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores apostrophes and other nonalpha chars' do
-      expect(KaiserRuby.transpile("My dreams were ice. A life unfulfilled; wakin' everybody up, taking booze and pills")).to eq "@my_dreams = 3.1415926535"
+      expect(KaiserRuby.transpile("My dreams were ice. A life unfulfilled; wakin' everybody up, taking booze and pills")).to eq '@my_dreams = 3.1415926535'
     end
 
     it 'converts decimals properly' do
-      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck and essential seasick")).to eq "@conversion = 0.0397"
+      expect(KaiserRuby.transpile('Conversion is lovestruck. lovestruck and essential seasick')).to eq '@conversion = 0.0397'
     end
 
-    it "ignores following dots" do
-      expect(KaiserRuby.transpile("Conversion is lovestruck. lovestruck. and essential. seasick.")).to eq "@conversion = 0.0397"
+    it 'ignores following dots' do
+      expect(KaiserRuby.transpile('Conversion is lovestruck. lovestruck. and essential. seasick.')).to eq '@conversion = 0.0397'
     end
 
     it 'ignores nonalphabetic characters' do
-      expect(KaiserRuby.transpile("my number is a 57 + true 43")).to eq "@my_number = 14.0"
+      expect(KaiserRuby.transpile('my number is a 57 + true 43')).to eq '@my_number = 14.0'
     end
 
     it 'ignores nonalphabetic characters in decimals' do
-      expect(KaiserRuby.transpile("my number is 100 a. 57 + true 43")).to eq "@my_number = 1.4"
+      expect(KaiserRuby.transpile('my number is 100 a. 57 + true 43')).to eq '@my_number = 1.4'
     end
   end
 
   context 'contractions' do
     it 'changes contraction to is' do
-      expect(KaiserRuby.transpile("Janie's got a gun")).to eq "@janie = 313.0"
+      expect(KaiserRuby.transpile("Janie's got a gun")).to eq '@janie = 313.0'
     end
 
     it "doesn't contract in number literals" do
-      expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq "@janie = 65.0"
+      expect(KaiserRuby.transpile("Janie is Devil's niece")).to eq '@janie = 65.0'
     end
   end
 end

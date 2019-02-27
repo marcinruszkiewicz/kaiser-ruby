@@ -7,7 +7,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores empty lines' do
-      expect(KaiserRuby.transpile("\n")).to eq ""
+      expect(KaiserRuby.transpile("\n")).to eq ''
     end
 
     it 'transpiles a string' do
@@ -15,7 +15,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transpiles a single line' do
-      expect(KaiserRuby.transpile("Put 3 into your mind\n")).to eq "@your_mind = 3.0"
+      expect(KaiserRuby.transpile("Put 3 into your mind\n")).to eq '@your_mind = 3.0'
     end
 
     it 'transpiles multiple lines' do

@@ -1,6 +1,6 @@
 RSpec.describe KaiserRuby do
   describe 'parsing errors' do
-    Dir.glob("spec/fixtures/reference/parse-errors/*.rock").each do |filename|
+    Dir.glob('spec/fixtures/reference/parse-errors/*.rock').each do |filename|
       context "#{filename.split('/').last}" do
         let(:source) { file_fixture "#{filename}" }
 

@@ -33,7 +33,7 @@ module KaiserRuby
       while @nesting > 0
         @nesting -= 1
         @indentation = '  ' * @nesting
-        @output << @indentation + "end"
+        @output << @indentation + 'end'
       end
 
       @output << '' if @output.size > 1
@@ -66,19 +66,19 @@ module KaiserRuby
     end
 
     def transform_return(object)
-      raise KaiserRuby::RockstarSyntaxError, "Return used outside of a function" if object[:nesting].to_i.zero?
+      raise KaiserRuby::RockstarSyntaxError, 'Return used outside of a function' if object[:nesting].to_i.zero?
       var = select_transformer(object[:return])
       "return #{var}"
     end
 
     def transform_continue(object)
-      raise KaiserRuby::RockstarSyntaxError, "Continue used outside of a loop" if object[:nesting].to_i.zero?
-      "next"
+      raise KaiserRuby::RockstarSyntaxError, 'Continue used outside of a loop' if object[:nesting].to_i.zero?
+      'next'
     end
 
     def transform_break(object)
-      raise KaiserRuby::RockstarSyntaxError, "Break used outside of a loop" if object[:nesting].to_i.zero?
-      "break"
+      raise KaiserRuby::RockstarSyntaxError, 'Break used outside of a loop' if object[:nesting].to_i.zero?
+      'break'
     end
 
     def transform_variable_name(object)
@@ -213,20 +213,20 @@ module KaiserRuby
 
     def transform_type(object)
       case object[:type]
-      when "nil"
+      when 'nil'
         'nil'
-      when "null"
+      when 'null'
         '0.0'
-      when "true"
+      when 'true'
         'true'
-      when "false"
+      when 'false'
         'false'
       end
     end
 
     def transform_empty_line(_object)
       if @nesting == 0
-        return ""
+        return ''
       elsif @nesting == 1
         @local_variables = []
         return "end\n"
@@ -253,11 +253,11 @@ module KaiserRuby
     end
 
     def transform_else(object)
-      raise KaiserRuby::RockstarSyntaxError, "Else outside an if block" if object[:nesting].to_i.zero?
-      raise KaiserRuby::RockstarSyntaxError, "Double else inside if block" if @else_already != nil && object[:nesting_start_line] == @else_already
+      raise KaiserRuby::RockstarSyntaxError, 'Else outside an if block' if object[:nesting].to_i.zero?
+      raise KaiserRuby::RockstarSyntaxError, 'Double else inside if block' if @else_already != nil && object[:nesting_start_line] == @else_already
 
       @else_already = object[:nesting_start_line]
-      "else"
+      'else'
     end
 
     def transform_while(object)

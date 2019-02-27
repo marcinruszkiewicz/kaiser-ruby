@@ -45,7 +45,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_arguments)).to eq two_arguments_output
     end
 
-    it "works with contraction" do
+    it 'works with contraction' do
       expect(KaiserRuby.transpile(two_arguments_contracted)).to eq two_arguments_output
     end
 
@@ -55,30 +55,30 @@ RSpec.describe KaiserRuby do
   end
 
   context 'function calls' do
-    let(:one_argument) { "Midnight taking Hate" }
-    let(:two_arguments) { "Metal taking a man, a song" }
-    let(:mixed_arguments) { "Metal taking a man, a song, and a life" }
+    let(:one_argument) { 'Midnight taking Hate' }
+    let(:two_arguments) { 'Metal taking a man, a song' }
+    let(:mixed_arguments) { 'Metal taking a man, a song, and a life' }
     let(:contraction) { "Music taking Rock'n'Roll" }
-    let(:ampersand) { "Music taking Rock & Roll" }
+    let(:ampersand) { 'Music taking Rock & Roll' }
 
     it 'calls a function' do
-      expect(KaiserRuby.transpile(one_argument)).to eq "midnight(@hate)"
+      expect(KaiserRuby.transpile(one_argument)).to eq 'midnight(@hate)'
     end
 
     it 'calls a function with more arguments' do
-      expect(KaiserRuby.transpile(two_arguments)).to eq "metal(@a_man, @a_song)"
+      expect(KaiserRuby.transpile(two_arguments)).to eq 'metal(@a_man, @a_song)'
     end
 
     it 'calls a function with mixed separators' do
-      expect(KaiserRuby.transpile(mixed_arguments)).to eq "metal(@a_man, @a_song, @a_life)"
+      expect(KaiserRuby.transpile(mixed_arguments)).to eq 'metal(@a_man, @a_song, @a_life)'
     end
 
     it 'works with contractions' do
-      expect(KaiserRuby.transpile(contraction)).to eq "music(@rock, @roll)"
+      expect(KaiserRuby.transpile(contraction)).to eq 'music(@rock, @roll)'
     end
 
     it 'works with ampersand' do
-      expect(KaiserRuby.transpile(ampersand)).to eq "music(@rock, @roll)"
+      expect(KaiserRuby.transpile(ampersand)).to eq 'music(@rock, @roll)'
     end
   end
 
