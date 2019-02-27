@@ -21,18 +21,13 @@ module KaiserRuby
       @parsed_tree.each_with_index do |line_object, lnum|
         @lnum = lnum
         transformed_line = select_transformer(line_object)
-        if line_object[:nesting]
-          @nesting = line_object[:nesting]
-        else
-          @nesting = 0
-        end
-
+        @nesting = line_object[:nesting] ? line_object[:nesting] : 0
         @indentation = '  ' * @nesting
         @output << @indentation + transformed_line
       end
 
       # at end of file, close all the blocks that are still started
-      while @nesting > 0
+      while @nesting.positive?
         @nesting -= 1
         @indentation = '  ' * @nesting
         @output << @indentation + 'end'
@@ -47,8 +42,8 @@ module KaiserRuby
       send("transform_#{key}", object)
     end
 
-    def method_missing(m, *args, &block)
-      raise ArgumentError, "missing Transform rule: #{m}, #{args}"
+    def method_missing(rule, *args, &_block)
+      raise ArgumentError, "missing Transform rule: #{rule}, #{args}"
     end
 
     # transform language tree into Ruby
@@ -69,17 +64,20 @@ module KaiserRuby
 
     def transform_return(object)
       raise KaiserRuby::RockstarSyntaxError, 'Return used outside of a function' if object[:nesting].to_i.zero?
+
       var = select_transformer(object[:return])
       "return #{var}"
     end
 
     def transform_continue(object)
       raise KaiserRuby::RockstarSyntaxError, 'Continue used outside of a loop' if object[:nesting].to_i.zero?
+
       'next'
     end
 
     def transform_break(object)
       raise KaiserRuby::RockstarSyntaxError, 'Break used outside of a loop' if object[:nesting].to_i.zero?
+
       'break'
     end
 
@@ -180,7 +178,7 @@ module KaiserRuby
     end
 
     def transform_passed_function_call(object)
-      return transform_function_call(object[:passed_function_call])
+      transform_function_call(object[:passed_function_call])
     end
 
     def transform_poetic_string(object)
@@ -227,14 +225,14 @@ module KaiserRuby
     end
 
     def transform_empty_line(_object)
-      if @nesting == 0
-        return ''
+      if @nesting.zero?
+        ''
       elsif @nesting == 1
         @local_variables = []
-        return "end\n"
+        "end\n"
       else
         @else_already = nil
-        return "end\n"
+        "end\n"
       end
     end
 
@@ -245,12 +243,13 @@ module KaiserRuby
       # single variable without any operator needs to return a refined boolean
       arg = "#{arg}.to_bool" if arg !~ /==|>|>=|<|<=|!=/
 
-      return arg
+      arg
     end
 
     def transform_if(object)
       argument = select_transformer(object[:if][:argument])
       argument = additional_argument_transformation(argument)
+
       "if #{argument}"
     end
 
@@ -259,54 +258,63 @@ module KaiserRuby
       raise KaiserRuby::RockstarSyntaxError, 'Double else inside if block' if @else_already != nil && object[:nesting_start_line] == @else_already
 
       @else_already = object[:nesting_start_line]
+
       'else'
     end
 
     def transform_while(object)
       argument = select_transformer(object[:while][:argument])
       argument = additional_argument_transformation(argument)
+
       "while #{argument}"
     end
 
     def transform_until(object)
       argument = select_transformer(object[:until][:argument])
       argument = additional_argument_transformation(argument)
+
       "until #{argument}"
     end
 
     def transform_equality(object)
       left = select_transformer(object[:equality][:left])
       right = select_transformer(object[:equality][:right])
+
       "#{left} == #{right}"
     end
 
     def transform_inequality(object)
       left = select_transformer(object[:inequality][:left])
       right = select_transformer(object[:inequality][:right])
+
       "#{left} != #{right}"
     end
 
     def transform_gt(object)
       left = select_transformer(object[:gt][:left])
       right = select_transformer(object[:gt][:right])
+
       "#{left} > #{right}"
     end
 
     def transform_gte(object)
       left = select_transformer(object[:gte][:left])
       right = select_transformer(object[:gte][:right])
+
       "#{left} >= #{right}"
     end
 
     def transform_lt(object)
       left = select_transformer(object[:lt][:left])
       right = select_transformer(object[:lt][:right])
+
       "#{left} < #{right}"
     end
 
     def transform_lte(object)
       left = select_transformer(object[:lte][:left])
       right = select_transformer(object[:lte][:right])
+
       "#{left} <= #{right}"
     end
 
@@ -330,6 +338,7 @@ module KaiserRuby
 
     def transform_not(object)
       arg = select_transformer(object[:not])
+
       "!#{arg}"
     end
 
@@ -354,7 +363,7 @@ module KaiserRuby
     end
 
     def filter_string(string, rxp: /[[:alpha:]]/)
-      string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }.reject { |a| a.empty? }
+      string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }.reject(&:empty?)
     end
   end
 end

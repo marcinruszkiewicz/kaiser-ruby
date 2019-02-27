@@ -4,69 +4,69 @@ module KaiserRuby
   class Parser
     attr_reader :lines, :raw_input, :tree
 
-    POETIC_STRING_KEYWORDS = %w(says)
-    POETIC_NUMBER_KEYWORDS = %w(is was were are 's 're)
-    POETIC_NUMBER_CONTRACTIONS = %w('s 're)
-    POETIC_TYPE_KEYWORDS = %w(is)
-    PRINT_KEYWORDS = %w(say whisper shout scream)
-    LISTEN_TO_KEYWORDS = ['listen to']
-    LISTEN_KEYWORDS = ['listen']
-    BREAK_KEYWORDS = ['break', 'break it down']
-    CONTINUE_KEYWORDS = ['continue', 'take it to the top']
-    RETURN_KEYWORDS = ['give back']
+    POETIC_STRING_KEYWORDS = %w[says].freeze
+    POETIC_NUMBER_KEYWORDS = %w[is was were are 's 're].freeze
+    POETIC_NUMBER_CONTRACTIONS = %w['s 're].freeze
+    POETIC_TYPE_KEYWORDS = %w[is].freeze
+    PRINT_KEYWORDS = %w[say whisper shout scream].freeze
+    LISTEN_TO_KEYWORDS = ['listen to'].freeze
+    LISTEN_KEYWORDS = ['listen'].freeze
+    BREAK_KEYWORDS = ['break', 'break it down'].freeze
+    CONTINUE_KEYWORDS = ['continue', 'take it to the top'].freeze
+    RETURN_KEYWORDS = ['give back'].freeze
 
-    INCREMENT_FIRST_KEYWORDS = %w(build)
-    INCREMENT_SECOND_KEYWORDS = %w(up)
-    DECREMENT_FIRST_KEYWORDS = %w(knock)
-    DECREMENT_SECOND_KEYWORDS = %w(down)
-    ASSIGNMENT_FIRST_KEYWORDS = %w(put)
-    ASSIGNMENT_SECOND_KEYWORDS = %w(into)
+    INCREMENT_FIRST_KEYWORDS = %w[build].freeze
+    INCREMENT_SECOND_KEYWORDS = %w[up].freeze
+    DECREMENT_FIRST_KEYWORDS = %w[knock].freeze
+    DECREMENT_SECOND_KEYWORDS = %w[down].freeze
+    ASSIGNMENT_FIRST_KEYWORDS = %w[put].freeze
+    ASSIGNMENT_SECOND_KEYWORDS = %w[into].freeze
 
-    FUNCTION_KEYWORDS = %w(takes)
-    FUNCTION_SEPARATORS = ['and', ', and', "'n'", '&', ',']
-    FUNCTION_CALL_KEYWORDS = %w(taking)
-    FUNCTION_CALL_SEPARATORS = [', and', "'n'", '&', ',']
-    IF_KEYWORDS = %w(if)
-    UNTIL_KEYWORDS = %w(until)
-    WHILE_KEYWORDS = %w(while)
-    ELSE_KEYWORDS = %w(else)
+    FUNCTION_KEYWORDS = %w[takes].freeze
+    FUNCTION_SEPARATORS = ['and', ', and', "'n'", '&', ','].freeze
+    FUNCTION_CALL_KEYWORDS = %w[taking].freeze
+    FUNCTION_CALL_SEPARATORS = [', and', "'n'", '&', ','].freeze
+    IF_KEYWORDS = %w[if].freeze
+    UNTIL_KEYWORDS = %w[until].freeze
+    WHILE_KEYWORDS = %w[while].freeze
+    ELSE_KEYWORDS = %w[else].freeze
 
-    NULL_TYPE = %w(null nothing nowhere nobody gone empty)
-    TRUE_TYPE = %w(true yes ok right)
-    FALSE_TYPE = %w(false no lies wrong)
-    NIL_TYPE = %w(mysterious)
+    NULL_TYPE = %w[null nothing nowhere nobody gone empty].freeze
+    TRUE_TYPE = %w[true yes ok right].freeze
+    FALSE_TYPE = %w[false no lies wrong].freeze
+    NIL_TYPE = %w[mysterious].freeze
     POETIC_TYPE_LITERALS = NIL_TYPE + NULL_TYPE + TRUE_TYPE + FALSE_TYPE
 
-    COMMON_VARIABLE_KEYWORDS = %w(a an the my your)
-    PRONOUN_KEYWORDS = %w(he him she her it its they them)
+    COMMON_VARIABLE_KEYWORDS = %w[a an the my your].freeze
+    PRONOUN_KEYWORDS = %w[he him she her it its they them].freeze
 
-    ADDITION_KEYWORDS = %w(plus with)
-    SUBTRACTION_KEYWORDS = %w(minus without)
-    MULTIPLICATION_KEYWORDS = %w(times of)
-    DIVISION_KEYWORDS = %w(over)
+    ADDITION_KEYWORDS = %w[plus with].freeze
+    SUBTRACTION_KEYWORDS = %w[minus without].freeze
+    MULTIPLICATION_KEYWORDS = %w[times of].freeze
+    DIVISION_KEYWORDS = %w[over].freeze
     MATH_OP_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS
 
-    EQUALITY_KEYWORDS = %w(is)
-    INEQUALITY_KEYWORDS = %w(isn't isnt ain't aint is\ not)
-    GT_KEYWORDS = ['is higher than', 'is greater than', 'is bigger than', 'is stronger than']
-    GTE_KEYWORDS = ['is as high as', 'is as great as', 'is as big as', 'is as strong as']
-    LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than']
-    LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as']
+    EQUALITY_KEYWORDS = %w[is].freeze
+    INEQUALITY_KEYWORDS = %w[isn't isnt ain't aint is\ not].freeze
+    GT_KEYWORDS = ['is higher than', 'is greater than', 'is bigger than', 'is stronger than'].freeze
+    GTE_KEYWORDS = ['is as high as', 'is as great as', 'is as big as', 'is as strong as'].freeze
+    LT_KEYWORDS = ['is lower than', 'is less than', 'is smaller than', 'is weaker than'].freeze
+    LTE_KEYWORDS = ['is as low as', 'is as little as', 'is as small as', 'is as weak as'].freeze
     COMPARISON_KEYWORDS = EQUALITY_KEYWORDS + INEQUALITY_KEYWORDS + GT_KEYWORDS + GTE_KEYWORDS + LT_KEYWORDS + LTE_KEYWORDS
 
     FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['(?<!, )and', 'is', 'or', 'into', 'nor']
 
-    AND_KEYWORDS = %w(and)
-    OR_KEYWORDS = %w(or)
-    NOR_KEYWORDS = %w(nor)
-    NOT_KEYWORDS = ['(?<!is )not']
+    AND_KEYWORDS = %w[and].freeze
+    OR_KEYWORDS = %w[or].freeze
+    NOR_KEYWORDS = %w[nor].freeze
+    NOT_KEYWORDS = ['(?<!is )not'].freeze
     LOGIC_KEYWORDS = AND_KEYWORDS + OR_KEYWORDS + NOT_KEYWORDS + NOR_KEYWORDS
 
     RESERVED_KEYWORDS = LOGIC_KEYWORDS + MATH_OP_KEYWORDS + POETIC_TYPE_LITERALS
 
     def initialize(input)
       @raw_input = input
-      @lines = input.split /\n/
+      @lines = input.split(/\n/)
     end
 
     def parse
@@ -99,7 +99,7 @@ module KaiserRuby
       line = line.strip
 
       if line.empty?
-        if @nesting > 0
+        if @nesting.positive?
           @nesting -= 1
           @nesting_start_line = nil
         end
@@ -113,14 +113,14 @@ module KaiserRuby
     end
 
     def update_nesting(object)
-      if %i(if function until while).include? object.keys.first
+      if %i[if function until while].include? object.keys.first
         @nesting += 1
         @nesting_start_line = @lnum
       end
     end
 
     def parse_line_content(line)
-      words = line.split /\s/
+      words = line.split(/\s/)
 
       if matches_first?(words, IF_KEYWORDS)
         return parse_if(line)
@@ -148,21 +148,13 @@ module KaiserRuby
           return(parse_continue) if matches_several_first?(line, CONTINUE_KEYWORDS)
           return(parse_function_call(line)) if matches_any?(words, FUNCTION_CALL_KEYWORDS)
 
-          if matches_separate?(words, INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
-            return parse_increment(line)
-          end
-
-          if matches_separate?(words, DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
-            return parse_decrement(line)
-          end
-
-          if matches_any?(words, FUNCTION_KEYWORDS)
-            return(parse_function(line))
-          end
+          return parse_increment(line) if matches_separate?(words, INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
+          return parse_decrement(line) if matches_separate?(words, DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
+          return(parse_function(line)) if matches_any?(words, FUNCTION_KEYWORDS)
         end
       end
 
-      raise KaiserRuby::RockstarSyntaxError, "couldn't parse line: #{line}:#{@lnum+1}"
+      raise KaiserRuby::RockstarSyntaxError, "couldn't parse line: #{line}:#{@lnum + 1}"
     end
 
     # statements
@@ -178,6 +170,7 @@ module KaiserRuby
       words = line.split prepared_regexp(LISTEN_TO_KEYWORDS)
       arg = parse_variables(words.last.strip)
       arg[:type] = :assignment
+
       { listen_to: arg }
     end
 
@@ -189,6 +182,7 @@ module KaiserRuby
       words = line.split prepared_regexp(RETURN_KEYWORDS)
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
+
       { return: argument }
     end
 
@@ -196,8 +190,8 @@ module KaiserRuby
       match_rxp = prepared_capture(INCREMENT_FIRST_KEYWORDS, INCREMENT_SECOND_KEYWORDS)
       var = line.match(match_rxp).captures.first.strip
       capture = parse_variables(var)
-
       capture[:amount] = line.split(var).last.scan(/\bup\b/i).count
+
       { increment: capture }
     end
 
@@ -205,8 +199,8 @@ module KaiserRuby
       match_rxp = prepared_capture(DECREMENT_FIRST_KEYWORDS, DECREMENT_SECOND_KEYWORDS)
       var = line.match(match_rxp).captures.first.strip
       capture = parse_variables(var)
-
       capture[:amount] = line.split(var).last.scan(/\bdown\b/i).count
+
       { decrement: capture }
     end
 
@@ -249,15 +243,14 @@ module KaiserRuby
     end
 
     def parse_function_call(line)
-      words = line.split /\s/
-      if matches_any?(words, FUNCTION_CALL_KEYWORDS)
-        words = line.split prepared_regexp(FUNCTION_CALL_KEYWORDS)
-        left = parse_function_name(words.first.strip)
-        right = parse_function_call_arguments(words.last.strip)
-        { function_call: { left: left, right: right } }
-      else
-        return false
-      end
+      words = line.split(/\s/)
+      return false unless matches_any?(words, FUNCTION_CALL_KEYWORDS)
+
+      words = line.split prepared_regexp(FUNCTION_CALL_KEYWORDS)
+      left = parse_function_name(words.first.strip)
+      right = parse_function_call_arguments(words.last.strip)
+
+      { function_call: { left: left, right: right } }
     end
 
     def parse_poetic_string(line)
@@ -265,6 +258,7 @@ module KaiserRuby
       left = parse_variables(words.first.strip)
       right = { string: "\"#{words.last.strip}\"" }
       left[:type] = :assignment
+
       { poetic_string: { left: left, right: right } }
     end
 
@@ -273,23 +267,28 @@ module KaiserRuby
       left = parse_variables(words.first.strip)
       right = parse_type_value(words.last.strip)
       left[:type] = :assignment
+
       { poetic_type: { left: left, right: right } }
     end
 
     def parse_type_value(string)
-      words = string.split /\s/
+      words = string.split(/\s/)
 
       if matches_first?(words, NIL_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
+
         { type: 'nil' }
       elsif matches_first?(words, NULL_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
+
         { type: 'null' }
       elsif matches_first?(words, TRUE_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
+
         { type: 'true' }
       elsif matches_first?(words, FALSE_TYPE)
-        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum+1}" if words.count > 1
+        raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
+
         { type: 'false' }
       elsif string.strip.start_with?('"') && string.strip.end_with?('"')
         parse_literal_string(string)
@@ -299,8 +298,8 @@ module KaiserRuby
     end
 
     def parse_type_literal(string)
-      words = string.split /\s/
-      raise SyntaxError, "too many words in poetic type literal: #{string}:#{@lnum+1}" if words.size > 1
+      words = string.split(/\s/)
+      raise SyntaxError, "too many words in poetic type literal: #{string}:#{@lnum + 1}" if words.size > 1
 
       if matches_first?(words, NIL_TYPE)
         { type: 'nil' }
@@ -311,7 +310,7 @@ module KaiserRuby
       elsif matches_first?(words, FALSE_TYPE)
         { type: 'false' }
       else
-        raise SyntaxError, "unknown poetic type literal: #{string}:#{@lnum+1}"
+        raise SyntaxError, "unknown poetic type literal: #{string}:#{@lnum + 1}"
       end
     end
 
@@ -320,14 +319,15 @@ module KaiserRuby
       right = parse_argument(line.match(match_rxp).captures.first.strip)
       left = parse_variables(line.match(match_rxp).captures.last.strip)
       left[:type] = :assignment
+
       { assignment: { left: left, right: right } }
     end
 
     def parse_if(line)
       words = line.split prepared_regexp(IF_KEYWORDS)
-
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
+
       { if: { argument: argument } }
     end
 
@@ -335,6 +335,7 @@ module KaiserRuby
       words = line.split prepared_regexp(UNTIL_KEYWORDS)
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
+
       { until: { argument: argument } }
     end
 
@@ -342,6 +343,7 @@ module KaiserRuby
       words = line.split prepared_regexp(WHILE_KEYWORDS)
       arg = consume_function_calls(words.last.strip)
       argument = parse_argument(arg)
+
       { while: { argument: argument } }
     end
 
@@ -349,13 +351,14 @@ module KaiserRuby
       words = line.split prepared_regexp(FUNCTION_KEYWORDS)
       funcname = parse_function_name(words.first.strip)
       argument = parse_function_definition_arguments(words.last.strip)
+
       { function: { name: funcname, argument: argument } }
     end
 
     def consume_function_calls(string)
       if string =~ prepared_regexp(FUNCTION_CALL_KEYWORDS)
         words = string.split prepared_regexp(FUNCTION_RESTRICTED_KEYWORDS)
-        found_string = words.select { |w| w =~ (/\btaking\b/) }.first
+        found_string = words.select { |w| w =~ /\btaking\b/ }.first
         @function_temp << found_string
         string = string.gsub(found_string, " func_#{@function_temp.count - 1} ")
       end
@@ -364,11 +367,9 @@ module KaiserRuby
     end
 
     def pass_function_calls(string)
-      if string.strip =~ /func_\d+\Z/
-        { passed_function_call: string }
-      else
-        return false
-      end
+      return false unless string.strip =~ /func_\d+\Z/
+
+      { passed_function_call: string }
     end
 
     def parse_argument(string)
@@ -413,11 +414,9 @@ module KaiserRuby
 
     def parse_poetic_number_value(string)
       num = parse_literal_number(string)
-      if num
-        return num
-      else
-        return { number_literal: string.strip }
-      end
+      return num if num
+
+      { number_literal: string.strip }
     end
 
     def parse_logic_operation(string)
@@ -432,7 +431,7 @@ module KaiserRuby
         return parse_nor(string)
       end
 
-      return false
+      false
     end
 
     def parse_and(string)
@@ -463,6 +462,7 @@ module KaiserRuby
 
     def parse_not(string)
       return false if string !~ /(?<!is )\bnot\b/i
+
       words = string.split prepared_regexp(NOT_KEYWORDS)
       argument = parse_argument(words.last.strip)
 
@@ -471,7 +471,6 @@ module KaiserRuby
 
     def parse_comparison(string)
       return false if string.strip.start_with?('"') && string.strip.strip.end_with?('"') && string.count('"') == 2
-      words = string.split(/\s/)
 
       if string =~ prepared_regexp(GT_KEYWORDS)
         return parse_gt(string)
@@ -487,7 +486,7 @@ module KaiserRuby
         return parse_equality(string)
       end
 
-      return false
+      false
     end
 
     def parse_equality(string)
@@ -539,7 +538,7 @@ module KaiserRuby
     end
 
     def parse_variables(string)
-      words = string.split /\s/
+      words = string.split(/\s/)
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alnum:]]|\./ }.join }
       string = words.join(' ')
 
@@ -551,7 +550,7 @@ module KaiserRuby
         return parse_proper_variable(string)
       end
 
-      return false
+      false
     end
 
     def parse_function_name(string)
@@ -566,7 +565,7 @@ module KaiserRuby
       copied = words.dup
       copied.shift
       copied.each do |w|
-        raise SyntaxError, "invalid common variable name: #{string}:#{@lnum+1}" if w =~ /[[:upper:]]/
+        raise SyntaxError, "invalid common variable name: #{string}:#{@lnum + 1}" if w =~ /[[:upper:]]/
       end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
@@ -579,11 +578,11 @@ module KaiserRuby
       copied = words.dup
       copied.shift
       copied.each do |w|
-        raise SyntaxError, "invalid proper variable name: #{string}:#{@lnum+1}" unless w =~ /\A[[:upper:]]/
+        raise SyntaxError, "invalid proper variable name: #{string}:#{@lnum + 1}" unless w =~ /\A[[:upper:]]/
       end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
-      { variable_name: words.map { |w| w.downcase }.join('_') }
+      { variable_name: words.map(&:downcase).join('_') }
     end
 
     def parse_pronoun
@@ -592,6 +591,7 @@ module KaiserRuby
 
     def parse_math_operations(string)
       return false if string.strip.start_with?('"') && string.strip.end_with?('"') && string.count('"') == 2
+
       words = string.split(/\s/)
 
       if matches_any?(words, MULTIPLICATION_KEYWORDS)
@@ -604,7 +604,7 @@ module KaiserRuby
         return parse_subtraction(string)
       end
 
-      return false
+      false
     end
 
     def parse_addition(string)
@@ -640,28 +640,24 @@ module KaiserRuby
     end
 
     def parse_literal_string(string)
-      if string.strip.start_with?('"') && string.strip.end_with?('"') && string.count('"') == 2
-        { string: string }
-      else
-        return false
-      end
+      return false unless string.strip.start_with?('"') && string.strip.end_with?('"') && string.count('"') == 2
+
+      { string: string }
     end
 
     def parse_literal_number(string)
       num = Float(string) rescue string
-      if num.is_a?(Float)
-        { number: num }
-      else
-        return false
-      end
+      return false unless num.is_a?(Float)
+
+      { number: num }
     end
 
-    #private
+    # private
 
     def add_to_tree(object)
       object.extend(Hashie::Extensions::DeepLocate)
 
-      if @nesting > 0
+      if @nesting.positive?
         object[:nesting_start_line] = @nesting_start_line
         object[:nesting] = @nesting
       end
@@ -693,22 +689,22 @@ module KaiserRuby
       first_idx = words.index { |w| w =~ prepared_regexp(first_rxp) }
       second_idx = words.index { |w| w =~ prepared_regexp(second_rxp) }
 
-      second_idx != nil && first_idx != nil && second_idx.to_i - first_idx.to_i == 1
+      !second_idx.nil? && !first_idx.nil? && second_idx.to_i - first_idx.to_i == 1
     end
 
     def matches_first?(words, rxp)
-      words.index { |w| w =~ prepared_regexp(rxp) } == 0
+      words.index { |w| w =~ prepared_regexp(rxp) }&.zero?
     end
 
     def matches_several_first?(line, rxp)
-      (line =~ prepared_regexp(rxp)) == 0
+      (line =~ prepared_regexp(rxp))&.zero?
     end
 
     def matches_separate?(words, first_rxp, second_rxp)
       first_idx = words.index { |w| w =~ prepared_regexp(first_rxp) }
       second_idx = words.index { |w| w =~ prepared_regexp(second_rxp) }
 
-      second_idx != nil && first_idx != nil && second_idx.to_i > first_idx.to_i
+      !second_idx.nil? && !first_idx.nil? && second_idx.to_i > first_idx.to_i
     end
   end
 end
