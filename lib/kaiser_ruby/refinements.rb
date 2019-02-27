@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KaiserRuby
   module Refinements
     refine NilClass do

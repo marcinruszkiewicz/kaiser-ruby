@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'equality' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do
@@ -16,10 +19,11 @@ RSpec.describe KaiserRuby do
   end
 
   context 'inequality' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy ain't nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do
@@ -32,10 +36,11 @@ RSpec.describe KaiserRuby do
   end
 
   context 'greater than' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is higher than nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do
@@ -48,10 +53,11 @@ RSpec.describe KaiserRuby do
   end
 
   context 'greater than or equal' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is as high as nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do
@@ -64,10 +70,11 @@ RSpec.describe KaiserRuby do
   end
 
   context 'less than' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is smaller than nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do
@@ -80,10 +87,11 @@ RSpec.describe KaiserRuby do
   end
 
   context 'less than or equal' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is as small as nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a comparison' do

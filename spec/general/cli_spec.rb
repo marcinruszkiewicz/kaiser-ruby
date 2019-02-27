@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   let(:cli) { KaiserRuby::CLI.new }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KaiserRuby
   class Parser
     attr_reader :lines, :raw_input, :tree

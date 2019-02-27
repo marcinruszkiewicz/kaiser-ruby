@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'assignment statement' do
     it 'assigns common variables' do

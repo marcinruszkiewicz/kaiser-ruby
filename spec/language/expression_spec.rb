@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'increment expression' do
     it 'increments a common variable' do
@@ -24,7 +26,7 @@ RSpec.describe KaiserRuby do
 
     it 'decrements multiple times' do
       expect(KaiserRuby.transpile('Knock London Bridge down, down, down')).to eq '@london_bridge -= 3'
-    end    
+    end
   end
 
   context 'addition expression' do

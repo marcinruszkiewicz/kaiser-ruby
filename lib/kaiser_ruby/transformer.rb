@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KaiserRuby
   class Transformer
     attr_reader :parsed_tree, :output

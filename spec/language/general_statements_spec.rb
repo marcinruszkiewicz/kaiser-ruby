@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'print statement' do
-    let(:input) do <<~END
+    let(:input) do
+      <<~CODE
         put 0 into I
         put 1 into J
         say J plus ", " plus I
-      END
+      CODE
     end
 
     it 'prints values' do
@@ -31,16 +34,18 @@ RSpec.describe KaiserRuby do
   end
 
   context 'input from STDIN' do
-    let(:input) do <<~END
+    let(:input) do
+      <<~CODE
         Listen to the news
         Shout the news
-      END
+      CODE
     end
 
-    let(:single) do <<~END
+    let(:single) do
+      <<~CODE
         Listen
         Shout the news
-      END
+      CODE
     end
 
     it 'transforms into ruby' do

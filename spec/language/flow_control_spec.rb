@@ -1,42 +1,49 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'if else' do
-    let(:if_block) do <<~END
+    let(:if_block) do
+      <<~CODE
         If Tommy is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:if_else_block) do <<~END
+    let(:if_else_block) do
+      <<~CODE
         If Tommy is a human
         Shout "Human"
         Else
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:multiple_ifs) do <<~END
+    let(:multiple_ifs) do
+      <<~CODE
         If Tommy is a human
         Shout "Human"
 
         If Tommy is a boss
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:nested_ifs) do <<~END
+    let(:nested_ifs) do
+      <<~CODE
         If Tommy is a human
         Shout "Human"
         If Tommy is a boss
         Shout "Nobody"
         Else
         Shout "Unknown"
-      END
+      CODE
     end
 
-    let(:two_conditions) do <<~END
+    let(:two_conditions) do
+      <<~CODE
         If Tommy is a man and Gina is a vampire
         Shout "Master"
-      END
+      CODE
     end
 
     it 'makes an if block' do
@@ -92,16 +99,18 @@ RSpec.describe KaiserRuby do
   end
 
   context 'while loop' do
-    let(:while_block) do <<~END
+    let(:while_block) do
+      <<~CODE
         While Tommy is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:two_conditions) do <<~END
+    let(:two_conditions) do
+      <<~CODE
         While Tommy is nobody or Gina is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
     it 'makes a while block' do
@@ -122,19 +131,22 @@ RSpec.describe KaiserRuby do
   end
 
   context 'until loop' do
-    let(:until_block) do <<~END
+    let(:until_block) do
+      <<~CODE
         Until Tommy is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:two_conditions) do <<~END
+    let(:two_conditions) do
+      <<~CODE
         Until Tommy is nobody or Gina is nobody
         Shout "Nobody"
-      END
+      CODE
     end
 
-    let(:nested_if) do <<~END
+    let(:nested_if) do
+      <<~CODE
         Until Tommy is nobody
         Shout "Nobody"
         If Tommy is a man
@@ -144,7 +156,7 @@ RSpec.describe KaiserRuby do
         Take it to the top
 
         Shout "Until"
-      END
+      CODE
     end
 
     it 'makes a until block' do
@@ -182,62 +194,66 @@ RSpec.describe KaiserRuby do
   end
 
   context 'break' do
-    let(:break_block) do <<~END
+    let(:break_block) do
+      <<~CODE
         While Tommy is nobody
         Break
-      END
+      CODE
     end
 
-    let(:alias_block) do <<~END
+    let(:alias_block) do
+      <<~CODE
         While Tommy is nobody
         Break it down
-      END
+      CODE
     end
 
     it 'makes break command' do
-      expect(KaiserRuby.transpile(break_block)).to eq <<~END
+      expect(KaiserRuby.transpile(break_block)).to eq <<~RESULT
         while @tommy == 0.0
           break
         end
-      END
+      RESULT
     end
 
     it 'alias makes break command' do
-      expect(KaiserRuby.transpile(alias_block)).to eq <<~END
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
         while @tommy == 0.0
           break
         end
-      END
+      RESULT
     end
   end
 
   context 'continue' do
-    let(:continue_block) do <<~END
+    let(:continue_block) do
+      <<~CODE
         While Tommy is nobody
         Continue
-      END
+      CODE
     end
 
-    let(:alias_block) do <<~END
+    let(:alias_block) do
+      <<~CODE
         While Tommy is nobody
         Take it to the top
-      END
+      CODE
     end
 
     it 'makes continue command' do
-      expect(KaiserRuby.transpile(continue_block)).to eq <<~END
+      expect(KaiserRuby.transpile(continue_block)).to eq <<~RESULT
         while @tommy == 0.0
           next
         end
-      END
+      RESULT
     end
 
     it 'alias makes continue command' do
-      expect(KaiserRuby.transpile(alias_block)).to eq <<~END
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
         while @tommy == 0.0
           next
         end
-      END
+      RESULT
     end
   end
 end

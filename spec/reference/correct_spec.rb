@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   describe 'correct specs' do
     Dir.glob('spec/fixtures/reference/correct/*.rock').each do |filename|

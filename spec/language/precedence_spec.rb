@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'operator precedence' do
     it 'function call with mixed arguments' do

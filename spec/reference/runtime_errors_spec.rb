@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   describe 'trying to call a non-function' do
     Dir.glob('spec/fixtures/reference/runtime-errors/notCallable/*.rock').each do |filename|

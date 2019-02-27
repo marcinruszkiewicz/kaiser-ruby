@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   describe 'parsing errors' do
     Dir.glob('spec/fixtures/reference/parse-errors/*.rock').each do |filename|

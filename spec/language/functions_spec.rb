@@ -1,35 +1,42 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'function definition' do
-    let(:one_argument) do <<~END
+    let(:one_argument) do
+      <<~CODE
         Midnight takes Hate
         Shout Desire
         Give back Hate
-      END
+      CODE
     end
 
-    let(:two_arguments) do <<~END
+    let(:two_arguments) do
+      <<~CODE
         Midnight takes Hate and Desire
         Shout Desire
-      END
+      CODE
     end
 
-    let(:two_arguments_output) do <<~RESULT
+    let(:two_arguments_output) do
+      <<~RESULT
         def midnight(hate, desire)
           puts desire
         end
       RESULT
     end
 
-    let(:two_arguments_contracted) do <<~END
+    let(:two_arguments_contracted) do
+      <<~CODE
         Midnight takes Hate 'n' Desire
         Shout Desire
-      END
+      CODE
     end
 
-    let(:two_arguments_ampersand) do <<~END
+    let(:two_arguments_ampersand) do
+      <<~CODE
         Midnight takes Hate & Desire
         Shout Desire
-      END
+      CODE
     end
 
     it 'makes a function definition' do
@@ -83,31 +90,33 @@ RSpec.describe KaiserRuby do
   end
 
   context 'return a value' do
-    let(:variable) do <<~END
+    let(:variable) do
+      <<~CODE
         Function takes Desire
         Give back Desire
-      END
+      CODE
     end
-    let(:expression) do <<~END
+    let(:expression) do
+      <<~CODE
         Function takes the daylight & the night
         Give back the daylight with the night
-      END
+      CODE
     end
 
     it 'returns a variable' do
-      expect(KaiserRuby.transpile(variable)).to eq <<~END
+      expect(KaiserRuby.transpile(variable)).to eq <<~RESULT
         def function(desire)
           return desire
         end
-      END
+      RESULT
     end
 
     it 'returs an expression' do
-      expect(KaiserRuby.transpile(expression)).to eq <<~END
+      expect(KaiserRuby.transpile(expression)).to eq <<~RESULT
         def function(the_daylight, the_night)
           return the_daylight + the_night
         end
-      END
+      RESULT
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'proper variables' do
     it 'handles a single word' do
@@ -56,12 +58,13 @@ RSpec.describe KaiserRuby do
   end
 
   context 'pronouns' do
-    let(:example) do <<~END
+    let(:example) do
+      <<~CODE
         Desire is a killer
         Shout it
         Union's been on strike
         Whisper them
-      END
+      CODE
     end
 
     it 'converts pronouns to last used variable' do

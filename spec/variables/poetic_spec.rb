@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'poetic string literals' do
     it 'assigns string to a variable' do

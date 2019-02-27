@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'hashie'
 require 'kaiser_ruby/parser'
 require 'kaiser_ruby/transformer'

@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe KaiserRuby do
   context 'verses' do
-    let(:more_lines) do <<~END
+    let(:more_lines) do
+      <<~CODE
         Put 5 into your heart
         Whisper your heart
-      END
+      CODE
     end
 
     it 'ignores empty lines' do
@@ -27,13 +30,14 @@ RSpec.describe KaiserRuby do
   end
 
   context 'lyrics' do
-    let(:lyrics) do <<~END
+    let(:lyrics) do
+      <<~CODE
         Put 5 into your heart
         Whisper your heart
 
         Put "Ruby" into a rockstar
         Scream a rockstar
-      END
+      CODE
     end
 
     it 'transpiles multiple blocks of code' do
@@ -48,11 +52,12 @@ RSpec.describe KaiserRuby do
   end
 
   context 'comments' do
-    let(:comments) do <<~END
+    let(:comments) do
+      <<~CODE
         Ruby is a language
         (a programming one)
         Javascript is a language (probably)
-      END
+      CODE
     end
 
     it 'consumes comments' do
