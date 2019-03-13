@@ -82,6 +82,63 @@ module KaiserRuby
       end
     end
 
+    refine Integer do
+      alias_method :old_add, :+
+      alias_method :old_mul, :*
+      alias_method :old_div, :/
+      alias_method :old_gt, :<
+      alias_method :old_gte, :<=
+      alias_method :old_lt, :>
+      alias_method :old_lte, :>=
+      alias_method :old_eq, :==
+
+      def to_bool
+        self.zero? ? false : true
+      end
+
+      def +(other)
+        other.is_a?(String) ? self.to_s + other : self.old_add(other)
+      end
+
+      def *(other)
+        other.is_a?(String) ? other * self : self.old_mul(other)
+      end
+
+      def /(other)
+        raise ZeroDivisionError if other.zero?
+
+        t = self.to_f.old_div(other)
+        t.modulo(1).zero? ? t.to_i : t
+      end
+
+      def <(other)
+        other.is_a?(String) ? self < Float(other) : self.old_gt(other)
+      end
+
+      def <=(other)
+        other.is_a?(String) ? self <= Float(other) : self.old_gte(other)
+      end
+
+      def >(other)
+        other.is_a?(String) ? self > Float(other) : self.old_lt(other)
+      end
+
+      def >=(other)
+        other.is_a?(String) ? self >= Float(other) : self.old_lte(other)
+      end
+
+      def ==(other)
+        if other.is_a?(TrueClass) || other.is_a?(FalseClass)
+          self.to_bool == other
+        elsif other.is_a?(String)
+          t = Float(other) rescue other
+          self.old_eq(t)
+        else
+          self.old_eq(other)
+        end
+      end
+    end
+
     refine String do
       alias_method :old_add, :+
       alias_method :old_gt, :<
@@ -106,19 +163,43 @@ module KaiserRuby
       end
 
       def <(other)
-        other.is_a?(Float) ? Float(self) < other : self.old_gt(other)
+        if other.is_a?(Float)
+          Float(self) < other
+        elsif other.is_a?(Integer)
+          Integer(self) < other
+        else
+          self.old_gt(other)
+        end
       end
 
       def <=(other)
-        other.is_a?(Float) ? Float(self) <= other : self.old_gte(other)
+        if other.is_a?(Float)
+          Float(self) <= other
+        elsif other.is_a?(Integer)
+          Integer(self) <= other
+        else
+          self.old_gte(other)
+        end
       end
 
       def >(other)
-        other.is_a?(Float) ? Float(self) > other : self.old_lt(other)
+        if other.is_a?(Float)
+          Float(self) > other
+        elsif other.is_a?(Integer)
+          Integer(self) > other
+        else
+          self.old_lt(other)
+        end
       end
 
       def >=(other)
-        other.is_a?(Float) ? Float(self) >= other : self.old_lte(other)
+        if other.is_a?(Float)
+          Float(self) >= other
+        elsif other.is_a?(Integer)
+          Integer(self) >= other
+        else
+          self.old_lte(other)
+        end
       end
 
       def ==(other)
@@ -126,6 +207,9 @@ module KaiserRuby
           self.__booleanize == other
         elsif other.is_a?(Float)
           t = Float(self) rescue self
+          t == other
+        elsif other.is_a?(Integer)
+          t = Integer(self) rescue self
           t == other
         else
           self.old_eq(other)
@@ -151,7 +235,7 @@ module KaiserRuby
       end
 
       def ==(other)
-        if other.is_a?(Float)
+        if other.is_a?(Float) || other.is_a?(Integer)
           self == other.to_bool
         elsif other.is_a?(String)
           self.old_eq(other.__booleanize)
@@ -179,7 +263,7 @@ module KaiserRuby
       end
 
       def ==(other)
-        if other.is_a?(Float)
+        if other.is_a?(Float) || other.is_a?(Integer)
           self == other.to_bool
         elsif other.is_a?(String)
           self.old_eq(other.__booleanize)
@@ -195,7 +279,7 @@ module KaiserRuby
       def !
         if self.is_a?(String)
           self.size.zero?
-        elsif self.is_a?(Float)
+        elsif self.is_a?(Float) || self.is_a?(Integer)
           self.zero?
         elsif self.is_a?(NilClass)
           true

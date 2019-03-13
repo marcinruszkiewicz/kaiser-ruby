@@ -48,7 +48,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes an if block' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy == 0.0
+        if @tommy == 0
           puts "Nobody"
         end
       RESULT
@@ -115,7 +115,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a while block' do
       expect(KaiserRuby.transpile(while_block)).to eq <<~RESULT
-        while @tommy == 0.0
+        while @tommy == 0
           puts "Nobody"
         end
       RESULT
@@ -123,7 +123,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a while block with two conditions' do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
-        while @tommy == 0.0 || @gina == 0.0
+        while @tommy == 0 || @gina == 0
           puts "Nobody"
         end
       RESULT
@@ -161,7 +161,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a until block' do
       expect(KaiserRuby.transpile(until_block)).to eq <<~RESULT
-        until @tommy == 0.0
+        until @tommy == 0
           puts "Nobody"
         end
       RESULT
@@ -169,7 +169,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a until block with two conditions' do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
-        until @tommy == 0.0 || @gina == 0.0
+        until @tommy == 0 || @gina == 0
           puts "Nobody"
         end
       RESULT
@@ -177,7 +177,7 @@ RSpec.describe KaiserRuby do
 
     it 'nests if and comes back to the until loop' do
       expect(KaiserRuby.transpile(nested_if)).to eq <<~RESULT
-        until @tommy == 0.0
+        until @tommy == 0
           puts "Nobody"
           if @tommy == @a_man
             next
@@ -210,7 +210,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes break command' do
       expect(KaiserRuby.transpile(break_block)).to eq <<~RESULT
-        while @tommy == 0.0
+        while @tommy == 0
           break
         end
       RESULT
@@ -218,7 +218,7 @@ RSpec.describe KaiserRuby do
 
     it 'alias makes break command' do
       expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
-        while @tommy == 0.0
+        while @tommy == 0
           break
         end
       RESULT
@@ -242,7 +242,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes continue command' do
       expect(KaiserRuby.transpile(continue_block)).to eq <<~RESULT
-        while @tommy == 0.0
+        while @tommy == 0
           next
         end
       RESULT
@@ -250,7 +250,7 @@ RSpec.describe KaiserRuby do
 
     it 'alias makes continue command' do
       expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
-        while @tommy == 0.0
+        while @tommy == 0
           next
         end
       RESULT

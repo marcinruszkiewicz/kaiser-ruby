@@ -115,7 +115,7 @@ module KaiserRuby
     end
 
     def transform_number(object)
-      object[:number]
+      normalize_num(object[:number])
     end
 
     def transform_argument_list(object)
@@ -210,13 +210,15 @@ module KaiserRuby
 
     def transform_number_literal(object)
       string = object[:number_literal]
-      if string.include?('.')
-        string.split('.', 2).map do |sub|
-          str_to_num(sub.strip)
-        end.join('.').to_f
-      else
-        str_to_num(string).to_f
-      end
+      out = if string.include?('.')
+              string.split('.', 2).map do |sub|
+                str_to_num(sub.strip)
+              end.join('.').to_f
+            else
+              str_to_num(string).to_f
+            end
+
+      normalize_num(out)
     end
 
     def transform_type(object)
@@ -224,7 +226,7 @@ module KaiserRuby
       when 'nil'
         'nil'
       when 'null'
-        '0.0'
+        '0'
       when 'true'
         'true'
       when 'false'
@@ -372,6 +374,10 @@ module KaiserRuby
 
     def filter_string(string, rxp: /[[:alpha:]]/)
       string.to_s.split(/\s+/).map { |e| e.chars.select { |c| c =~ rxp }.join }.reject(&:empty?)
+    end
+
+    def normalize_num(num)
+      num.modulo(1).zero? ? num.to_i : num
     end
   end
 end

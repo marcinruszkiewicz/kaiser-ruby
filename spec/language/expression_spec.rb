@@ -31,7 +31,7 @@ RSpec.describe KaiserRuby do
 
   context 'addition expression' do
     it 'adds two values' do
-      expect(KaiserRuby.transpile('Say 3 with 4')).to eq 'puts 3.0 + 4.0'
+      expect(KaiserRuby.transpile('Say 3 with 4')).to eq 'puts 3 + 4'
     end
 
     it 'adds two variables' do
@@ -43,7 +43,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'adds multiple variables' do
-      expect(KaiserRuby.transpile('say 5 plus 8 plus 10.5')).to eq 'puts 5.0 + 8.0 + 10.5'
+      expect(KaiserRuby.transpile('say 5 plus 8 plus 10.5')).to eq 'puts 5 + 8 + 10.5'
     end
 
     it 'adds strings' do
@@ -53,7 +53,7 @@ RSpec.describe KaiserRuby do
 
   context 'subtraction expression' do
     it 'subtracts two values' do
-      expect(KaiserRuby.transpile('Say 3 without 4')).to eq 'puts 3.0 - 4.0'
+      expect(KaiserRuby.transpile('Say 3 without 4')).to eq 'puts 3 - 4'
     end
 
     it 'subtracts two variables' do
@@ -67,7 +67,7 @@ RSpec.describe KaiserRuby do
 
   context 'division expression' do
     it 'divides two values' do
-      expect(KaiserRuby.transpile('Say 3 over 4')).to eq 'puts 3.0 / 4.0'
+      expect(KaiserRuby.transpile('Say 3 over 4')).to eq 'puts 3 / 4'
     end
 
     it 'divides two variables' do
@@ -81,7 +81,7 @@ RSpec.describe KaiserRuby do
 
   context 'multiplication expression' do
     it 'multiplicates two values' do
-      expect(KaiserRuby.transpile('Say 3 times 4')).to eq 'puts 3.0 * 4.0'
+      expect(KaiserRuby.transpile('Say 3 times 4')).to eq 'puts 3 * 4'
     end
 
     it 'multiplicates two variables' do

@@ -11,7 +11,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy == 0.0
+        if @tommy == 0
           puts "Nobody"
         end
       RESULT
@@ -28,7 +28,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy != 0.0
+        if @tommy != 0
           puts "Nobody"
         end
       RESULT
@@ -45,7 +45,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy > 0.0
+        if @tommy > 0
           puts "Nobody"
         end
       RESULT
@@ -62,7 +62,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy >= 0.0
+        if @tommy >= 0
           puts "Nobody"
         end
       RESULT
@@ -79,7 +79,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy < 0.0
+        if @tommy < 0
           puts "Nobody"
         end
       RESULT
@@ -96,7 +96,7 @@ RSpec.describe KaiserRuby do
 
     it 'makes a comparison' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
-        if @tommy <= 0.0
+        if @tommy <= 0
           puts "Nobody"
         end
       RESULT

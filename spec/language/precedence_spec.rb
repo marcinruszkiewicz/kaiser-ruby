@@ -15,11 +15,11 @@ RSpec.describe KaiserRuby do
     end
 
     it 'function call with logical and comparison' do
-      expect(KaiserRuby.transpile("If Modulus taking Counter'n'Fizz is 0")).to eq 'if modulus(@counter, @fizz) == 0.0'
+      expect(KaiserRuby.transpile("If Modulus taking Counter'n'Fizz is 0")).to eq 'if modulus(@counter, @fizz) == 0'
     end
 
     it 'function call with literal numbers' do
-      expect(KaiserRuby.transpile('say A taking 3, 4, and 5')).to eq 'puts a(3.0, 4.0, 5.0)'
+      expect(KaiserRuby.transpile('say A taking 3, 4, and 5')).to eq 'puts a(3, 4, 5)'
     end
 
     it 'function call' do

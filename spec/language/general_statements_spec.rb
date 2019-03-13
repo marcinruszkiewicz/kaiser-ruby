@@ -17,19 +17,19 @@ RSpec.describe KaiserRuby do
     context 'different types' do
       it 'converts types' do
         expect(KaiserRuby.transpile(input)).to eq <<~RESULT
-          @i = 0.0
-          @j = 1.0
+          @i = 0
+          @j = 1
           puts @j + ", " + @i
         RESULT
       end
 
       it 'executes correctly' do
-        expect(KaiserRuby.execute(input)).to eq "1.0, 0.0\n"
+        expect(KaiserRuby.execute(input)).to eq "1, 0\n"
       end
     end
 
     it 'ignores stuff in quotes' do
-      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + 0.0'
+      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + 0'
     end
   end
 
