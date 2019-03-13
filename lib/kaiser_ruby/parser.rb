@@ -40,7 +40,7 @@ module KaiserRuby
     POETIC_TYPE_LITERALS = NIL_TYPE + NULL_TYPE + TRUE_TYPE + FALSE_TYPE
 
     COMMON_VARIABLE_KEYWORDS = %w[a an the my your].freeze
-    PRONOUN_KEYWORDS = %w[he him she her it its they them].freeze
+    PRONOUN_KEYWORDS = %w[he him she her it its they them ze hir zie zir xe xem ve ver].freeze
 
     ADDITION_KEYWORDS = %w[plus with].freeze
     SUBTRACTION_KEYWORDS = %w[minus without].freeze
