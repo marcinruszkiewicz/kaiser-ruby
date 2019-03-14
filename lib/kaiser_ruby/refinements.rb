@@ -99,6 +99,7 @@ module KaiserRuby
       alias_method :old_lt, :>
       alias_method :old_lte, :>=
       alias_method :old_eq, :==
+      alias_method :old_to_s, :to_s
 
       def to_bool
         self.zero? ? false : true
@@ -181,6 +182,10 @@ module KaiserRuby
         else
           self.old_eq(other)
         end
+      end
+
+      def to_s
+        self.modulo(1).zero? ? self.to_i.to_s : self.old_to_s
       end
     end
 

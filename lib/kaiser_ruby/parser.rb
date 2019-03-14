@@ -42,11 +42,12 @@ module KaiserRuby
     COMMON_VARIABLE_KEYWORDS = %w[a an the my your].freeze
     PRONOUN_KEYWORDS = %w[he him she her it its they them ze hir zie zir xe xem ve ver].freeze
 
-    ADDITION_KEYWORDS = %w[plus with].freeze
-    SUBTRACTION_KEYWORDS = %w[minus without].freeze
-    MULTIPLICATION_KEYWORDS = %w[times of].freeze
-    DIVISION_KEYWORDS = %w[over].freeze
+    ADDITION_KEYWORDS = %w[plus with +].freeze
+    SUBTRACTION_KEYWORDS = %w[minus without -].freeze
+    MULTIPLICATION_KEYWORDS = %w[times of *].freeze
+    DIVISION_KEYWORDS = %w[over /].freeze
     MATH_OP_KEYWORDS = ADDITION_KEYWORDS + SUBTRACTION_KEYWORDS + MULTIPLICATION_KEYWORDS + DIVISION_KEYWORDS
+    MATH_TOKENS = %w[+ / * -].freeze
 
     EQUALITY_KEYWORDS = %w[is].freeze
     INEQUALITY_KEYWORDS = %w[isn't isnt ain't aint is\ not].freeze
@@ -667,13 +668,13 @@ module KaiserRuby
     end
 
     def prepared_regexp(array)
-      rxp = array.map { |a| '\b' + a + '\b' }.join('|')
+      rxp = array.map { |a| tokenize_word(a) }.join('|')
       Regexp.new(rxp, Regexp::IGNORECASE)
     end
 
     def prepared_capture(farr, sarr)
-      frxp = farr.map { |a| '\b' + a + '\b' }.join('|')
-      srxp = sarr.map { |a| '\b' + a + '\b' }.join('|')
+      frxp = farr.map { |a| tokenize_word(a) }.join('|')
+      srxp = sarr.map { |a| tokenize_word(a) }.join('|')
       Regexp.new(frxp + '(.*?)' + srxp + '(.*)', Regexp::IGNORECASE)
     end
 
@@ -707,6 +708,12 @@ module KaiserRuby
       second_idx = words.index { |w| w =~ prepared_regexp(second_rxp) }
 
       !second_idx.nil? && !first_idx.nil? && second_idx.to_i > first_idx.to_i
+    end
+
+    def tokenize_word(word)
+      return '\B' + Regexp.escape(word) + '\B' if MATH_TOKENS.include?(word) # apparently ' + ' is not a word so word boundaries don't work
+
+      '\b' + word + '\b'
     end
   end
 end
