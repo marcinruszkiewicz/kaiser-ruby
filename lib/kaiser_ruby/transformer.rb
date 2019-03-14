@@ -226,7 +226,7 @@ module KaiserRuby
       when 'mysterious'
         'KaiserRuby::Mysterious.new'
       when 'null'
-        '0'
+        'nil'
       when 'true'
         'true'
       when 'false'

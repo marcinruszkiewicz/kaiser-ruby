@@ -29,7 +29,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores stuff in quotes' do
-      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + 0'
+      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + nil'
     end
   end
 

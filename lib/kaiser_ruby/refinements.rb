@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-
+# rubocop:disable Style/RedundantSelf
 module KaiserRuby
+  # Rockstar introduces a new type that is similar to JS' undefined
+  # Ruby obviously doesn't have that so we have to make our own
   class Mysterious
     def to_bool
       false
@@ -34,7 +36,7 @@ module KaiserRuby
   # This module is required to run the code that the transpiler generated, as Rockstar
   # expects somewhat different behaviour of types than Ruby.
   #
-  # You should probably never use this code outside this gem.
+  # Not a single method in here is a good idea and you should probably never use this code outside this gem.
   module Refinements
     refine NilClass do
       def to_bool
@@ -42,11 +44,45 @@ module KaiserRuby
       end
 
       def +(other)
-        'null' + other if other.is_a?(String)
+        return 'null' + other if other.is_a?(String)
+
+        0 + other
       end
 
       def -(other)
-        'null' + other if other.is_a?(String)
+        return 'null' + other if other.is_a?(String)
+
+        0 - other
+      end
+
+      def *(other)
+        0 * other
+      end
+
+      def /(other)
+        0 / other
+      end
+
+      def <(other)
+        0 < other
+      end
+
+      def >(other)
+        0 > other
+      end
+
+      def <=(other)
+        0 <= other
+      end
+
+      def >=(other)
+        0 >= other
+      end
+
+      def ==(other)
+        return false if other.is_a?(String) || other.is_a?(KaiserRuby::Mysterious) || other.is_a?(FalseClass) || other.is_a?(TrueClass)
+
+        0 == other
       end
 
       def to_s
@@ -69,33 +105,69 @@ module KaiserRuby
       end
 
       def +(other)
-        other.is_a?(String) ? self.to_s + other : self.old_add(other)
+        if other.is_a?(String)
+          self.to_s + other
+        elsif other.is_a?(NilClass)
+          self + 0
+        else
+          self.old_add(other)
+        end
       end
 
       def *(other)
-        other.is_a?(String) ? other * self : self.old_mul(other)
+        if other.is_a?(String)
+          other * self
+        elsif other.is_a?(NilClass)
+          self * 0
+        else
+          self.old_mul(other)
+        end
       end
 
       def /(other)
-        raise ZeroDivisionError if other.zero?
+        raise ZeroDivisionError if other.zero? || other.is_a?(NilClass)
 
         self.old_div(other)
       end
 
       def <(other)
-        other.is_a?(String) ? self < Float(other) : self.old_gt(other)
+        if other.is_a?(String)
+          self < Float(other)
+        elsif other.is_a?(NilClass)
+          self < 0
+        else
+          self.old_gt(other)
+        end
       end
 
       def <=(other)
-        other.is_a?(String) ? self <= Float(other) : self.old_gte(other)
+        if other.is_a?(String)
+          self <= Float(other)
+        elsif other.is_a?(NilClass)
+          self <= 0
+        else
+          self.old_gte(other)
+        end
       end
 
       def >(other)
-        other.is_a?(String) ? self > Float(other) : self.old_lt(other)
+        if other.is_a?(String)
+          self > Float(other)
+        elsif other.is_a?(NilClass)
+          self > 0
+        else
+          self.old_lt(other)
+        end
       end
 
       def >=(other)
-        other.is_a?(String) ? self >= Float(other) : self.old_lte(other)
+        if other.is_a?(String)
+          self >= Float(other)
+        elsif other.is_a?(NilClass)
+          self >= 0
+        else
+          self.old_lte(other)
+        end
       end
 
       def ==(other)
@@ -104,6 +176,8 @@ module KaiserRuby
         elsif other.is_a?(String)
           t = Float(other) rescue other
           self.old_eq(t)
+        elsif other.is_a?(NilClass)
+          self.zero?
         else
           self.old_eq(other)
         end
@@ -125,34 +199,70 @@ module KaiserRuby
       end
 
       def +(other)
-        other.is_a?(String) ? self.to_s + other : self.old_add(other)
+        if other.is_a?(String)
+          self.to_s + other
+        elsif other.is_a?(NilClass)
+          self + 0
+        else
+          self.old_add(other)
+        end
       end
 
       def *(other)
-        other.is_a?(String) ? other * self : self.old_mul(other)
+        if other.is_a?(String)
+          other * self
+        elsif other.is_a?(NilClass)
+          self * 0
+        else
+          self.old_mul(other)
+        end
       end
 
       def /(other)
-        raise ZeroDivisionError if other.zero?
+        raise ZeroDivisionError if other.zero? || other.is_a?(NilClass)
 
         t = self.to_f.old_div(other)
         t.modulo(1).zero? ? t.to_i : t
       end
 
       def <(other)
-        other.is_a?(String) ? self < Float(other) : self.old_gt(other)
+        if other.is_a?(String)
+          self < Float(other)
+        elsif other.is_a?(NilClass)
+          self < 0
+        else
+          self.old_gt(other)
+        end
       end
 
       def <=(other)
-        other.is_a?(String) ? self <= Float(other) : self.old_gte(other)
+        if other.is_a?(String)
+          self <= Float(other)
+        elsif other.is_a?(NilClass)
+          self <= 0
+        else
+          self.old_gte(other)
+        end
       end
 
       def >(other)
-        other.is_a?(String) ? self > Float(other) : self.old_lt(other)
+        if other.is_a?(String)
+          self > Float(other)
+        elsif other.is_a?(NilClass)
+          self > 0
+        else
+          self.old_lt(other)
+        end
       end
 
       def >=(other)
-        other.is_a?(String) ? self >= Float(other) : self.old_lte(other)
+        if other.is_a?(String)
+          self >= Float(other)
+        elsif other.is_a?(NilClass)
+          self >= 0
+        else
+          self.old_lte(other)
+        end
       end
 
       def ==(other)
@@ -161,6 +271,8 @@ module KaiserRuby
         elsif other.is_a?(String)
           t = Float(other) rescue other
           self.old_eq(t)
+        elsif other.is_a?(NilClass)
+          self.zero?
         else
           self.old_eq(other)
         end
@@ -174,6 +286,7 @@ module KaiserRuby
       alias_method :old_lt, :>
       alias_method :old_lte, :>=
       alias_method :old_eq, :==
+      alias_method :old_mul, :*
 
       def to_bool
         self.size.zero? ? false : true
@@ -188,6 +301,16 @@ module KaiserRuby
 
       def +(other)
         other.is_a?(String) ? self.old_add(other) : self + other.to_s
+      end
+
+      def *(other)
+        if other.is_a?(NilClass)
+          self.old_mul(0)
+        elsif other.is_a?(String)
+          KaiserRuby::Mysterious.new
+        else
+          self.old_mul(other)
+        end
       end
 
       def <(other)
@@ -263,7 +386,7 @@ module KaiserRuby
       end
 
       def ==(other)
-        if other.is_a?(Float) || other.is_a?(Integer)
+        if other.is_a?(Float) || other.is_a?(Integer) || other.is_a?(NilClass)
           self == other.to_bool
         elsif other.is_a?(String)
           self.old_eq(other.__booleanize)
@@ -291,7 +414,7 @@ module KaiserRuby
       end
 
       def ==(other)
-        if other.is_a?(Float) || other.is_a?(Integer)
+        if other.is_a?(Float) || other.is_a?(Integer) || other.is_a?(NilClass)
           self == other.to_bool
         elsif other.is_a?(String)
           self.old_eq(other.__booleanize)

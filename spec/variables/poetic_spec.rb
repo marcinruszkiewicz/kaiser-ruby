@@ -16,8 +16,8 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile('My heart is true')).to eq '@my_heart = true'
     end
 
-    it 'assigns a zero to proper variable' do
-      expect(KaiserRuby.transpile('Tommy is nobody')).to eq '@tommy = 0'
+    it 'assigns a nil to proper variable' do
+      expect(KaiserRuby.transpile('Tommy is nobody')).to eq '@tommy = nil'
     end
 
     it 'assigns a false' do
