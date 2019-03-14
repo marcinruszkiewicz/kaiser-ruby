@@ -36,8 +36,8 @@ module KaiserRuby
     NULL_TYPE = %w[null nothing nowhere nobody gone empty].freeze
     TRUE_TYPE = %w[true yes ok right].freeze
     FALSE_TYPE = %w[false no lies wrong].freeze
-    NIL_TYPE = %w[mysterious].freeze
-    POETIC_TYPE_LITERALS = NIL_TYPE + NULL_TYPE + TRUE_TYPE + FALSE_TYPE
+    MYSTERIOUS_TYPE = %w[mysterious].freeze
+    POETIC_TYPE_LITERALS = MYSTERIOUS_TYPE + NULL_TYPE + TRUE_TYPE + FALSE_TYPE
 
     COMMON_VARIABLE_KEYWORDS = %w[a an the my your].freeze
     PRONOUN_KEYWORDS = %w[he him she her it its they them ze hir zie zir xe xem ve ver].freeze
@@ -276,10 +276,10 @@ module KaiserRuby
     def parse_type_value(string)
       words = string.split(/\s/)
 
-      if matches_first?(words, NIL_TYPE)
+      if matches_first?(words, MYSTERIOUS_TYPE)
         raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
 
-        { type: 'nil' }
+        { type: 'mysterious' }
       elsif matches_first?(words, NULL_TYPE)
         raise KaiserRuby::RockstarSyntaxError, "extra words are not allowed after literal type keyword: #{string}:#{@lnum + 1}" if words.count > 1
 
@@ -303,8 +303,8 @@ module KaiserRuby
       words = string.split(/\s/)
       raise SyntaxError, "too many words in poetic type literal: #{string}:#{@lnum + 1}" if words.size > 1
 
-      if matches_first?(words, NIL_TYPE)
-        { type: 'nil' }
+      if matches_first?(words, MYSTERIOUS_TYPE)
+        { type: 'mysterious' }
       elsif matches_first?(words, NULL_TYPE)
         { type: 'null' }
       elsif matches_first?(words, TRUE_TYPE)

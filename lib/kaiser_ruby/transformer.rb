@@ -223,8 +223,8 @@ module KaiserRuby
 
     def transform_type(object)
       case object[:type]
-      when 'nil'
-        'nil'
+      when 'mysterious'
+        'KaiserRuby::Mysterious.new'
       when 'null'
         '0'
       when 'true'

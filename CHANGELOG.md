@@ -5,7 +5,7 @@ Language Implementation
 - [x] Add support for simple variables
 - [x] Add support for rest of the pronouns
 - [x] Return integers instead of floats where applicable so it will show `5` instead of `5.0` if there's no need for a Float
--
+- [x] Introduce proper `mysterious` type to allow `nil` to be used more predictably
 
 Other
 

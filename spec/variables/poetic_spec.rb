@@ -24,8 +24,8 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile('Bad Wolf is wrong')).to eq '@bad_wolf = false'
     end
 
-    it 'assigns a nil' do
-      expect(KaiserRuby.transpile('Bad Wolf is mysterious')).to eq '@bad_wolf = nil'
+    it 'assigns a mysterious' do
+      expect(KaiserRuby.transpile('Bad Wolf is mysterious')).to eq '@bad_wolf = KaiserRuby::Mysterious.new'
     end
 
     it 'assigns a string' do

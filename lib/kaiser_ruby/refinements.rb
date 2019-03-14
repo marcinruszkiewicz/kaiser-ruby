@@ -1,6 +1,34 @@
 # frozen_string_literal: true
 
 module KaiserRuby
+  class Mysterious
+    def to_bool
+      false
+    end
+
+    def +(other)
+      'mysterious' + other if other.is_a?(String)
+    end
+
+    def -(other)
+      'mysterious' + other if other.is_a?(String)
+    end
+
+    def to_s
+      'mysterious'
+    end
+
+    def !
+      true
+    end
+
+    def ==(other)
+      return true if other.is_a?(KaiserRuby::Mysterious)
+
+      false
+    end
+  end
+
   # Breaking Ruby for fun and profit!
   #
   # This module is required to run the code that the transpiler generated, as Rockstar
@@ -14,15 +42,15 @@ module KaiserRuby
       end
 
       def +(other)
-        'mysterious' + other if other.is_a?(String)
+        'null' + other if other.is_a?(String)
       end
 
       def -(other)
-        'mysterious' + other if other.is_a?(String)
+        'null' + other if other.is_a?(String)
       end
 
       def to_s
-        'mysterious'
+        'null'
       end
     end
 
