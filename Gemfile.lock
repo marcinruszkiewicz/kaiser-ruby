@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kaiser-ruby (0.7.1)
+    kaiser-ruby (0.8)
       hashie
       thor
 
@@ -62,4 +62,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   1.16.2
+   1.17.2

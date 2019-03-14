@@ -44,12 +44,8 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile('say a 332man!')).to eq 'puts @a_man'
     end
 
-    it 'a single lowercased word is not a variable name' do
-      expect { KaiserRuby.transpile('say johnny') }.to raise_error SyntaxError
-    end
-
     it "doesn't convert mixed case words" do
-      expect { KaiserRuby.transpile('say the World') }.to raise_error SyntaxError
+      expect(KaiserRuby.transpile('say the World')).to eq 'puts @the_world'
     end
 
     it 'handles metal umlauts' do
@@ -74,6 +70,20 @@ RSpec.describe KaiserRuby do
         @union = 426
         puts @union
       RESULT
+    end
+  end
+
+  context 'simple variables' do
+    it 'converts a single lowercased word' do
+      expect(KaiserRuby.transpile('say johnny')).to eq 'puts @johnny'
+    end
+
+    it 'leaves numbers' do
+      expect(KaiserRuby.transpile('say a5')).to eq 'puts @a5'
+    end
+
+    it 'strips special chars' do
+      expect(KaiserRuby.transpile('say bad_name!')).to eq 'puts @badname'
     end
   end
 end

@@ -550,6 +550,8 @@ module KaiserRuby
         return parse_common_variable(string)
       elsif matches_all?(words, /\A[[:upper:]]/) && string !~ prepared_regexp(RESERVED_KEYWORDS)
         return parse_proper_variable(string)
+      elsif words.count == 1 && string !~ prepared_regexp(RESERVED_KEYWORDS)
+        return prase_simple_variable(string)
       end
 
       false
@@ -563,12 +565,6 @@ module KaiserRuby
 
     def parse_common_variable(string)
       words = string.split(/\s/)
-
-      copied = words.dup
-      copied.shift
-      copied.each do |w|
-        raise SyntaxError, "invalid common variable name: #{string}:#{@lnum + 1}" if w =~ /[[:upper:]]/
-      end
 
       words = words.map { |e| e.chars.select { |c| c =~ /[[:alpha:]]/ }.join }
       { variable_name: words.map(&:downcase).join('_') }
@@ -589,6 +585,10 @@ module KaiserRuby
 
     def parse_pronoun
       { pronoun: nil }
+    end
+
+    def prase_simple_variable(string)
+      { variable_name: string }
     end
 
     def parse_math_operations(string)

@@ -1,3 +1,16 @@
+# 0.8
+
+Language Implementation
+
+- [x] Add support for simple variables
+- [x] Add support for rest of the pronouns
+- [x] Return integers instead of floats where applicable so it will show `5` instead of `5.0` if there's no need for a Float
+-
+
+Other
+
+- [x] Add new reference tests from main language repository
+
 # 0.7.1
 
 - [x] Strips all lines while parsing, so you can indent the .rock file however you want
