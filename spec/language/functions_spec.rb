@@ -18,9 +18,9 @@ RSpec.describe KaiserRuby do
     end
 
     let(:two_arguments_output) do
-      <<~RESULT
+      <<~'RESULT'
         def midnight(hate, desire)
-          puts desire
+          puts "#{desire}"
         end
       RESULT
     end
@@ -40,9 +40,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a function definition' do
-      expect(KaiserRuby.transpile(one_argument)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(one_argument)).to eq <<~'RESULT'
         def midnight(hate)
-          puts @desire
+          puts "#{@desire}"
           return hate
         end
       RESULT

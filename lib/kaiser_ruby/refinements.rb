@@ -296,7 +296,7 @@ module KaiserRuby
         return false if self =~ /\A\bfalse\b|\bno\b|\blies\b|\bwrong\b\Z/i
         return true if self =~ /\A\btrue\b|\byes\b|\bok\b|\bright\b\Z/i
 
-        return self
+        self
       end
 
       def +(other)

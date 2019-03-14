@@ -31,65 +31,65 @@ RSpec.describe KaiserRuby do
 
   context 'addition expression' do
     it 'adds two values' do
-      expect(KaiserRuby.transpile('Say 3 with 4')).to eq 'puts 3 + 4'
+      expect(KaiserRuby.transpile('Say 3 with 4')).to eq 'puts "#{3 + 4}"'
     end
 
     it 'adds two variables' do
-      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts @universe + @my_love'
+      expect(KaiserRuby.transpile('Say Universe plus my love')).to eq 'puts "#{@universe + @my_love}"'
     end
 
     it 'adds a value to a variable' do
-      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts @you + "my axe"'
+      expect(KaiserRuby.transpile('Say You with "my axe"')).to eq 'puts "#{@you + "my axe"}"'
     end
 
     it 'adds multiple variables' do
-      expect(KaiserRuby.transpile('say 5 plus 8 plus 10.5')).to eq 'puts 5 + 8 + 10.5'
+      expect(KaiserRuby.transpile('say 5 plus 8 plus 10.5')).to eq 'puts "#{5 + 8 + 10.5}"'
     end
 
     it 'adds strings' do
-      expect(KaiserRuby.transpile('say "ab" plus "cd"')).to eq 'puts "ab" + "cd"'
+      expect(KaiserRuby.transpile('say "ab" plus "cd"')).to eq 'puts "#{"ab" + "cd"}"'
     end
   end
 
   context 'subtraction expression' do
     it 'subtracts two values' do
-      expect(KaiserRuby.transpile('Say 3 without 4')).to eq 'puts 3 - 4'
+      expect(KaiserRuby.transpile('Say 3 without 4')).to eq 'puts "#{3 - 4}"'
     end
 
     it 'subtracts two variables' do
-      expect(KaiserRuby.transpile('Say My world without my love')).to eq 'puts @my_world - @my_love'
+      expect(KaiserRuby.transpile('Say My world without my love')).to eq 'puts "#{@my_world - @my_love}"'
     end
 
     it 'subtracts a value from a variable' do
-      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts @you - "my axe"'
+      expect(KaiserRuby.transpile('Say You without "my axe"')).to eq 'puts "#{@you - "my axe"}"'
     end
   end
 
   context 'division expression' do
     it 'divides two values' do
-      expect(KaiserRuby.transpile('Say 3 over 4')).to eq 'puts 3 / 4'
+      expect(KaiserRuby.transpile('Say 3 over 4')).to eq 'puts "#{3 / 4}"'
     end
 
     it 'divides two variables' do
-      expect(KaiserRuby.transpile('Say My world over my love')).to eq 'puts @my_world / @my_love'
+      expect(KaiserRuby.transpile('Say My world over my love')).to eq 'puts "#{@my_world / @my_love}"'
     end
 
     it 'divides a value to a variable' do
-      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts @you / "my axe"'
+      expect(KaiserRuby.transpile('Say You over "my axe"')).to eq 'puts "#{@you / "my axe"}"'
     end
   end
 
   context 'multiplication expression' do
     it 'multiplicates two values' do
-      expect(KaiserRuby.transpile('Say 3 times 4')).to eq 'puts 3 * 4'
+      expect(KaiserRuby.transpile('Say 3 times 4')).to eq 'puts "#{3 * 4}"'
     end
 
     it 'multiplicates two variables' do
-      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts @universe * @my_love'
+      expect(KaiserRuby.transpile('Say Universe of my love')).to eq 'puts "#{@universe * @my_love}"'
     end
 
     it 'multiplicates a value with a variable' do
-      expect(KaiserRuby.transpile('Say Your head of "my axe"')).to eq 'puts @your_head * "my axe"'
+      expect(KaiserRuby.transpile('Say Your head of "my axe"')).to eq 'puts "#{@your_head * "my axe"}"'
     end
   end
 end

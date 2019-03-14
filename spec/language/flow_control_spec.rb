@@ -47,52 +47,52 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes an if block' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'makes an if else block' do
-      expect(KaiserRuby.transpile(if_else_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_else_block)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "Human"
+          puts "#{"Human"}"
           else
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'makes multiple consecutive if blocks correctly' do
-      expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "Human"
+          puts "#{"Human"}"
         end
 
         if @tommy == @a_boss
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'makes nested if blocks correctly' do
-      expect(KaiserRuby.transpile(nested_ifs)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(nested_ifs)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "Human"
+          puts "#{"Human"}"
           if @tommy == @a_boss
-            puts "Nobody"
+            puts "#{"Nobody"}"
             else
-            puts "Unknown"
+            puts "#{"Unknown"}"
           end
         end
       RESULT
     end
 
     it 'makes a comparison with two elements' do
-      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         if @tommy == @a_man && @gina == @a_vampire
-          puts "Master"
+          puts "#{"Master"}"
         end
       RESULT
     end
@@ -114,17 +114,17 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a while block' do
-      expect(KaiserRuby.transpile(while_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(while_block)).to eq <<~'RESULT'
         while @tommy == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'makes a while block with two conditions' do
-      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         while @tommy == nil || @gina == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -160,25 +160,25 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a until block' do
-      expect(KaiserRuby.transpile(until_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(until_block)).to eq <<~'RESULT'
         until @tommy == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'makes a until block with two conditions' do
-      expect(KaiserRuby.transpile(two_conditions)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         until @tommy == nil || @gina == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
 
     it 'nests if and comes back to the until loop' do
-      expect(KaiserRuby.transpile(nested_if)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(nested_if)).to eq <<~'RESULT'
         until @tommy == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
           if @tommy == @a_man
             next
           end
@@ -187,7 +187,7 @@ RSpec.describe KaiserRuby do
             next
           end
 
-          puts "Until"
+          puts "#{"Until"}"
         end
       RESULT
     end
@@ -209,7 +209,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes break command' do
-      expect(KaiserRuby.transpile(break_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(break_block)).to eq <<~'RESULT'
         while @tommy == nil
           break
         end
@@ -217,7 +217,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'alias makes break command' do
-      expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~'RESULT'
         while @tommy == nil
           break
         end
@@ -241,7 +241,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes continue command' do
-      expect(KaiserRuby.transpile(continue_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(continue_block)).to eq <<~'RESULT'
         while @tommy == nil
           next
         end
@@ -249,7 +249,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'alias makes continue command' do
-      expect(KaiserRuby.transpile(alias_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(alias_block)).to eq <<~'RESULT'
         while @tommy == nil
           next
         end

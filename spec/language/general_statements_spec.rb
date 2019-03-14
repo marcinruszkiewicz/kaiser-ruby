@@ -11,15 +11,15 @@ RSpec.describe KaiserRuby do
     end
 
     it 'prints values' do
-      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts @my_love'
+      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts "#{@my_love}"'
     end
 
     context 'different types' do
       it 'converts types' do
-        expect(KaiserRuby.transpile(input)).to eq <<~RESULT
+        expect(KaiserRuby.transpile(input)).to eq <<~'RESULT'
           @i = 0
           @j = 1
-          puts @j + ", " + @i
+          puts "#{@j + ", " + @i}"
         RESULT
       end
 
@@ -29,7 +29,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores stuff in quotes' do
-      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "void and " + nil'
+      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "#{"void and " + nil}"'
     end
   end
 
@@ -49,19 +49,19 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transforms into ruby' do
-      expect(KaiserRuby.transpile(input)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(input)).to eq <<~'RESULT'
         print '> '
         __input = $stdin.gets.chomp
         @the_news = Float(__input) rescue __input
-        puts @the_news
+        puts "#{@the_news}"
       RESULT
     end
 
     it 'version without a variable' do
-      expect(KaiserRuby.transpile(single)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(single)).to eq <<~'RESULT'
         print '> '
         $stdin.gets.chomp
-        puts @the_news
+        puts "#{@the_news}"
       RESULT
     end
   end

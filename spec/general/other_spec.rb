@@ -22,9 +22,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transpiles multiple lines' do
-      expect(KaiserRuby.transpile(more_lines)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(more_lines)).to eq <<~'RESULT'
         @your_heart = 5
-        puts @your_heart
+        puts "#{@your_heart}"
       RESULT
     end
   end
@@ -41,12 +41,12 @@ RSpec.describe KaiserRuby do
     end
 
     it 'transpiles multiple blocks of code' do
-      expect(KaiserRuby.transpile(lyrics)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(lyrics)).to eq <<~'RESULT'
         @your_heart = 5
-        puts @your_heart
+        puts "#{@your_heart}"
 
         @a_rockstar = "Ruby"
-        puts @a_rockstar
+        puts "#{@a_rockstar}"
       RESULT
     end
   end

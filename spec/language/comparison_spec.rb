@@ -10,9 +10,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy == nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -27,9 +27,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy != nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -44,9 +44,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy > nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -61,9 +61,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy >= nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -78,9 +78,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy < nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end
@@ -95,9 +95,9 @@ RSpec.describe KaiserRuby do
     end
 
     it 'makes a comparison' do
-      expect(KaiserRuby.transpile(if_block)).to eq <<~RESULT
+      expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy <= nil
-          puts "Nobody"
+          puts "#{"Nobody"}"
         end
       RESULT
     end

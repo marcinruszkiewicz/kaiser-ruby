@@ -6,3 +6,6 @@ Metrics:
 
 Style/RescueModifier:
   Enabled: false
+
+Lint/InterpolationCheck:
+  Enabled: false
