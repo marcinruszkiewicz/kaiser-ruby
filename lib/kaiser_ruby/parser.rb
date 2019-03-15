@@ -69,7 +69,7 @@ module KaiserRuby
 
     def initialize(input)
       @raw_input = input
-      @lines = input.split(/\n/)
+      @lines = input.gsub(/\(\n.*?\n+\)/m, "\n").split(/\n/) # eat multiline comments
     end
 
     def parse
@@ -99,7 +99,8 @@ module KaiserRuby
     end
 
     def parse_line(line)
-      line = line.strip
+      # consume comments and extra spaces
+      line = line.gsub(/\(.*?\)/, '').strip
 
       if line.empty?
         if @nesting.positive?

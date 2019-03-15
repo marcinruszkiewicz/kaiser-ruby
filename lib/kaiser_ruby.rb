@@ -12,9 +12,6 @@ module KaiserRuby
   end
 
   def self.parse(input)
-    # eat comments since we don't care about them
-    input = input.gsub(/\n *\(.*?\) *\n/m, "\n\n")
-    input = input.gsub(/\(.*?\)\s*\n/m, "\n").gsub(/ +/, ' ')
     parser = KaiserRuby::Parser.new(input)
     parser.parse
   end
