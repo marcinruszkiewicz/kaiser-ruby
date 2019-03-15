@@ -23,7 +23,8 @@ module KaiserRuby
         @lnum = lnum
         transformed_line = select_transformer(line_object)
         @nesting = line_object[:nesting] ? line_object[:nesting] : 0
-        @indentation = '  ' * @nesting
+        actual_nesting = line_object.key?(:else) ? @nesting - 1 : @nesting
+        @indentation = '  ' * actual_nesting
         @output << @indentation + transformed_line
       end
 

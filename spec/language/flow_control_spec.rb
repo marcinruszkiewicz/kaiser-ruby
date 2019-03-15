@@ -46,6 +46,31 @@ RSpec.describe KaiserRuby do
       CODE
     end
 
+    let(:two_elses) do
+      <<~CODE
+        if true
+        if false
+        say "1"
+        else
+        say "2"
+        else
+        say "3"
+      CODE
+    end
+
+    let(:two_elses_with_empty_line) do
+      <<~CODE
+        if true
+        if false
+        say "1"
+        else
+        say "2"
+
+        else
+        say "3"
+      CODE
+    end
+
     it 'makes an if block' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy == nil
@@ -58,7 +83,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(if_else_block)).to eq <<~'RESULT'
         if @tommy == @a_human
           puts "#{"Human"}"
-          else
+        else
           puts "#{"Nobody"}"
         end
       RESULT
@@ -82,7 +107,7 @@ RSpec.describe KaiserRuby do
           puts "#{"Human"}"
           if @tommy == @a_boss
             puts "#{"Nobody"}"
-            else
+          else
             puts "#{"Unknown"}"
           end
         end
@@ -93,6 +118,36 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         if @tommy == @a_man && @gina == @a_vampire
           puts "#{"Master"}"
+        end
+      RESULT
+    end
+
+    it 'nests if elses correctly without explicit empty lines' do
+      expect(KaiserRuby.transpile(two_elses)).to eq <<~'RESULT'
+        if true.to_bool
+          if false.to_bool
+            puts "#{"1"}"
+          else
+            puts "#{"2"}"
+          end
+
+        else
+          puts "#{"3"}"
+        end
+      RESULT
+    end
+
+    it 'nests if elses correctly with explicit empty lines' do
+      expect(KaiserRuby.transpile(two_elses_with_empty_line)).to eq <<~'RESULT'
+        if true.to_bool
+          if false.to_bool
+            puts "#{"1"}"
+          else
+            puts "#{"2"}"
+          end
+
+        else
+          puts "#{"3"}"
         end
       RESULT
     end

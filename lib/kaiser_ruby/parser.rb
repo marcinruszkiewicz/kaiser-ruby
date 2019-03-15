@@ -79,6 +79,7 @@ module KaiserRuby
       @function_temp = []
       @nesting = 0
       @nesting_start_line = 0
+      @nesting_has_else = false
       @lnum = 0
 
       # parse through lines to get the general structure (statements/flow control/functions/etc) out of it
@@ -104,6 +105,7 @@ module KaiserRuby
 
       if line.empty?
         if @nesting.positive?
+          @nesting_has_else = false
           @nesting -= 1
           @nesting_start_line = nil
         end
@@ -120,6 +122,7 @@ module KaiserRuby
       if %i[if function until while].include? object.keys.first
         @nesting += 1
         @nesting_start_line = @lnum
+        @nesting_has_else = false
       end
     end
 
@@ -209,6 +212,15 @@ module KaiserRuby
     end
 
     def parse_else
+      if @nesting_has_else
+        @nesting -= 1
+        @nesting_start_line = nil
+        @nesting_has_else = false
+        add_to_tree parse_empty_line
+      else
+        @nesting_has_else = true
+      end
+
       { else: nil }
     end
 
