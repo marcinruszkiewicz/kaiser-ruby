@@ -62,6 +62,14 @@ RSpec.describe KaiserRuby do
         Whisper them
       CODE
     end
+    let(:assignment) do
+      <<~CODE
+        The beers were numbering fa'too'many
+        While the beers ain't nothing
+        Say it with your heart
+        Say it with your soul
+      CODE
+    end
 
     it 'converts pronouns to last used variable' do
       expect(KaiserRuby.transpile(example)).to eq <<~'RESULT'
@@ -69,6 +77,16 @@ RSpec.describe KaiserRuby do
         puts "#{@desire}"
         @union = 426
         puts "#{@union}"
+      RESULT
+    end
+
+    it 'only updates pronoun on assignment' do
+      expect(KaiserRuby.transpile(assignment)).to eq <<~'RESULT'
+        @the_beers = 99
+        while @the_beers != nil
+          puts "#{@the_beers + @your_heart}"
+          puts "#{@the_beers + @your_soul}"
+        end
       RESULT
     end
   end

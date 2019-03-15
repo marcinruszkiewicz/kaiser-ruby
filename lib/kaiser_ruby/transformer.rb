@@ -96,7 +96,9 @@ module KaiserRuby
         end
       end
 
-      @last_variable = varname
+      # have to break this to make 99 beers example work as it only updates the pronoun
+      # on assignment, which is technically a bug but seems like a good feature though
+      # @last_variable = varname
       varname
     end
 
@@ -161,6 +163,7 @@ module KaiserRuby
       left = select_transformer(object[:assignment][:left])
       right = select_transformer(object[:assignment][:right])
 
+      @last_variable = left
       "#{left} = #{right}"
     end
 
@@ -193,6 +196,7 @@ module KaiserRuby
       var = select_transformer(object[:poetic_string][:left])
       value = select_transformer(object[:poetic_string][:right])
 
+      @last_variable = var
       "#{var} = #{value}"
     end
 
@@ -200,6 +204,7 @@ module KaiserRuby
       var = select_transformer(object[:poetic_type][:left])
       value = select_transformer(object[:poetic_type][:right])
 
+      @last_variable = var
       "#{var} = #{value}"
     end
 
@@ -207,6 +212,7 @@ module KaiserRuby
       var = select_transformer(object[:poetic_number][:left])
       value = select_transformer(object[:poetic_number][:right])
 
+      @last_variable = var
       "#{var} = #{value}"
     end
 

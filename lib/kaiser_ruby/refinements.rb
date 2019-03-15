@@ -29,6 +29,10 @@ module KaiserRuby
 
       false
     end
+
+    def !=(other)
+      !self.==(other)
+    end
   end
 
   # Breaking Ruby for fun and profit!
@@ -83,6 +87,10 @@ module KaiserRuby
         return false if other.is_a?(String) || other.is_a?(KaiserRuby::Mysterious) || other.is_a?(FalseClass) || other.is_a?(TrueClass)
 
         0 == other
+      end
+
+      def !=(other)
+        !self.==(other)
       end
 
       def to_s
@@ -184,6 +192,10 @@ module KaiserRuby
         end
       end
 
+      def !=(other)
+        !self.==(other)
+      end
+
       def to_s
         self.modulo(1).zero? ? self.to_i.to_s : self.old_to_s
       end
@@ -282,6 +294,10 @@ module KaiserRuby
           self.old_eq(other)
         end
       end
+
+      def !=(other)
+        !self.==(other)
+      end
     end
 
     refine String do
@@ -372,6 +388,10 @@ module KaiserRuby
           self.old_eq(other)
         end
       end
+
+      def !=(other)
+        !self.==(other)
+      end
     end
 
     refine TrueClass do
@@ -400,6 +420,10 @@ module KaiserRuby
           self.old_eq(other)
         end
       end
+
+      def !=(other)
+        !self.==(other)
+      end
     end
 
     refine FalseClass do
@@ -427,6 +451,10 @@ module KaiserRuby
         else
           self.old_eq(other)
         end
+      end
+
+      def !=(other)
+        !self.==(other)
       end
     end
 
