@@ -1,15 +1,23 @@
 # 0.8
 
-Language Implementation
+Language implementation:
 
 - [x] Add support for simple variables
 - [x] Add support for rest of the pronouns
 - [x] Return integers instead of floats where applicable so it will show `5` instead of `5.0` if there's no need for a Float
 - [x] Introduce proper `mysterious` type to allow `nil` to be used more predictably
+- [x] Update pronouns only on variable assignment, not on usage too
+- [x] Fix double elses without preceding empty line to end the `if/else` block explicitly
+- [x] Comments are properly ignored now (even multiline ones though they're a really bad idea anyway)
+- [x] Math operators like `+` are also handled in addition to `plus`
+- [x] Strings are no longer considered falsy if they contain a falsy alias (`lies`, `false` etc), they're always truthy
+- [ ] Handle recursion
+- [ ] Handle nested functions and their scoping
 
-Other
+Other changes:
 
 - [x] Add new reference tests from main language repository
+- [x] Fix else nesting
 
 # 0.7.1
 
@@ -20,7 +28,7 @@ Other
 
 # 0.7
 
-Language Implementation
+Language implementation:
 
 - [x] Full language implementation according to the spec
 
@@ -40,7 +48,7 @@ Language Implementation
 - [x] Multiple increments/decrements with `build X up, up up` and `knock Y down, down, down`
 - [x] Handle global variables if they're declared after function definition that uses them
 
-Other
+Other changes:
 
 - [x] Replaced parsing with Parslet with a hand-written parser in plain Ruby
 - [x] Implemented reference tests
@@ -51,26 +59,27 @@ Other
 
 # 0.6 - unreleased
 
+Other changes:
+
 - [x] Fixed error in input from STDIN
 - [x] The transpiler now throws a SyntaxError instead of Parslet exception
-
-Test Suite
-
 - [x] Refactored the test suite to make more sense
 - [x] Added a ton of new negative and positive tests
 
 # 0.5
 
+Language implementation:
+
 - [x] Fixed converting decimals so "Conversion is lovestruck. lovestruck and essential seasick" results in "conversion = 0.0397" as one would expect.
 
-Other stuff
+Other changes:
 
 - [x] Updated the REPL to work on Ruby versions earlier than 2.5 (2.3 is the minimum supported version)
 - [x] Travis CI tests on all supported Ruby versions
 
 # 0.4
 
-Language Implementation:
+Language implementation:
 
 - [x] Handle non-alpha values in quoted strings
 - [x] Ignore comments in parentheses
@@ -80,7 +89,7 @@ Language Implementation:
 - [x] Better handle input of integers from STDIN
 - [x] Print can print returned values from functions
 
-Other stuff:
+Other changes:
 
 - [x] Updated the FizzBuzz example
 - [x] Catch exceptions in the REPL
@@ -90,7 +99,7 @@ Other stuff:
 
 # 0.3
 
-Language Implementation:
+Language implementation:
 
 - [x] Handle null type differently - nil in Ruby isn't really comparable to 0
 - [x] Handle mysterious type - probably this should be nil and what is now nil should be 0 instead
@@ -104,7 +113,7 @@ Language Implementation:
 - [x] Handle function calls
 - [x] Return can return math operations directly
 
-Other stuff:
+Other changes:
 
 - [x] FizzBuzz example is working
 - [x] Fibonacci example is working
