@@ -4,5 +4,6 @@ Give back X
 Else
 Put X minus 1 into NewX
 Give back Decrement taking NewX
-
+(end else)
+(end function)
 Say Decrement taking 5
