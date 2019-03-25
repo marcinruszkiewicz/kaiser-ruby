@@ -201,102 +201,206 @@ module KaiserRuby
       end
     end
 
-    refine Integer do
-      alias_method :old_add, :+
-      alias_method :old_mul, :*
-      alias_method :old_div, :/
-      alias_method :old_gt, :<
-      alias_method :old_gte, :<=
-      alias_method :old_lt, :>
-      alias_method :old_lte, :>=
-      alias_method :old_eq, :==
+    # in Ruby 2.3 you have to refine Fixnum instead of Integer, which makes sense
+    # as merging Fixnum and BigInt into Integer was the 2.4 feature, so all is good
+    # BUT every Fixnum in 2.3 is_a?(Integer) so all the tests still work properly
+    if (RUBY_VERSION.split('.').map(&:to_i) <=> [2, 4]) >= 1
+      refine Integer do
+        alias_method :old_add, :+
+        alias_method :old_mul, :*
+        alias_method :old_div, :/
+        alias_method :old_gt, :<
+        alias_method :old_gte, :<=
+        alias_method :old_lt, :>
+        alias_method :old_lte, :>=
+        alias_method :old_eq, :==
 
-      def to_bool
-        self.zero? ? false : true
-      end
+        def to_bool
+          self.zero? ? false : true
+        end
 
-      def +(other)
-        if other.is_a?(String)
-          self.to_s + other
-        elsif other.is_a?(NilClass)
-          self + 0
-        else
-          self.old_add(other)
+        def +(other)
+          if other.is_a?(String)
+            self.to_s + other
+          elsif other.is_a?(NilClass)
+            self + 0
+          else
+            self.old_add(other)
+          end
+        end
+
+        def *(other)
+          if other.is_a?(String)
+            other * self
+          elsif other.is_a?(NilClass)
+            self * 0
+          else
+            self.old_mul(other)
+          end
+        end
+
+        def /(other)
+          raise ZeroDivisionError if other.zero? || other.is_a?(NilClass)
+
+          t = self.to_f.old_div(other)
+          t.modulo(1).zero? ? t.to_i : t
+        end
+
+        def <(other)
+          if other.is_a?(String)
+            self < Float(other)
+          elsif other.is_a?(NilClass)
+            self < 0
+          else
+            self.old_gt(other)
+          end
+        end
+
+        def <=(other)
+          if other.is_a?(String)
+            self <= Float(other)
+          elsif other.is_a?(NilClass)
+            self <= 0
+          else
+            self.old_gte(other)
+          end
+        end
+
+        def >(other)
+          if other.is_a?(String)
+            self > Float(other)
+          elsif other.is_a?(NilClass)
+            self > 0
+          else
+            self.old_lt(other)
+          end
+        end
+
+        def >=(other)
+          if other.is_a?(String)
+            self >= Float(other)
+          elsif other.is_a?(NilClass)
+            self >= 0
+          else
+            self.old_lte(other)
+          end
+        end
+
+        def ==(other)
+          if other.is_a?(TrueClass) || other.is_a?(FalseClass)
+            self.to_bool == other
+          elsif other.is_a?(String)
+            t = Float(other) rescue other
+            self.old_eq(t)
+          elsif other.is_a?(NilClass)
+            self.zero?
+          else
+            self.old_eq(other)
+          end
+        end
+
+        def !=(other)
+          !self.==(other)
         end
       end
+    else
+      refine Fixnum do
+        alias_method :old_add, :+
+        alias_method :old_mul, :*
+        alias_method :old_div, :/
+        alias_method :old_gt, :<
+        alias_method :old_gte, :<=
+        alias_method :old_lt, :>
+        alias_method :old_lte, :>=
+        alias_method :old_eq, :==
 
-      def *(other)
-        if other.is_a?(String)
-          other * self
-        elsif other.is_a?(NilClass)
-          self * 0
-        else
-          self.old_mul(other)
+        def to_bool
+          self.zero? ? false : true
         end
-      end
 
-      def /(other)
-        raise ZeroDivisionError if other.zero? || other.is_a?(NilClass)
-
-        t = self.to_f.old_div(other)
-        t.modulo(1).zero? ? t.to_i : t
-      end
-
-      def <(other)
-        if other.is_a?(String)
-          self < Float(other)
-        elsif other.is_a?(NilClass)
-          self < 0
-        else
-          self.old_gt(other)
+        def +(other)
+          if other.is_a?(String)
+            self.to_s + other
+          elsif other.is_a?(NilClass)
+            self + 0
+          else
+            self.old_add(other)
+          end
         end
-      end
 
-      def <=(other)
-        if other.is_a?(String)
-          self <= Float(other)
-        elsif other.is_a?(NilClass)
-          self <= 0
-        else
-          self.old_gte(other)
+        def *(other)
+          if other.is_a?(String)
+            other * self
+          elsif other.is_a?(NilClass)
+            self * 0
+          else
+            self.old_mul(other)
+          end
         end
-      end
 
-      def >(other)
-        if other.is_a?(String)
-          self > Float(other)
-        elsif other.is_a?(NilClass)
-          self > 0
-        else
-          self.old_lt(other)
+        def /(other)
+          raise ZeroDivisionError if other.zero? || other.is_a?(NilClass)
+
+          t = self.to_f.old_div(other)
+          t.modulo(1).zero? ? t.to_i : t
         end
-      end
 
-      def >=(other)
-        if other.is_a?(String)
-          self >= Float(other)
-        elsif other.is_a?(NilClass)
-          self >= 0
-        else
-          self.old_lte(other)
+        def <(other)
+          if other.is_a?(String)
+            self < Float(other)
+          elsif other.is_a?(NilClass)
+            self < 0
+          else
+            self.old_gt(other)
+          end
         end
-      end
 
-      def ==(other)
-        if other.is_a?(TrueClass) || other.is_a?(FalseClass)
-          self.to_bool == other
-        elsif other.is_a?(String)
-          t = Float(other) rescue other
-          self.old_eq(t)
-        elsif other.is_a?(NilClass)
-          self.zero?
-        else
-          self.old_eq(other)
+        def <=(other)
+          if other.is_a?(String)
+            self <= Float(other)
+          elsif other.is_a?(NilClass)
+            self <= 0
+          else
+            self.old_gte(other)
+          end
         end
-      end
 
-      def !=(other)
-        !self.==(other)
+        def >(other)
+          if other.is_a?(String)
+            self > Float(other)
+          elsif other.is_a?(NilClass)
+            self > 0
+          else
+            self.old_lt(other)
+          end
+        end
+
+        def >=(other)
+          if other.is_a?(String)
+            self >= Float(other)
+          elsif other.is_a?(NilClass)
+            self >= 0
+          else
+            self.old_lte(other)
+          end
+        end
+
+        def ==(other)
+          if other.is_a?(TrueClass) || other.is_a?(FalseClass)
+            self.to_bool == other
+          elsif other.is_a?(String)
+            t = Float(other) rescue other
+            self.old_eq(t)
+          elsif other.is_a?(NilClass)
+            self.zero?
+          else
+            self.old_eq(other)
+          end
+        end
+
+        def !=(other)
+          !self.==(other)
+        end
       end
     end
 
