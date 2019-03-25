@@ -10,6 +10,7 @@ module KaiserRuby
       @output = []
       @method_names = []
       @global_variables = []
+      @nested_functions = {}
       @nesting = 0
       @indentation = ''
       @lnum = 0
@@ -196,7 +197,11 @@ module KaiserRuby
       func_name = select_transformer(object[:function_call][:left])
       argument = select_transformer(object[:function_call][:right])
 
-      "#{func_name}(#{argument})"
+      if @nested_functions[@current_scope.last]&.include?(func_name)
+        "#{func_name}.call(#{argument})"
+      else
+        "#{func_name}(#{argument})"
+      end
     end
 
     def transform_passed_function_call(object)
@@ -350,9 +355,15 @@ module KaiserRuby
       funcname = transform_function_name(object[:function][:name])
       argument = select_transformer(object[:function][:argument])
 
-      @method_names << funcname
+      if @current_scope.last.nil?
+        @method_names << funcname
+        "def #{funcname}(#{argument})"
+      else
+        @nested_functions[@current_scope.last] ||= []
+        @nested_functions[@current_scope.last].push funcname
 
-      "def #{funcname}(#{argument})"
+        "#{funcname} = ->(#{argument}) do"
+      end
     end
 
     def transform_and(object)

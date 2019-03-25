@@ -61,7 +61,7 @@ module KaiserRuby
 
     FUNCTION_RESTRICTED_KEYWORDS = MATH_OP_KEYWORDS + ['(?<!, )and', 'is', 'or', 'into', 'nor']
 
-    AND_KEYWORDS = %w[and].freeze
+    AND_KEYWORDS = ['(?<!, )and'].freeze
     OR_KEYWORDS = %w[or].freeze
     NOR_KEYWORDS = %w[nor].freeze
     NOT_KEYWORDS = ['(?<!is )not'].freeze
@@ -80,7 +80,6 @@ module KaiserRuby
       @tree.extend(Hashie::Extensions::DeepLocate)
       @function_temp = []
       @nesting = 0
-      @nesting_start_line = 0
       @nesting_has_else = false
       @current_scope = [nil]
       @lnum = 0
@@ -108,11 +107,12 @@ module KaiserRuby
 
       if line.empty?
         if @nesting.positive?
+          @current_scope.pop unless @current_scope[@nesting].nil?
           @nesting_has_else = false
           @nesting -= 1
-          @nesting_start_line = nil
-          @current_scope.pop if @nesting.zero?
         end
+
+        @current_scope.pop if @nesting.zero?
 
         add_to_tree(parse_empty_line)
       else
@@ -125,7 +125,6 @@ module KaiserRuby
     def update_nesting(object)
       if %i[if function until while].include? object.keys.first
         @nesting += 1
-        @nesting_start_line = @lnum
         @nesting_has_else = false
       end
 
@@ -224,7 +223,6 @@ module KaiserRuby
     def parse_else
       if @nesting_has_else
         @nesting -= 1
-        @nesting_start_line = nil
         @nesting_has_else = false
         add_to_tree parse_empty_line
       else
@@ -702,11 +700,8 @@ module KaiserRuby
       object.extend(Hashie::Extensions::DeepLocate)
 
       object[:current_scope] = @current_scope.last
+      object[:nesting] = @nesting
 
-      if @nesting.positive?
-        object[:nesting_start_line] = @nesting_start_line
-        object[:nesting] = @nesting
-      end
       @tree << object
     end
 
