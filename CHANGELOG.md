@@ -12,13 +12,14 @@ Language implementation:
 - [x] Math operators like `+` are also handled in addition to `plus`
 - [x] Strings are no longer considered falsy if they contain a falsy alias (`lies`, `false` etc), they're always truthy
 - [x] Support `let <variable> be <expression>`
-- [ ] Handle recursion
-- [ ] Handle nested functions and their scoping
+- [x] Handle recursion
+- [x] Handle nested functions and their scoping
 
 Other changes:
 
 - [x] Add new reference tests from main language repository
 - [x] Fix else nesting
+- [x] Fix older Ruby versions
 
 # 0.7.1
 
