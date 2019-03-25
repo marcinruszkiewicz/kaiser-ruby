@@ -8,6 +8,7 @@ RSpec.describe KaiserRuby do
         let(:output) { file_fixture "#{filename}.out" }
 
         it 'executes correctly' do
+          puts KaiserRuby.transpile(source.read)
           expect(KaiserRuby.execute(source.read)).to eq output.read
         end
       end

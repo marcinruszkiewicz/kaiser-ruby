@@ -67,7 +67,7 @@ module KaiserRuby
     def transform_print(object)
       var = select_transformer(object[:print])
 
-      "puts \"\#{#{var}\}\""
+      "puts (#{var}).to_s"
     end
 
     def transform_listen_to(object)

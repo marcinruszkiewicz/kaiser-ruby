@@ -11,7 +11,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'prints values' do
-      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts "#{@my_love}"'
+      expect(KaiserRuby.transpile('Scream my love')).to eq 'puts (@my_love).to_s'
     end
 
     context 'different types' do
@@ -19,7 +19,7 @@ RSpec.describe KaiserRuby do
         expect(KaiserRuby.transpile(input)).to eq <<~'RESULT'
           @i = 0
           @j = 1
-          puts "#{@j + ", " + @i}"
+          puts (@j + ", " + @i).to_s
         RESULT
       end
 
@@ -29,7 +29,7 @@ RSpec.describe KaiserRuby do
     end
 
     it 'ignores stuff in quotes' do
-      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts "#{"void and " + nil}"'
+      expect(KaiserRuby.transpile('say "void and " plus nothing')).to eq 'puts ("void and " + nil).to_s'
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe KaiserRuby do
         print '> '
         __input = $stdin.gets.chomp
         @the_news = Float(__input) rescue __input
-        puts "#{@the_news}"
+        puts (@the_news).to_s
       RESULT
     end
 
@@ -61,7 +61,7 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(single)).to eq <<~'RESULT'
         print '> '
         $stdin.gets.chomp
-        puts "#{@the_news}"
+        puts (@the_news).to_s
       RESULT
     end
   end

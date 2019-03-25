@@ -74,7 +74,7 @@ RSpec.describe KaiserRuby do
     it 'makes an if block' do
       expect(KaiserRuby.transpile(if_block)).to eq <<~'RESULT'
         if @tommy == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -82,9 +82,9 @@ RSpec.describe KaiserRuby do
     it 'makes an if else block' do
       expect(KaiserRuby.transpile(if_else_block)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "#{"Human"}"
+          puts ("Human").to_s
         else
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -92,11 +92,11 @@ RSpec.describe KaiserRuby do
     it 'makes multiple consecutive if blocks correctly' do
       expect(KaiserRuby.transpile(multiple_ifs)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "#{"Human"}"
+          puts ("Human").to_s
         end
 
         if @tommy == @a_boss
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -104,11 +104,11 @@ RSpec.describe KaiserRuby do
     it 'makes nested if blocks correctly' do
       expect(KaiserRuby.transpile(nested_ifs)).to eq <<~'RESULT'
         if @tommy == @a_human
-          puts "#{"Human"}"
+          puts ("Human").to_s
           if @tommy == @a_boss
-            puts "#{"Nobody"}"
+            puts ("Nobody").to_s
           else
-            puts "#{"Unknown"}"
+            puts ("Unknown").to_s
           end
         end
       RESULT
@@ -117,7 +117,7 @@ RSpec.describe KaiserRuby do
     it 'makes a comparison with two elements' do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         if @tommy == @a_man && @gina == @a_vampire
-          puts "#{"Master"}"
+          puts ("Master").to_s
         end
       RESULT
     end
@@ -126,13 +126,13 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_elses)).to eq <<~'RESULT'
         if true.to_bool
           if false.to_bool
-            puts "#{"1"}"
+            puts ("1").to_s
           else
-            puts "#{"2"}"
+            puts ("2").to_s
           end
 
         else
-          puts "#{"3"}"
+          puts ("3").to_s
         end
       RESULT
     end
@@ -141,13 +141,13 @@ RSpec.describe KaiserRuby do
       expect(KaiserRuby.transpile(two_elses_with_empty_line)).to eq <<~'RESULT'
         if true.to_bool
           if false.to_bool
-            puts "#{"1"}"
+            puts ("1").to_s
           else
-            puts "#{"2"}"
+            puts ("2").to_s
           end
 
         else
-          puts "#{"3"}"
+          puts ("3").to_s
         end
       RESULT
     end
@@ -171,7 +171,7 @@ RSpec.describe KaiserRuby do
     it 'makes a while block' do
       expect(KaiserRuby.transpile(while_block)).to eq <<~'RESULT'
         while @tommy == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -179,7 +179,7 @@ RSpec.describe KaiserRuby do
     it 'makes a while block with two conditions' do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         while @tommy == nil || @gina == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -217,7 +217,7 @@ RSpec.describe KaiserRuby do
     it 'makes a until block' do
       expect(KaiserRuby.transpile(until_block)).to eq <<~'RESULT'
         until @tommy == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -225,7 +225,7 @@ RSpec.describe KaiserRuby do
     it 'makes a until block with two conditions' do
       expect(KaiserRuby.transpile(two_conditions)).to eq <<~'RESULT'
         until @tommy == nil || @gina == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
         end
       RESULT
     end
@@ -233,7 +233,7 @@ RSpec.describe KaiserRuby do
     it 'nests if and comes back to the until loop' do
       expect(KaiserRuby.transpile(nested_if)).to eq <<~'RESULT'
         until @tommy == nil
-          puts "#{"Nobody"}"
+          puts ("Nobody").to_s
           if @tommy == @a_man
             next
           end
@@ -242,7 +242,7 @@ RSpec.describe KaiserRuby do
             next
           end
 
-          puts "#{"Until"}"
+          puts ("Until").to_s
         end
       RESULT
     end

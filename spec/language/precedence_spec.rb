@@ -7,11 +7,11 @@ RSpec.describe KaiserRuby do
     end
 
     it 'function call with math operation' do
-      expect(KaiserRuby.transpile('say A taking B, C plus D')).to eq 'puts "#{a(@b, @c) + @d}"'
+      expect(KaiserRuby.transpile('say A taking B, C plus D')).to eq 'puts (a(@b, @c) + @d).to_s'
     end
 
     it 'function call with logical and math' do
-      expect(KaiserRuby.transpile('say A taking B, C plus D and E')).to eq 'puts "#{a(@b, @c) + @d && @e}"'
+      expect(KaiserRuby.transpile('say A taking B, C plus D and E')).to eq 'puts (a(@b, @c) + @d && @e).to_s'
     end
 
     it 'function call with logical and comparison' do
@@ -19,19 +19,19 @@ RSpec.describe KaiserRuby do
     end
 
     it 'function call with literal numbers' do
-      expect(KaiserRuby.transpile('say A taking 3, 4, and 5')).to eq 'puts "#{a(3, 4, 5)}"'
+      expect(KaiserRuby.transpile('say A taking 3, 4, and 5')).to eq 'puts (a(3, 4, 5)).to_s'
     end
 
     it 'function call' do
-      expect(KaiserRuby.transpile('say B times A taking C')).to eq 'puts "#{@b * a(@c)}"'
+      expect(KaiserRuby.transpile('say B times A taking C')).to eq 'puts (@b * a(@c)).to_s'
     end
 
     it 'works with and' do
-      expect(KaiserRuby.transpile('say A taking B and C')).to eq 'puts "#{a(@b) && @c}"'
+      expect(KaiserRuby.transpile('say A taking B and C')).to eq 'puts (a(@b) && @c).to_s'
     end
 
     it 'works with and' do
-      expect(KaiserRuby.transpile('say A and B taking C')).to eq 'puts "#{@a && b(@c)}"'
+      expect(KaiserRuby.transpile('say A and B taking C')).to eq 'puts (@a && b(@c)).to_s'
     end
   end
 end
