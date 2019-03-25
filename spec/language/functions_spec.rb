@@ -42,7 +42,7 @@ RSpec.describe KaiserRuby do
     it 'makes a function definition' do
       expect(KaiserRuby.transpile(one_argument)).to eq <<~'RESULT'
         def midnight(hate)
-          puts "#{@desire}"
+          puts "#{desire}"
           return hate
         end
       RESULT

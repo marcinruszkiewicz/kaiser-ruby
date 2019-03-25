@@ -82,6 +82,7 @@ module KaiserRuby
       @nesting = 0
       @nesting_start_line = 0
       @nesting_has_else = false
+      @current_scope = [nil]
       @lnum = 0
 
       # parse through lines to get the general structure (statements/flow control/functions/etc) out of it
@@ -110,6 +111,7 @@ module KaiserRuby
           @nesting_has_else = false
           @nesting -= 1
           @nesting_start_line = nil
+          @current_scope.pop if @nesting.zero?
         end
 
         add_to_tree(parse_empty_line)
@@ -125,6 +127,10 @@ module KaiserRuby
         @nesting += 1
         @nesting_start_line = @lnum
         @nesting_has_else = false
+      end
+
+      if object.keys.first == :function
+        @current_scope.push object.deep_locate(:function_name).first.dig(:function_name)
       end
     end
 
@@ -694,6 +700,8 @@ module KaiserRuby
 
     def add_to_tree(object)
       object.extend(Hashie::Extensions::DeepLocate)
+
+      object[:current_scope] = @current_scope.last
 
       if @nesting.positive?
         object[:nesting_start_line] = @nesting_start_line

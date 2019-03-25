@@ -8,7 +8,16 @@ module KaiserRuby
   class CLI < Thor
     package_name "Kaiser-Ruby v#{KaiserRuby::VERSION}"
 
-    desc 'transpile FILE', 'transpile a .rock FILE and output the result'
+    desc 'parse FILE', 'parse a .rock FILE and output the intermediate tree'
+    def parse(filename)
+      file = File.read filename
+      output = KaiserRuby.parse(file)
+
+      puts output
+      say
+    end
+
+    desc 'transpile FILE', 'transpile a .rock FILE and output the resulting Ruby code'
     option 'show-source'.to_sym, type: :boolean, desc: 'prints out the source file along with the transpiled output'
     option :save, desc: 'saves the transpiled output in SAVE'
     def transpile(filename)
