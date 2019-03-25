@@ -11,6 +11,7 @@ Language implementation:
 - [x] Comments are properly ignored now (even multiline ones though they're a really bad idea anyway)
 - [x] Math operators like `+` are also handled in addition to `plus`
 - [x] Strings are no longer considered falsy if they contain a falsy alias (`lies`, `false` etc), they're always truthy
+- [x] Support `let <variable> be <expression>`
 - [ ] Handle recursion
 - [ ] Handle nested functions and their scoping
 

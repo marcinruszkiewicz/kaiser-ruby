@@ -23,6 +23,8 @@ module KaiserRuby
     DECREMENT_SECOND_KEYWORDS = %w[down].freeze
     ASSIGNMENT_FIRST_KEYWORDS = %w[put].freeze
     ASSIGNMENT_SECOND_KEYWORDS = %w[into].freeze
+    LET_ASSIGNMENT_FIRST_KEYWORDS = %w[let].freeze
+    LET_ASSIGNMENT_SECOND_KEYWORDS = %w[be].freeze
 
     FUNCTION_KEYWORDS = %w[takes].freeze
     FUNCTION_SEPARATORS = ['and', ', and', "'n'", '&', ','].freeze
@@ -139,6 +141,8 @@ module KaiserRuby
         return parse_until(line)
       elsif matches_separate?(words, ASSIGNMENT_FIRST_KEYWORDS, ASSIGNMENT_SECOND_KEYWORDS)
         return parse_assignment(line)
+      elsif matches_separate?(words, LET_ASSIGNMENT_FIRST_KEYWORDS, LET_ASSIGNMENT_SECOND_KEYWORDS)
+        return parse_let_assignment(line)
       elsif matches_several_first?(line, RETURN_KEYWORDS)
         return parse_return(line)
       elsif matches_first?(words, PRINT_KEYWORDS)
@@ -335,6 +339,24 @@ module KaiserRuby
       right = parse_argument(line.match(match_rxp).captures.first.strip)
       left = parse_variables(line.match(match_rxp).captures.last.strip)
       left[:type] = :assignment
+
+      { assignment: { left: left, right: right } }
+    end
+
+    def parse_let_assignment(line)
+      match_rxp = prepared_capture(LET_ASSIGNMENT_FIRST_KEYWORDS, LET_ASSIGNMENT_SECOND_KEYWORDS)
+      right = parse_argument(line.match(match_rxp).captures.last.strip)
+      left = parse_variables(line.match(match_rxp).captures.first.strip)
+      left[:type] = :assignment
+
+      # if the right is an expression and its variable name is empty
+      # then it's a compound assignment which we translate back to an explicit one
+      right.extend(Hashie::Extensions::DeepLocate)
+      unless right.deep_locate(:variable_name).empty?
+        if right.deep_locate(:variable_name).first[:variable_name].empty?
+          right.deep_locate(:variable_name).first[:variable_name] = left[:variable_name]
+        end
+      end
 
       { assignment: { left: left, right: right } }
     end
