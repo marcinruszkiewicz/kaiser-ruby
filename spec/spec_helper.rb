@@ -26,7 +26,7 @@ def file_fixture(fixture_name)
     path
   else
     msg = "the directory '%s' does not contain a file named '%s'"
-    raise ArgumentError, msg % [file_fixture_path, fixture_name]
+    raise ArgumentError, format(msg, file_fixture_path, fixture_name)
   end
 end
 

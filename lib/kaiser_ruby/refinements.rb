@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:disable Style/RedundantSelf
+
 module KaiserRuby
   # Rockstar introduces a new type that is similar to JS' undefined
   # Ruby obviously doesn't have that so we have to make our own

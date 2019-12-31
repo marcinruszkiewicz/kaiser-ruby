@@ -1,11 +1,26 @@
 AllCops:
   TargetRubyVersion: 2.3
+  Exclude:
+      - 'examples/**/*' # generated examples aren't exactly the pinnacle of Ruby good practices
 
 Metrics:
   Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false # yes, we actually have a reason to use eval, stop whining
+
+Lint/UnifiedInteger:
+  Enabled: false # yes, using Fixnum in refinements is on purpose
 
 Style/RescueModifier:
   Enabled: false
 
 Lint/InterpolationCheck:
   Enabled: false
+
+Style/RedundantSelf:
+  Exclude:
+    - lib/kaiser_ruby/refinements.rb
