@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/marcinruszkiewicz/kaiser-ruby.svg?branch=master)](https://travis-ci.com/marcinruszkiewicz/kaiser-ruby)
+![Build Status](https://github.com/marcinruszkiewicz/kaiser-ruby/actions/workflows/rspec.yml/badge.svg)
 [![Gem Version](https://badge.fury.io/rb/kaiser-ruby.svg)](https://badge.fury.io/rb/kaiser-ruby)
 
 # KaiserRuby - a Rockstar to Ruby transpiler
